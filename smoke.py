@@ -29,6 +29,15 @@ class AcceptanceTests(unittest.TestCase):
                 self.assertEqual(hashlib.sha256(report["diff"].encode()).hexdigest(), report["patch_sha256"])
                 self.assert_cleanup(events, 2)
 
+    def test_invoice_sample(self):
+        events = []
+        repair(record(events), "invoice", profile_id="billing")
+        result = events[-1]
+        self.assertEqual(result["event"], "result")
+        self.assertIn("4 failed", result["before"])
+        self.assertIn("4 passed", result["after"])
+        self.assert_cleanup(events, 2)
+
     def test_reject_regression(self):
         events = []
         with self.assertRaisesRegex(RuntimeError, "Candidate rejected"):

@@ -9,6 +9,7 @@ const patchPanel = document.querySelector("#patch-panel");
 const steps = [...document.querySelectorAll(".steps li")];
 const profile = document.querySelector("#profile");
 const projectTitle = document.querySelector("#project-title");
+const loadExample = document.querySelector("#load-example");
 const repository = document.querySelector("#repository");
 const ref = document.querySelector("#ref");
 const sandboxes = document.querySelector("#sandboxes");
@@ -27,11 +28,18 @@ document.querySelector("#source").addEventListener("submit", event => {
 
 fetch("/api/config").then(response => response.json()).then(config => {
   repository.disabled = ref.disabled = !config.public_import;
+  loadExample.hidden = !config.public_import;
   document.querySelector("#source-note").textContent = config.public_import
     ? `${config.mode} · Python / pytest profiles`
     : `${config.mode} · this deployment runs the bundled project`;
 }).catch(() => {
   document.querySelector("#source-note").textContent = "Repair settings are unavailable.";
+});
+
+loadExample.addEventListener("click", () => {
+  profile.value = "pandas";
+  repository.value = "https://github.com/Hari-Aditya-003/versionbridge-ai";
+  ref.value = "274b7ba6ec8fd8d418f686f37538517d4f87ca82";
 });
 
 function showSandbox(event) {
@@ -161,7 +169,7 @@ function resetRepair() {
 }
 
 async function execute(isProbe) {
-  run.disabled = probe.disabled = profile.disabled = true;
+  run.disabled = probe.disabled = profile.disabled = loadExample.disabled = true;
   if (isProbe) {
     probeLog.textContent = "Starting containment probe…\n";
   } else {
@@ -201,7 +209,7 @@ async function execute(isProbe) {
       steps.find(step => step.classList.contains("active"))?.classList.remove("active");
     }
   } finally {
-    run.disabled = probe.disabled = profile.disabled = false;
+    run.disabled = probe.disabled = profile.disabled = loadExample.disabled = false;
     if (!isProbe) loadHistory();
   }
 }
@@ -225,24 +233,3 @@ download.addEventListener("click", () => {
 patchDownload.addEventListener("click", () => {
   if (report) saveFile(report.diff, "text/plain", `versionbridge-${report.id}.patch`);
 });
-
-let queued = false;
-window.addEventListener("scroll", () => {
-  if (queued) return;
-  queued = true;
-  requestAnimationFrame(() => {
-    document.documentElement.style.setProperty("--shift", `${Math.min(window.scrollY, 700) * 0.21}px`);
-    queued = false;
-  });
-}, { passive: true });
-
-const reveals = new IntersectionObserver(entries => {
-  for (const entry of entries) {
-    if (entry.isIntersecting) {
-      entry.target.classList.add("arriving");
-      reveals.unobserve(entry.target);
-    }
-  }
-}, { threshold: 0.15 });
-
-document.querySelectorAll("main .section").forEach(section => reveals.observe(section));

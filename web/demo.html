@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080e17">
+<meta name="description" content="VersionBridge AI repairs Python dependency failures and verifies patches in isolated sandboxes.">
+<title>VersionBridge AI — Interactive demo</title>
+<link rel="icon" href="/mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+<script src="/motion.js" defer></script>
+<script src="/app.js" defer></script>
+</head>
+<body>
+<header><div class="nav shell"><a class="brand" href="/"><img src="/mark.svg" alt="">VersionBridge<span>AI</span></a>
+<nav aria-label="Demo"><a href="#workspace">Repair</a><a href="#containment">Containment</a><a href="#history">Run history</a></nav>
+<a class="button secondary small" href="/">Project overview</a></div></header>
+<main id="top">
+<section class="shell section" id="workspace">
+<div class="section-index">01 <span>/</span> REPAIR WORKSPACE</div>
+<div class="section-head"><div><h2>Run your first repair.</h2><p>Run a Python dependency migration or test whether the verifier catches a regression.</p></div><span class="tag">BUNDLED EXAMPLE</span></div>
+<div class="workspace">
+<form id="source" class="source-form">
+<label for="profile">Repair profile</label>
+<select id="profile">
+<option value="pandas">pandas 2 · removed append API</option>
+<option value="settings">Pydantic 2 · settings import</option>
+<option value="billing">Python · invoice total bug</option>
+<option value="regression">pandas 2 · regression guard</option>
+</select>
+<label for="repository">Public GitHub repository <small>Optional · leave blank for the bundled example</small></label>
+<div><input id="repository" type="url" maxlength="220" placeholder="https://github.com/owner/project" disabled>
+<input id="ref" aria-label="Branch or commit" maxlength="128" placeholder="Default branch" disabled></div>
+<button type="button" id="load-example" class="button secondary small" hidden>Load pinned GitHub example</button>
+<p id="source-note">Checking available repair sources…</p>
+</form>
+<div class="workspace-top"><span><i></i> <span id="project-title">pandas 2 · removed append API</span></span><button id="run" class="button primary small">▶ &nbsp;Run repair</button></div>
+<div class="workspace-body"><aside class="steps"><p class="micro">EXECUTION PLAN</p><ol><li><b>01</b><span>Reproduce failure<small>Run the original tests</small></span></li><li><b>02</b><span>Prepare patch<small>Propose a scoped repair</small></span></li><li><b>03</b><span>Verify result<small>Rerun the unchanged tests</small></span></li></ol></aside>
+<div class="terminal"><div class="terminal-head"><span>⌘ &nbsp; EXECUTION LOG</span><span id="state">READY</span></div><pre id="logs" tabindex="0">Choose a profile and run it to capture baseline and verification output.</pre></div></div>
+<section class="runtime" aria-labelledby="runtime-title"><div id="runtime-title" class="micro">SANDBOX ACTIVITY</div><div id="sandboxes" role="status">Containers appear here when a repair starts.</div></section>
+<div class="workspace-foot"><span id="status" role="status">Ready to start a sandbox run.</span><button class="button secondary small" id="download" hidden>Download evidence ↓</button><button class="button secondary small" id="download-patch" hidden>Download patch ↓</button></div>
+<details id="patch-panel" hidden><summary>View verified patch</summary><pre id="patch"></pre></details>
+</div></section>
+<section class="shell section" id="containment">
+<div class="lab"><div><div class="section-index">02 <span>/</span> CONTAINMENT LAB</div><h2>Test the boundary.</h2><p>Watch outbound connections and filesystem writes get blocked. The lab also checks the memory cap, forces a timeout, and confirms that Docker removed the container.</p><button class="button secondary" id="probe">Run containment check <span aria-hidden="true">→</span></button></div>
+<pre id="probe-log" tabindex="0" aria-live="polite">BOUNDARY PROBE
+────────────────────────
+01  Outbound networking
+02  Root filesystem write
+03  Process privileges
+04  Inference key isolation
+05  Deadline and teardown
+06  Kernel memory cap</pre></div>
+</section>
+<section class="shell section" id="history">
+<div class="section-index">03 <span>/</span> RUN HISTORY</div>
+<div class="section-head"><div><h2>Review prior repairs.</h2><p>Open a recorded run to inspect and export its evidence.</p></div><label class="micro">STATUS <select id="history-filter"><option>All</option><option>Verified</option><option>Unverified</option></select></label></div>
+<div id="history-list" class="workspace history-list" aria-live="polite">Loading run history…</div>
+</section>
+</main>
+<footer class="shell"><a class="brand" href="/"><img src="/mark.svg" alt="">VersionBridge<span>AI</span></a><a class="muted" href="/brand.png" target="_blank" rel="noopener">Brand artwork ↗</a><a href="https://lablab.ai/ai-hackathons/vultr-hackathon/">Vultr Agent Rush ↗</a></footer>
+</body>
+</html>

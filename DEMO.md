@@ -1,6 +1,6 @@
 # Record the VersionBridge demo
 
-Record the public Vultr deployment in a 16:9 browser window. Start with a fresh run, then keep the unedited test and containment results on screen long enough to read.
+Record the public Vultr deployment in a 16:9 browser window. Open the demo in its own tab from the homepage. Start with a fresh run, then keep the unedited test and containment results on screen long enough to read.
 
 | Time | On screen | Narration cue |
 | --- | --- | --- |

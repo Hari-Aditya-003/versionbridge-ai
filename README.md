@@ -13,13 +13,13 @@ docker build -t versionbridge-sandbox:1 -f Sandbox.Dockerfile .
 python3 server.py
 ```
 
-Open http://127.0.0.1:8787. Run the bundled repair, inspect the patch and sandbox IDs, then download the patch and JSON evidence. The containment lab makes real network and filesystem attempts, checks user identity and the kernel memory cap, and forces a timeout followed by a Docker cleanup check. SQLite retains the latest 100 repair runs and shows the latest 25 in the workspace. Local runs without inference credentials label the built-in patch explicitly.
+Open http://127.0.0.1:8787 and choose **Run the demo** to open the workspace in a new tab. Run the bundled repair, inspect the patch and sandbox IDs, then download the patch and JSON evidence. The containment lab makes real network and filesystem attempts, checks user identity and the kernel memory cap, and forces a timeout followed by a Docker cleanup check. SQLite retains the latest 100 repair runs and shows the latest 25 in the workspace. Local runs without inference credentials label the built-in patch explicitly.
 
 The optional public GitHub import is enabled with `ENABLE_PUBLIC_IMPORT=1`. It resolves a branch or commit to an immutable GitHub SHA and runs a bounded migration profile. The project must be small and contain exactly one supported migration line for the selected profile. The image supplies pandas, NumPy, Pydantic, pydantic-settings and pytest. Dependency installation, private repositories and automated pushes are outside this profile.
 
 See [acceptance and model evaluation](EVALUATION.md) for the real Docker tests, a pinned GitHub import, and a Vultr model comparison command.
 
-[Architecture](ARCHITECTURE.md) · [Security](SECURITY.md) · [Model verification](MODELS.md) · [LabLab submission kit](SUBMISSION.md)
+[Architecture](ARCHITECTURE.md) · [Security](SECURITY.md) · [Model verification](MODELS.md) · [LabLab submission kit](SUBMISSION.md) · [Comparison with AegisPR](COMPARISON.md)
 
 ## Architecture
 

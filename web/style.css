@@ -45,3 +45,5 @@ input,select{min-width:0;background:#080f1a;border:1px solid #34445a;border-radi
 @media(max-width:530px){.source-form>div,.history-row{grid-template-columns:1fr}.source-form small{display:block;margin:4px 0}}
 
 #profile{width:100%;margin-bottom:14px}
+
+#load-example{margin-top:9px}
