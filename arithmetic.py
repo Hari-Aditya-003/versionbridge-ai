@@ -7,11 +7,18 @@ OPERATORS = {"+": add, "-": sub, "*": mul}
 
 
 def examples(log):
-    return re.findall(
-        r"^E\s+assert (-?\d+) == (-?\d+)\n"
-        r"E\s+\+\s+where -?\d+ = ([a-zA-Z_]\w*)\((-?\d+(?:, -?\d+)*)\)$",
+    comparisons = re.findall(
+        r"^E +assert (-?\d{1,10}) == (-?\d{1,10})\n"
+        r"E +\+ +where (-?\d{1,10}) = ([a-zA-Z_]\w{0,79})\((-?\d{1,10}(?:, -?\d{1,10}){0,2})\)$",
         log, flags=re.MULTILINE,
-    )[:8]
+    )
+    result = []
+    for left, right, observed, function, args in comparisons:
+        if left != right and observed in (left, right):
+            expected = right if observed == left else left
+            result.append((observed, expected, function, args))
+    return result[:8]
+
 
 
 def candidate_expressions(names, code, observations):

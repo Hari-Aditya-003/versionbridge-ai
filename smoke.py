@@ -170,6 +170,9 @@ class AcceptanceTests(unittest.TestCase):
                                            (126, 125, "125, 1, 0"), (28, 25, "0, 3, 25"))
         )
         observations = examples(output)
+        self.assertEqual(examples("E   assert 400 == 153\nE    +  where 153 = total(125, 3, 25)"),
+                         [("153", "400", "total", "125, 3, 25")])
+        self.assertFalse(examples("E   assert 400 == 153\nE    +  where 99 = total(125, 3, 25)"))
         names = ("unit", "quantity", "fee")
         self.assertIn("return (unit * quantity) + fee",
                       candidate_expressions(names, "def total(unit, quantity, fee):", observations))

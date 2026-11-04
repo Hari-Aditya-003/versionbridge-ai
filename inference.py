@@ -67,7 +67,7 @@ def local_failure_context(log):
     if not comparisons:
         return log[:1300]
     return "\n".join(f"{function}({args}) must return {expected}. Observed {actual}."
-                     for actual, expected, function, args in comparisons)
+                     for actual, expected, function, args in comparisons)[:1300]
 
 
 def propose(profile, log, code, previous=None):
@@ -110,7 +110,9 @@ def propose(profile, log, code, previous=None):
     ]
     if mode == "local-gpu":
         try:
-            allowed = synthesized if profile.arithmetic_names else profile.candidates
+            allowed = profile.candidates
+            if profile.arithmetic_names:
+                allowed = synthesized if previous is None else ()
             answer, receipt = local_gpu.complete(messages, allowed, arithmetic=bool(profile.arithmetic_names))
             candidate = parse_candidate(answer)
             if synthesized:
