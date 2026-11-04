@@ -75,7 +75,8 @@ def propose(profile, log, code, previous=None):
     if profile.arithmetic_names:
         policy = (
             f"Author a return expression from {', '.join(profile.arithmetic_names)} "
-            "and small integer constants using +, - and *. Calls and attributes are prohibited."
+            "and small integer constants using +, - and *. Calls and attributes are prohibited. "
+            "Follow the function contract and check the proposed arithmetic against the failing examples."
         )
     else:
         policy = f"Permitted replacement lines: {json.dumps(profile.candidates)}."
@@ -87,7 +88,7 @@ def propose(profile, log, code, previous=None):
     )
     if mode == "local-gpu":
         code = code[:2800]
-        log = log[-1300:]
+        log = log[:1300]
         if previous:
             previous = {**previous, "failure": previous["failure"][-750:]}
     messages = [
@@ -96,7 +97,8 @@ def propose(profile, log, code, previous=None):
     ]
     if mode == "local-gpu":
         try:
-            answer, receipt = local_gpu.complete(messages)
+            allowed = () if profile.arithmetic_names else profile.candidates
+            answer, receipt = local_gpu.complete(messages, allowed)
             candidate = parse_candidate(answer)
             return Proposal(validate_replacement(profile, candidate),
                             f"Local Ollama · {receipt['requested_model']}",

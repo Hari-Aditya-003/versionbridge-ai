@@ -179,6 +179,8 @@ class AcceptanceTests(unittest.TestCase):
         request = json.loads(body)
         self.assertEqual(request["keep_alive"], 0)
         self.assertEqual(request["options"]["num_ctx"], 2048)
+        self.assertEqual(request["format"]["required"], ["diagnosis", "replacement"])
+        self.assertFalse(request["format"]["additionalProperties"])
         self.assertEqual(proposal.receipt["accelerator"], "unverified")
         http.close.assert_called_once()
 

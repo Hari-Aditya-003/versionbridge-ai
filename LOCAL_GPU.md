@@ -2,7 +2,7 @@
 
 VersionBridge can use an Ollama instance on a trusted Dell through an SSH tunnel. The Dell runs inference. The application host runs the Python orchestrator and its separate Docker test sandboxes. Use the [Vultr configuration](deploy/README.md) for the public hackathon deployment.
 
-The default local model is Qwen2.5 Coder 1.5B Instruct Q4_K_M. Its quantized weights are 986 MB. The app sends one short request at a time and requests a 2,048-token context, a maximum of 320 generated tokens, two CPU threads, and unloading after each response. The app reports Ollama as the provider. Confirm GPU placement separately through the Ollama logs or NVIDIA telemetry. [Ollama model card](https://ollama.com/library/qwen2.5-coder:1.5b-instruct-q4_K_M)
+The default local model is Qwen2.5 Coder 1.5B Instruct Q4_K_M. Its quantized weights are 986 MB. The app sends one short request at a time and requests a 2,048-token context, a maximum of 320 generated tokens, two CPU threads, and unloading after each response. Ollama uses a response schema for the diagnosis and edit. The controller checks the resulting patch before execution. The app reports Ollama as the provider. Confirm GPU placement separately through the Ollama logs or NVIDIA telemetry. [Ollama model card](https://ollama.com/library/qwen2.5-coder:1.5b-instruct-q4_K_M)
 
 On the Dell, start an Ollama service bound to loopback and pull the model. For a portable Ollama installation use its absolute executable path.
 

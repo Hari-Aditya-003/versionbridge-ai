@@ -148,6 +148,8 @@ def repair(emit, run_id, repository="", ref="", profile_id="pandas", filename=""
             replacement = proposal.replacement
             emit("diagnosis", {"attempt": attempt, "text": proposal.diagnosis,
                                "provider": proposal.provider, "receipt": proposal.receipt})
+            if previous and replacement == previous["patch"]:
+                raise RuntimeError("Candidate rejected. The model repeated a patch that already failed verification.")
             lines = source.split("\n")
             original_line = lines[line_number - 1]
             if original_line.removesuffix("\r") != profile.original:

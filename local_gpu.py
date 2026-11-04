@@ -6,13 +6,25 @@ import os
 DEFAULT_MODEL = "qwen2.5-coder:1.5b-instruct-q4_K_M"
 
 
-def complete(messages):
+def complete(messages, replacements=()):
+    replacement = {"type": "string", "minLength": 1, "maxLength": 240}
+    if replacements:
+        replacement["enum"] = [line.strip() for line in replacements]
+    schema = {
+        "type": "object",
+        "properties": {
+            "diagnosis": {"type": "string", "minLength": 1, "maxLength": 360},
+            "replacement": replacement,
+        },
+        "required": ["diagnosis", "replacement"],
+        "additionalProperties": False,
+    }
     model = os.getenv("VERSIONBRIDGE_LOCAL_MODEL", DEFAULT_MODEL)
     try:
         port = int(os.getenv("VERSIONBRIDGE_OLLAMA_PORT", "11434"))
-        connection = http.client.HTTPConnection("127.0.0.1", port, timeout=45)
+        connection = http.client.HTTPConnection("127.0.0.1", port, timeout=70)
         body = json.dumps({
-            "model": model, "messages": messages, "stream": False, "format": "json",
+            "model": model, "messages": messages, "stream": False, "format": schema,
             "keep_alive": 0, "options": {
                 "num_ctx": 2048, "num_predict": 320, "num_thread": 2, "temperature": 0,
             },
