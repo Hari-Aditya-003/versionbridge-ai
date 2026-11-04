@@ -43,6 +43,30 @@ Set `VULTR_API_KEY` on the control plane. Set `VULTR_MODEL` to an identifier ava
 
 For the public judging run, deploy the backend on a Vultr VM, repeat a live repair and containment run, and save the model receipt and the public HTTPS demo URL. The Docker fixtures and local browser demo have been exercised. Public Vultr deployment and authenticated model results still require an authorized environment. [Deployment instructions](deploy/README.md) · [Submission checklist](SUBMISSION.md) · [Recording guide](DEMO.md)
 
+## Roadmap
+
+The current release supports bounded Python repairs, pinned public GitHub snapshots, Docker verification, and private Dell inference. The local Dell evaluation verified three repairs and rejected the seeded regression. GitHub Pages hosts the showcase and recording. Public Vultr deployment and authenticated Vultr model evaluation are pending. [Observed results](EVALUATION.md)
+
+The versions below are proposed milestones. A language or SQL engine becomes supported once its adapter passes the release tests.
+
+| Version | Build | Release tests |
+| --- | --- | --- |
+| **0.2 — Shared execution** | Extract the Python runner into a reusable adapter. Add queued jobs, cancellation, deadlines, and structured test reports. Verify the public Vultr path. | Preserve the existing Python checks. Recover from worker failure, clean up canceled sandboxes, apply exported diffs, and record a live Vultr repair and containment run. |
+| **0.3 — JavaScript and TypeScript** | Add a pinned Node toolchain, lockfile-based installs, type checking, Jest or Vitest, and bounded multi-file patches. | Repair a package upgrade and a type failure. Reject a candidate that passes a targeted test but breaks the full suite. |
+| **0.4 — SQL** | Add PostgreSQL query verification first, then SQLite and MySQL. Test schema migrations on disposable databases with seeded data. | Check NULLs, duplicates, joins, ordering, decimal precision, and date boundaries. Deny writes in query mode and verify data integrity after migrations. |
+| **0.5 — Compiled languages** | Add Go and Java, then Rust and C/C++. Evaluate C# and Kotlin as follow-on adapters. | For each toolchain, reproduce a build failure, verify a fix, reject a regression, and record the runtime and image version. |
+| **0.6 — Algorithms and model evaluation** | Add reference solutions, property tests, fuzzing, and time and memory budgets. Compare deterministic transforms, model-authored edits, and test-guided search. | Catch hidden wrong answers, overflow, flaky results, and resource overruns. Compare models on the same cases and budgets. |
+| **1.0 — GitHub and team workflows** | Add PR base/head comparisons, private repository access through a GitHub App, check results, approval gates, and draft repair PRs. | Verify tenant isolation, duplicate webhook handling, stale commits, review approvals, and recovery after failed jobs. |
+
+### How new adapters fit
+
+- The shared controller owns job state, sandbox lifecycle, retries, and evidence. Each adapter defines toolchain discovery, build and test commands, result parsing, and patch validation.
+- Each run records the source commit, toolchain, sandbox image, test inventory, candidate diff, and model receipt when available. Verification checks for skipped or weakened tests as well as passing results.
+- SQL verification compares results under the engine's ordering and duplicate rules. Algorithm verification adds reference outputs, properties, and resource budgets.
+- Evaluate repair strategies on both seeded fixtures and held-out pinned repositories. Include unfixable cases and rank models by verified repairs and false acceptances before latency and cost. [Architecture](ARCHITECTURE.md) · [Model evaluation plan](MODELS.md)
+
+**Next build:** extract the Python adapter, then ship one end-to-end TypeScript repair through the same controller. Follow it with PostgreSQL query verification.
+
 ## Project map
 
 | Area | Where to look |
