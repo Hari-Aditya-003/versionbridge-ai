@@ -81,6 +81,7 @@ function showHistory() {
       resetRepair();
       runEvents = item.evidence;
       for (const event of item.evidence) {
+        if (event.event === "diagnosis") appendLog(logs, `[Diagnosis · ${event.provider}]\n${event.text}\n`);
         if (event.event === "project") projectTitle.textContent = event.title;
         if (event.event === "sandbox") showSandbox(event);
         if (event.event === "rejected") showRejected(event);
@@ -173,6 +174,7 @@ async function execute(isProbe) {
   try {
     await streamEvents(isProbe ? "/api/containment" : "/api/repair", event => {
       if (!isProbe) runEvents.push(event);
+      if (event.event === "diagnosis") appendLog(target, `[Diagnosis · ${event.provider}]\n${event.text}\n`);
       if (event.event === "project") projectTitle.textContent = event.title;
       if (event.event === "rejected") showRejected(event);
       if (event.event === "sandbox") {

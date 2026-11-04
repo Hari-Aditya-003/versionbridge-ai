@@ -6,6 +6,7 @@ Run `docker build -t versionbridge-sandbox:1 -f Sandbox.Dockerfile .`, then `pyt
 | --- | --- | --- |
 | pandas 2 migration | Two failures after removal of DataFrame.append | Two passes after switching to concat |
 | Pydantic settings | Two failures after BaseSettings moved | Two passes, including an environment override |
+| Invoice arithmetic | Four wrong totals on the original formula | The model can author a bounded expression that passes all four cases |
 | Regression guard | Standard DataFrame fails, legacy adapter preserves audit metadata | The standard frame works but the adapter loses audit metadata, so the verifier rejects the patch |
 | Containment | Real network and filesystem attempts, a live infinite loop, and kernel memory-limit inspection | Restrictions observed and Docker confirms each container is gone |
 
@@ -17,4 +18,4 @@ For a live provider comparison, check the model IDs available to your Vultr acco
 python3 evaluate_models.py qwen2.5-coder-32b-instruct SECOND_AVAILABLE_MODEL > model-evidence.json
 ```
 
-Each model sees the same three tasks. The script ranks correct observed outcomes first, then total elapsed time. Provider errors, missing evidence and false acceptance of the regression count against the model. This comparison uses real inference requests and can consume credits. The three fixtures check this repair workflow and do not establish general model quality.
+Each model sees the same four tasks. The script ranks correct observed outcomes first, then total elapsed time. Provider errors, missing evidence and false acceptance of the regression count against the model. This comparison uses real inference requests and can consume credits. The fixtures check this repair workflow and do not establish general model quality.

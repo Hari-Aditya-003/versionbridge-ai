@@ -1,4 +1,4 @@
-"""Compare account-approved Vultr model IDs against the three Docker fixtures."""
+"""Compare account-approved Vultr model IDs against the four Docker fixtures."""
 import json
 import os
 import sys
@@ -23,10 +23,18 @@ def evaluate(model):
                         if entry["event"] in {"result", "rejected"}), None)
         passed = bool(outcome and outcome["provider"].startswith("Vultr Serverless Inference")
                       and outcome["event"] == ("rejected" if profile == "regression" else "result"))
+        if profile == "regression" and passed:
+            passed = (outcome["verification_exit_code"] == 1
+                      and "FAILED test_regression_pipeline.py::test_preserve_adapter_audit_metadata"
+                      in outcome["after"])
         cases.append({"profile": profile, "expected_outcome": passed,
                       "duration_seconds": round(time.monotonic() - started, 2),
                       "evidence": records})
-    return {"model": model, "correct_outcomes": sum(case["expected_outcome"] for case in cases),
+    reported_tokens = [entry["receipt"].get("tokens", {}).get("total_tokens")
+                       for case in cases for entry in case["evidence"] if entry["event"] == "diagnosis"]
+    return {"model": model, "reported_total_tokens": sum(value for value in reported_tokens
+                                                        if value is not None) if any(
+           value is not None for value in reported_tokens) else None, "correct_outcomes": sum(case["expected_outcome"] for case in cases),
             "cases": cases}
 
 

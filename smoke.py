@@ -1,10 +1,14 @@
 """Run the complete Docker acceptance suite without spending inference credits."""
 import hashlib
+import io
+import json
 import re
 import unittest
+from unittest.mock import patch
 
 from profiles import PROFILES
-from server import containment, repair, validate_replacement
+from inference import Proposal, propose, validate_replacement
+from server import containment, repair
 
 
 def record(events):
@@ -46,13 +50,42 @@ class AcceptanceTests(unittest.TestCase):
         self.assert_cleanup(events, 3)
 
     def test_model_output_validation(self):
-        profile = PROFILES["settings"]
-        for output in ({}, [], {"replacement": 1}, {"replacement": "import os"},
-                       {"replacement": profile.candidates[0] + "\nimport os"}):
-            with self.subTest(output=output), self.assertRaises(ValueError):
-                validate_replacement(profile, output)
-        self.assertEqual(validate_replacement(profile, {"replacement": profile.candidates[0]}),
-                         profile.candidates[0])
+        profile = PROFILES["billing"]
+        for line in ("return __import__('os')", "return unit_cents.real", "return unit_cents ** 8",
+                     "return unit_cents\nimport os", "return unknown + 1"):
+            with self.subTest(line=line), self.assertRaises(ValueError):
+                validate_replacement(profile, {"replacement": line, "diagnosis": "test"})
+        self.assertEqual(validate_replacement(profile, {
+            "replacement": "return fee_cents + (quantity * unit_cents)", "diagnosis": "Multiply first",
+        }), "    return fee_cents + quantity * unit_cents")
+
+    def test_vultr_response_receipt(self):
+        response = {"id": "test-receipt", "model": "served-model", "usage": {"total_tokens": 123},
+                    "choices": [{"message": {"content": json.dumps({
+                        "diagnosis": "Multiply the unit price by quantity.",
+                        "replacement": "return quantity * unit_cents + fee_cents",
+                    })}}]}
+        with patch.dict("os.environ", {"VULTR_API_KEY": "fixture-key", "VULTR_MODEL": "fixture-model"}):
+            with patch("inference.urlopen", return_value=io.BytesIO(json.dumps(response).encode())) as transport:
+                proposal = propose(PROFILES["billing"], "failing test", "source")
+        self.assertEqual(transport.call_args.args[0].full_url,
+                         "https://api.vultrinference.com/v1/chat/completions")
+        self.assertEqual(proposal.receipt, {"requested_model": "fixture-model", "served_model": "served-model",
+                                           "completion_id": "test-receipt", "tokens": {"total_tokens": 123}})
+
+    def test_model_style_feedback_retries_in_fresh_containers(self):
+        events = []
+        first = Proposal("    return unit_cents * quantity", "Test double", "Multiply quantity", {"test": True})
+        second = Proposal("    return fee_cents + quantity * unit_cents", "Test double",
+                          "Restore the flat fee", {"test": True})
+        with patch("server.propose", side_effect=[first, second]) as model:
+            repair(record(events), "retry", profile_id="billing")
+        self.assertEqual(events[-1]["event"], "result")
+        self.assertEqual(events[-1]["attempt"], 2)
+        self.assertIn("4 passed", events[-1]["after"])
+        self.assertIn("failed", model.call_args.args[3]["failure"])
+        self.assertEqual(len([event for event in events if event["event"] == "rejected"]), 1)
+        self.assert_cleanup(events, 3)
 
     def assert_cleanup(self, events, count):
         sandboxes = [event for event in events if event["event"] == "sandbox"]

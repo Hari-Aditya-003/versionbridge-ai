@@ -11,9 +11,14 @@ class Profile:
     original: str
     candidates: tuple[str, ...]
     failure: str
+    arithmetic_names: tuple[str, ...] = ()
 
 
 PROFILES = {
+    "billing": Profile("Python · invoice total bug", "scenarios/billing",
+                       "    return unit_cents + quantity + fee_cents",
+                       ("    return unit_cents * quantity + fee_cents",),
+                       "test_invoice_total", ("unit_cents", "quantity", "fee_cents")),
     "pandas": Profile("pandas 2 · removed append API", "fixture", PANDAS_CALL, (
         "    return pd.concat([events, pd.DataFrame([event])], ignore_index=True)",
         "    return pd.concat([events, pd.Series(event).to_frame().T], ignore_index=True)",

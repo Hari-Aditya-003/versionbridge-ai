@@ -1,6 +1,6 @@
 # VersionBridge AI
 
-VersionBridge repairs a supported Python dependency failure and shows exactly what ran. Three bundled cases demonstrate a pandas 2 repair, a Pydantic settings migration, and rejection of a patch that drops audit metadata. Each unchanged pytest suite runs before and after a one-line candidate patch in fresh containers.
+VersionBridge repairs a supported Python dependency failure and shows exactly what ran. Four bundled cases demonstrate a pandas 2 repair, a Pydantic settings migration, an arithmetic bug fix, and rejection of a patch that drops audit metadata. Each unchanged pytest suite runs before and after a one-line candidate patch in fresh containers.
 
 Built for Vultr Agent Rush, Blast Radius Zero.
 
@@ -18,6 +18,8 @@ Open http://127.0.0.1:8787. Run the bundled repair, inspect the patch and sandbo
 The optional public GitHub import is enabled with `ENABLE_PUBLIC_IMPORT=1`. It resolves a branch or commit to an immutable GitHub SHA and runs a bounded migration profile. The project must be small and contain exactly one supported migration line for the selected profile. The image supplies pandas, NumPy, Pydantic, pydantic-settings and pytest. Dependency installation, private repositories and automated pushes are outside this profile.
 
 See [acceptance and model evaluation](EVALUATION.md) for the real Docker tests, a pinned GitHub import, and a Vultr model comparison command.
+
+[Architecture](ARCHITECTURE.md) · [Security](SECURITY.md) · [Model verification](MODELS.md) · [LabLab submission kit](SUBMISSION.md)
 
 ## Architecture
 
