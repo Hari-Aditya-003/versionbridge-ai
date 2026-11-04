@@ -1,9 +1,9 @@
 # VersionBridge AI LabLab submission kit
 
-**Track** — Blast Radius Zero, sandboxed code execution  
-**Tagline** — When dependencies break, prove the fix.  
-**Source** — https://github.com/Hari-Aditya-003/versionbridge-ai  
-**License** — MIT
+- **Track** — Blast Radius Zero, sandboxed code execution
+- **Tagline** — When dependencies break, prove the fix.
+- **Source** — https://github.com/Hari-Aditya-003/versionbridge-ai
+- **License** — MIT
 
 ## Short description
 
