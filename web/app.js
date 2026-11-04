@@ -7,6 +7,8 @@ const state = document.querySelector("#state");
 const download = document.querySelector("#download");
 const patchPanel = document.querySelector("#patch-panel");
 const steps = [...document.querySelectorAll(".steps li")];
+const profile = document.querySelector("#profile");
+const projectTitle = document.querySelector("#project-title");
 const repository = document.querySelector("#repository");
 const ref = document.querySelector("#ref");
 const sandboxes = document.querySelector("#sandboxes");
@@ -26,7 +28,7 @@ document.querySelector("#source").addEventListener("submit", event => {
 fetch("/api/config").then(response => response.json()).then(config => {
   repository.disabled = ref.disabled = !config.public_import;
   document.querySelector("#source-note").textContent = config.public_import
-    ? `${config.mode} · pandas 2 / pytest profile`
+    ? `${config.mode} · Python / pytest profiles`
     : `${config.mode} · this deployment runs the bundled project`;
 }).catch(() => {
   document.querySelector("#source-note").textContent = "Repair settings are unavailable.";
@@ -51,8 +53,15 @@ function showResult(event) {
   steps.forEach(step => step.className = "done");
   state.textContent = "VERIFIED";
   statusLine.textContent = `Verified · ${event.provider} · exit ${event.baseline_exit_code} → ${event.verification_exit_code}`;
+  patchPanel.querySelector("summary").textContent = "View verified patch";
   document.querySelector("#patch").textContent = event.diff;
   patchPanel.hidden = download.hidden = patchDownload.hidden = false;
+}
+
+function showRejected(event) {
+  patchPanel.querySelector("summary").textContent = "Inspect rejected candidate";
+  document.querySelector("#patch").textContent = event.diff;
+  patchPanel.hidden = download.hidden = false;
 }
 
 function showHistory() {
@@ -72,7 +81,9 @@ function showHistory() {
       resetRepair();
       runEvents = item.evidence;
       for (const event of item.evidence) {
+        if (event.event === "project") projectTitle.textContent = event.title;
         if (event.event === "sandbox") showSandbox(event);
+        if (event.event === "rejected") showRejected(event);
         if (event.event === "log") appendLog(logs, `[${event.label}]\n${event.text}\n`);
         if (event.event === "result") showResult(event);
         if (event.event === "error") {
@@ -149,7 +160,7 @@ function resetRepair() {
 }
 
 async function execute(isProbe) {
-  run.disabled = probe.disabled = true;
+  run.disabled = probe.disabled = profile.disabled = true;
   if (isProbe) {
     probeLog.textContent = "Starting containment probe…\n";
   } else {
@@ -162,6 +173,8 @@ async function execute(isProbe) {
   try {
     await streamEvents(isProbe ? "/api/containment" : "/api/repair", event => {
       if (!isProbe) runEvents.push(event);
+      if (event.event === "project") projectTitle.textContent = event.title;
+      if (event.event === "rejected") showRejected(event);
       if (event.event === "sandbox") {
         if (isProbe) appendLog(target, `› Sandbox ${event.name.slice(-12)} · ${event.status} · ${event.location || `exit ${event.exit_code}`}\n`);
         else showSandbox(event);
@@ -176,7 +189,7 @@ async function execute(isProbe) {
       if (event.event === "log") appendLog(target, `\n[${event.label}]\n${event.text}\n`);
       if (event.event === "contained") appendLog(target, `✓ ${event.message}\n`);
       if (event.event === "result") showResult(event);
-    }, isProbe ? {} : { repository: repository.value.trim(), ref: ref.value.trim() });
+    }, isProbe ? {} : { repository: repository.value.trim(), ref: ref.value.trim(), profile: profile.value });
   } catch (error) {
     appendLog(target, `\n${error.message}\n`);
     if (!isProbe) {
@@ -186,7 +199,7 @@ async function execute(isProbe) {
       steps.find(step => step.classList.contains("active"))?.classList.remove("active");
     }
   } finally {
-    run.disabled = probe.disabled = false;
+    run.disabled = probe.disabled = profile.disabled = false;
     if (!isProbe) loadHistory();
   }
 }

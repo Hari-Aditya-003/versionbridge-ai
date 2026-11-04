@@ -33,15 +33,21 @@
 </div></section>
 <section class="shell section" id="workspace">
 <div class="section-index">01 <span>/</span> REPAIR WORKSPACE</div>
-<div class="section-head"><div><h2>Run your first repair.</h2><p>Reproduce a real pandas 2 migration failure using a bundled Python project.</p></div><span class="tag">BUNDLED EXAMPLE</span></div>
+<div class="section-head"><div><h2>Run your first repair.</h2><p>Run a Python dependency migration or test whether the verifier catches a regression.</p></div><span class="tag">BUNDLED EXAMPLE</span></div>
 <div class="workspace">
 <form id="source" class="source-form">
+<label for="profile">Repair profile</label>
+<select id="profile">
+<option value="pandas">pandas 2 · removed append API</option>
+<option value="settings">Pydantic 2 · settings import</option>
+<option value="regression">pandas 2 · regression guard</option>
+</select>
 <label for="repository">Public GitHub repository <small>Optional · leave blank for the bundled example</small></label>
 <div><input id="repository" type="url" maxlength="220" placeholder="https://github.com/owner/project" disabled>
 <input id="ref" aria-label="Branch or commit" maxlength="128" placeholder="Default branch" disabled></div>
 <p id="source-note">Checking available repair sources…</p>
 </form>
-<div class="workspace-top"><span><i></i> events-pipeline <span class="muted">/ pandas 2</span></span><button id="run" class="button primary small">▶ &nbsp;Run repair</button></div>
+<div class="workspace-top"><span><i></i> <span id="project-title">pandas 2 · removed append API</span></span><button id="run" class="button primary small">▶ &nbsp;Run repair</button></div>
 <div class="workspace-body"><aside class="steps"><p class="micro">EXECUTION PLAN</p><ol><li><b>01</b><span>Reproduce failure<small>Run the original tests</small></span></li><li><b>02</b><span>Prepare patch<small>Update the removed API</small></span></li><li><b>03</b><span>Verify result<small>Rerun the unchanged tests</small></span></li></ol></aside>
 <div class="terminal"><div class="terminal-head"><span>⌘ &nbsp; EXECUTION LOG</span><span id="state">READY</span></div><pre id="logs" tabindex="0">Example: DataFrame.append was removed in pandas 2.
 Run the repair to capture baseline and verification output.</pre></div></div>
@@ -52,7 +58,7 @@ Run the repair to capture baseline and verification output.</pre></div></div>
 <section class="shell section" id="workflow">
 <div class="section-index">02 <span>/</span> HOW IT WORKS</div><h2>From failure to evidence.</h2>
 <div class="cards"><article><span>01 / DIAGNOSE</span><h3>Reproduce the break</h3><p>Run the original tests in a fresh container to capture the actual runtime error.</p></article>
-<article><span>02 / REPAIR</span><h3>Change the failing call</h3><p>Target the removed pandas method while keeping the rest of the project and its tests intact.</p></article>
+<article><span>02 / REPAIR</span><h3>Change the failing call</h3><p>Update the incompatible API while keeping the rest of the project and its tests intact.</p></article>
 <article><span>03 / VERIFY</span><h3>Retest and inspect</h3><p>Review the diff, before-and-after output, and the checksum of the unchanged tests.</p></article></div>
 </section>
 <section class="shell section" id="containment">
@@ -78,7 +84,7 @@ Run the repair to capture baseline and verification output.</pre></div></div>
 <article><span>03 / EXECUTION</span><h3>Disposable Docker sandboxes</h3><p>Each baseline, verification, and probe runs in its own container. The workspace shows its ID and cleanup result.</p></article></div>
 <div class="faq"><h3>Common questions</h3>
 <details><summary>When would a team use VersionBridge?</summary><p>Use it to investigate a failing dependency upgrade, compare test results, and hand a verified patch to a maintainer for review.</p></details>
-<details><summary>What can I repair?</summary><p>This release focuses on a pandas 2 migration. Public imports, where enabled, require a small pytest repository with the supported call and dependencies available in the sandbox image.</p></details>
+<details><summary>What can I repair?</summary><p>Choose the pandas or Pydantic migration, or run the seeded regression case. Public imports require a small pytest repository compatible with the selected profile and the preinstalled sandbox dependencies.</p></details>
 <details><summary>Does it change my repository?</summary><p>The patch applies to a temporary copy. Download the diff and decide whether to apply it to your project.</p></details></div>
 </section>
 </main>
