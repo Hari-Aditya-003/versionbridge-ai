@@ -1,0 +1,14 @@
+name: Sandbox smoke test
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build disposable runtime
+        run: docker build -t versionbridge-sandbox:1 -f Sandbox.Dockerfile .
+      - name: Verify repair, evidence and containment
+        run: python3 smoke.py

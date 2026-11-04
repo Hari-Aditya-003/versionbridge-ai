@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080e17">
+<meta name="description" content="VersionBridge AI repairs Python dependency failures and verifies patches in isolated sandboxes.">
+<title>VersionBridge AI — Dependency repair, verified</title>
+<link rel="icon" href="/mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+<script src="/app.js" defer></script>
+</head>
+<body>
+<header><div class="nav shell"><a class="brand" href="#top"><img src="/mark.svg" alt="">VersionBridge<span>AI</span></a>
+<nav aria-label="Main"><a href="#workflow">How it works</a><a href="#containment">Containment</a><a href="#history">Run history</a></nav>
+<a class="button secondary small" href="#workspace">Open workspace <span aria-hidden="true">↗</span></a></div></header>
+<main id="top">
+<section class="hero"><div class="grid-glow"></div><div class="shell hero-grid">
+<div class="intro"><div class="eyebrow"><i></i> AGENT RUSH / BLAST RADIUS ZERO</div>
+<h1>When dependencies break,<br><em>prove the fix.</em></h1>
+<p>Find what broke after a Python upgrade. Generate a targeted patch and verify it against the original tests in an isolated sandbox.</p>
+<div class="actions"><a href="#workspace" class="button primary">Try a repair <span aria-hidden="true">→</span></a><a class="button secondary" href="https://github.com/Hari-Aditya-003/versionbridge-ai">View GitHub ↗</a></div>
+<div class="hero-meta"><span>PYTHON FIRST</span><span>TEST-BACKED PATCHES</span></div></div>
+<figure class="hero-visual">
+<div class="diagram-label"><span>VB / EXECUTION PATH</span><span>FIG. 01</span></div>
+<div class="diagram">
+<img src="/mark.svg" width="300" height="192" alt="Two isometric cubes connected by a cyan bridge">
+<div class="node-labels"><span><i></i> BROKEN BUILD</span><span><i></i> VERIFIED PATCH</span></div>
+</div>
+<figcaption><span>01 / REPRODUCE</span><span>02 / PATCH</span><span>03 / VERIFY</span></figcaption>
+</figure>
+</div></section>
+<section class="shell section" id="workspace">
+<div class="section-index">01 <span>/</span> REPAIR WORKSPACE</div>
+<div class="section-head"><div><h2>Run your first repair.</h2><p>Reproduce a real pandas 2 migration failure using a bundled Python project.</p></div><span class="tag">BUNDLED EXAMPLE</span></div>
+<div class="workspace">
+<form id="source" class="source-form">
+<label for="repository">Public GitHub repository <small>Optional · leave blank for the bundled example</small></label>
+<div><input id="repository" type="url" maxlength="220" placeholder="https://github.com/owner/project" disabled>
+<input id="ref" aria-label="Branch or commit" maxlength="128" placeholder="Default branch" disabled></div>
+<p id="source-note">Checking available repair sources…</p>
+</form>
+<div class="workspace-top"><span><i></i> events-pipeline <span class="muted">/ pandas 2</span></span><button id="run" class="button primary small">▶ &nbsp;Run repair</button></div>
+<div class="workspace-body"><aside class="steps"><p class="micro">EXECUTION PLAN</p><ol><li><b>01</b><span>Reproduce failure<small>Run the original tests</small></span></li><li><b>02</b><span>Prepare patch<small>Update the removed API</small></span></li><li><b>03</b><span>Verify result<small>Rerun the unchanged tests</small></span></li></ol></aside>
+<div class="terminal"><div class="terminal-head"><span>⌘ &nbsp; EXECUTION LOG</span><span id="state">READY</span></div><pre id="logs" tabindex="0">Example: DataFrame.append was removed in pandas 2.
+Run the repair to capture baseline and verification output.</pre></div></div>
+<section class="runtime" aria-labelledby="runtime-title"><div id="runtime-title" class="micro">SANDBOX ACTIVITY</div><div id="sandboxes" role="status">Containers appear here when a repair starts.</div></section>
+<div class="workspace-foot"><span id="status" role="status">Ready to start a sandbox run.</span><button class="button secondary small" id="download" hidden>Download evidence ↓</button><button class="button secondary small" id="download-patch" hidden>Download patch ↓</button></div>
+<details id="patch-panel" hidden><summary>View verified patch</summary><pre id="patch"></pre></details>
+</div></section>
+<section class="shell section" id="workflow">
+<div class="section-index">02 <span>/</span> HOW IT WORKS</div><h2>From failure to evidence.</h2>
+<div class="cards"><article><span>01 / DIAGNOSE</span><h3>Reproduce the break</h3><p>Run the original tests in a fresh container to capture the actual runtime error.</p></article>
+<article><span>02 / REPAIR</span><h3>Change the failing call</h3><p>Target the removed pandas method while keeping the rest of the project and its tests intact.</p></article>
+<article><span>03 / VERIFY</span><h3>Retest and inspect</h3><p>Review the diff, before-and-after output, and the checksum of the unchanged tests.</p></article></div>
+</section>
+<section class="shell section" id="containment">
+<div class="lab"><div><div class="section-index">03 <span>/</span> CONTAINMENT LAB</div><h2>Test the boundary.</h2><p>Watch outbound connections and filesystem writes get blocked. The lab also checks the memory cap, forces a timeout, and confirms that Docker removed the container.</p><button class="button secondary" id="probe">Run containment check <span aria-hidden="true">→</span></button></div>
+<pre id="probe-log" tabindex="0" aria-live="polite">BOUNDARY PROBE
+────────────────────────
+01  Outbound networking
+02  Root filesystem write
+03  Process privileges
+04  Inference key isolation
+05  Deadline and teardown
+06  Kernel memory cap</pre></div>
+</section>
+<section class="shell section" id="history">
+<div class="section-index">04 <span>/</span> RUN HISTORY</div>
+<div class="section-head"><div><h2>Review prior repairs.</h2><p>Open a recorded run to inspect and export its evidence.</p></div><label class="micro">STATUS <select id="history-filter"><option>All</option><option>Verified</option><option>Unverified</option></select></label></div>
+<div id="history-list" class="workspace history-list" aria-live="polite">Loading run history…</div>
+</section>
+<section class="shell section" id="architecture">
+<div class="section-index">05 <span>/</span> ARCHITECTURE</div><h2>Follow the work.</h2>
+<div class="cards"><article><span>01 / CONTROL PLANE</span><h3>Vultr Cloud Compute</h3><p>The web app coordinates jobs, stores evidence, and enforces the allowed repair profile.</p></article>
+<article><span>02 / PATCH AUTHOR</span><h3>Vultr Inference</h3><p>The configured coding model receives the failing test output and the relevant source. The server validates its proposed change.</p></article>
+<article><span>03 / EXECUTION</span><h3>Disposable Docker sandboxes</h3><p>Each baseline, verification, and probe runs in its own container. The workspace shows its ID and cleanup result.</p></article></div>
+<div class="faq"><h3>Common questions</h3>
+<details><summary>When would a team use VersionBridge?</summary><p>Use it to investigate a failing dependency upgrade, compare test results, and hand a verified patch to a maintainer for review.</p></details>
+<details><summary>What can I repair?</summary><p>This release focuses on a pandas 2 migration. Public imports, where enabled, require a small pytest repository with the supported call and dependencies available in the sandbox image.</p></details>
+<details><summary>Does it change my repository?</summary><p>The patch applies to a temporary copy. Download the diff and decide whether to apply it to your project.</p></details></div>
+</section>
+</main>
+<footer class="shell"><a class="brand" href="#top"><img src="/mark.svg" alt="">VersionBridge<span>AI</span></a><a class="muted" href="/brand.png" target="_blank" rel="noopener">Brand artwork ↗</a><a href="https://lablab.ai/ai-hackathons/vultr-hackathon/">Vultr Agent Rush ↗</a></footer>
+</body>
+</html>
