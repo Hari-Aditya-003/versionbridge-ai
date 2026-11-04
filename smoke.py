@@ -3,12 +3,15 @@ import hashlib
 import io
 import json
 import re
+import tempfile
+from pathlib import Path
 import unittest
 from unittest.mock import patch
 
 from profiles import PROFILES
 from inference import Proposal, propose, validate_replacement
 from server import containment, repair
+from python_target import resolve_target
 
 
 def record(events):
@@ -95,6 +98,76 @@ class AcceptanceTests(unittest.TestCase):
         self.assertIn("failed", model.call_args.args[3]["failure"])
         self.assertEqual(len([event for event in events if event["event"] == "rejected"]), 1)
         self.assert_cleanup(events, 3)
+
+    def test_scoped_python_import_runs_real_tests(self):
+        revision = "a" * 40
+
+        def copy_snapshot(_repository, _ref, project):
+            (project / "maths.py").write_text("def discount(price, reduction):\n    return price + reduction\n")
+            (project / "test_maths.py").write_text(
+                "from maths import discount\n\ndef test_discount():\n    assert discount(10, 2) == 8\n"
+            )
+            return revision
+
+        def candidate(profile, log, code, previous):
+            self.assertIn("test_discount", log)
+            line = validate_replacement(profile, {"replacement": "return price - reduction",
+                                                  "diagnosis": "Subtract the reduction."})
+            return Proposal(line, "Transport test double", "Subtract the reduction.", {"test": True})
+
+        events = []
+        with patch.dict("os.environ", {"ENABLE_SCOPED_REPAIR": "1", "ENABLE_PUBLIC_IMPORT": "1",
+                                       "VERSIONBRIDGE_INFERENCE_MODE": "local-gpu"}):
+            with patch("server.snapshot", side_effect=copy_snapshot), patch("server.propose", side_effect=candidate):
+                repair(record(events), "scoped", "https://github.com/example/project", "", "python",
+                       "maths.py", "discount")
+        self.assertEqual(events[-1]["commit"], revision)
+        self.assertIn("1 failed", events[-1]["before"])
+        self.assertIn("1 passed", events[-1]["after"])
+        self.assert_cleanup(events, 2)
+
+    def test_scoped_target_rejects_tests_and_ambiguous_bodies(self):
+        with tempfile.TemporaryDirectory() as folder:
+            project = Path(folder)
+            (project / "maths.py").write_text("def f(x):\n    y = x\n    return y\n")
+            for filename in ("../maths.py", "tests/helpers.py", "conftest.py", "maths.py"):
+                with self.subTest(filename=filename), self.assertRaises(RuntimeError):
+                    resolve_target(project, filename, "f")
+
+    def test_python_target_uses_physical_lines(self):
+        with tempfile.TemporaryDirectory() as folder:
+            project = Path(folder)
+            (project / "maths.py").write_text(
+                '"""one\u2028two\u2028three\u2028four"""\n\n'
+                'def donor(x):\n    return x + 1\n\ndef target(x):\n    return x + 2\n'
+            )
+            _, _, profile, line = resolve_target(project, "maths.py", "target")
+        self.assertEqual((profile.original, line), ("    return x + 2", 7))
+
+    def test_local_mode_never_replaces_required_vultr(self):
+        with patch.dict("os.environ", {"VERSIONBRIDGE_INFERENCE_MODE": "local-gpu", "REQUIRE_INFERENCE": "1"}):
+            with self.assertRaisesRegex(RuntimeError, "requires Vultr"):
+                propose(PROFILES["billing"], "failure", "source")
+
+    def test_local_chat_transport_budget(self):
+        response = {"done": True, "model": "fixture", "eval_count": 25,
+                    "message": {"content": json.dumps({
+                        "diagnosis": "Apply the fee.", "replacement": "return unit_cents * quantity + fee_cents",
+                    })}}
+        with patch.dict("os.environ", {"VERSIONBRIDGE_INFERENCE_MODE": "local-gpu"}, clear=True):
+            with patch("local_gpu.http.client.HTTPConnection") as connection:
+                http = connection.return_value
+                http.getresponse.return_value.status = 200
+                http.getresponse.return_value.read.return_value = json.dumps(response).encode()
+                proposal = propose(PROFILES["billing"], "failure", "source")
+        self.assertEqual(connection.call_args.args, ("127.0.0.1", 11434))
+        method, path, body, _headers = http.request.call_args.args
+        self.assertEqual((method, path), ("POST", "/api/chat"))
+        request = json.loads(body)
+        self.assertEqual(request["keep_alive"], 0)
+        self.assertEqual(request["options"]["num_ctx"], 2048)
+        self.assertEqual(proposal.receipt["accelerator"], "unverified")
+        http.close.assert_called_once()
 
     def assert_cleanup(self, events, count):
         sandboxes = [event for event in events if event["event"] == "sandbox"]

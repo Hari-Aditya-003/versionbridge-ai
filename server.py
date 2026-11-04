@@ -12,9 +12,10 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from uuid import uuid4
 
 import history
-from inference import propose
+from inference import inference_mode, propose
 from projects import snapshot
 from profiles import PROFILES
+from python_target import resolve_target
 
 ROOT = Path(__file__).resolve().parent
 IMAGE = "versionbridge-sandbox:1"
@@ -26,7 +27,7 @@ def sandbox(command, emit, project=None, timeout=35):
     args = [
         "docker", "run", "--rm", "--pull", "never", "--log-driver", "none",
         "--name", name, "--network", "none",
-        "--read-only", "--cap-drop", "ALL", "--security-opt", "no-new-privileges",
+        "--read-only", "--env", "PYTEST_DISABLE_PLUGIN_AUTOLOAD=1", "--cap-drop", "ALL", "--security-opt", "no-new-privileges",
         "--memory", "384m", "--memory-swap", "384m", "--cpus", "1", "--pids-limit", "64",
         "--ulimit", "fsize=1048576:1048576",
         "--user", "65534:65534", "--tmpfs", "/tmp:rw,noexec,nosuid,nodev,size=32m",
@@ -70,10 +71,15 @@ def sandbox(command, emit, project=None, timeout=35):
     return exit_code, captured.decode(errors="replace")
 
 
-def repair(emit, run_id, repository="", ref="", profile_id="pandas"):
-    profile = PROFILES[profile_id]
-    emit("project", {"profile": profile_id, "title": profile.title})
-    command = ["python", "-m", "pytest", "-q", "--tb=short", "-p", "no:cacheprovider"]
+def repair(emit, run_id, repository="", ref="", profile_id="pandas", filename="", function=""):
+    scoped = profile_id == "python"
+    if scoped and (not os.getenv("ENABLE_SCOPED_REPAIR") or not repository):
+        raise RuntimeError("Scoped Python repair requires an enabled public repository import.")
+    if scoped and inference_mode() == "sample":
+        raise RuntimeError("Scoped Python repair requires configured model inference.")
+    profile = PROFILES.get(profile_id)
+    emit("project", {"profile": profile_id, "title": "Python · scoped function repair" if scoped else profile.title})
+    command = ["python", "-I", "-m", "pytest", "-q", "--tb=short", "-p", "no:cacheprovider"]
     with tempfile.TemporaryDirectory(prefix="versionbridge-") as folder:
         project = Path(folder)
         project.chmod(0o755)
@@ -87,17 +93,28 @@ def repair(emit, run_id, repository="", ref="", profile_id="pandas"):
         else:
             shutil.copytree(ROOT / profile.fixture, project, dirs_exist_ok=True,
                             ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
-        targets = [file for file in project.rglob("*.py")
-                   if profile.original in file.read_text(errors="replace").splitlines()]
-        if len(targets) != 1:
-            raise RuntimeError("The selected profile needs exactly one supported migration line.")
-        target = targets[0]
-        source = target.read_text()
+        if scoped:
+            target, source, profile, line_number = resolve_target(project, filename, function)
+        else:
+            targets = [file for file in project.rglob("*.py")
+                       if profile.original in file.read_text(errors="replace").split("\n")]
+            if len(targets) != 1:
+                raise RuntimeError("The selected profile needs exactly one supported migration line.")
+            target = targets[0]
+            try:
+                source = target.read_text()
+            except UnicodeError as exc:
+                raise RuntimeError("The selected source file must be valid UTF-8 Python.") from exc
+            matching_lines = [index for index, line in enumerate(source.split("\n"), start=1)
+                              if line == profile.original]
+            if len(matching_lines) != 1:
+                raise RuntimeError("Expected exactly one supported call in application code.")
+            line_number = matching_lines[0]
         path = target.relative_to(project).as_posix()
         test_files = sorted(file for file in project.rglob("*.py")
                             if file.name.startswith("test_") or file.name.endswith("_test.py"))
-        if source.splitlines().count(profile.original) != 1 or target in test_files:
-            raise RuntimeError("Expected exactly one supported call in application code.")
+        if not test_files or target in test_files:
+            raise RuntimeError("An existing pytest suite and an application source target are required.")
         test_digest = hashlib.sha256()
         for file in test_files:
             test_digest.update(file.relative_to(project).as_posix().encode() + b"\0")
@@ -105,20 +122,28 @@ def repair(emit, run_id, repository="", ref="", profile_id="pandas"):
         emit("stage", {"step": 0, "message": "Reproducing the failure in a fresh container…"})
         baseline, before = sandbox(command, emit, project)
         emit("log", {"label": "Baseline", "text": before})
-        if baseline != 1 or profile.failure not in before:
+        if baseline != 1 or (not scoped and profile.failure not in before):
             raise RuntimeError("The expected baseline failure was not reproduced. Check the execution log.")
         previous = None
         for attempt in range(1, 3):
             emit("stage", {"step": 1, "message": f"Preparing candidate patch · attempt {attempt}"})
             if len(source.encode()) > 24000:
                 raise RuntimeError("The patch target is too large for the bounded model prompt.")
-            proposal = propose(profile, before, source, previous)
+            context = source
+            if inference_mode() == "local-gpu":
+                lines = source.split("\n")
+                context = "\n".join(lines[max(0, line_number - 12):line_number + 4])
+            proposal = propose(profile, before, context, previous)
             replacement = proposal.replacement
             emit("diagnosis", {"attempt": attempt, "text": proposal.diagnosis,
                                "provider": proposal.provider, "receipt": proposal.receipt})
-            patched = "".join(replacement + line[len(profile.original):]
-                              if line.rstrip("\r\n") == profile.original else line
-                              for line in source.splitlines(keepends=True))
+            lines = source.split("\n")
+            if lines[line_number - 1] != profile.original:
+                raise RuntimeError("The selected return statement could not be located.")
+            lines[line_number - 1] = replacement
+            patched = "\n".join(lines)
+            if patched == source:
+                raise RuntimeError("The candidate did not change the selected statement.")
             diff = "".join(difflib.unified_diff(
                 source.splitlines(True), patched.splitlines(True),
                 f"a/{path}", f"b/{path}",
@@ -207,7 +232,9 @@ class Handler(SimpleHTTPRequestHandler):
             return super().do_GET()
         data = history.recent() if self.path == "/api/history" else {
             "public_import": bool(os.getenv("ENABLE_PUBLIC_IMPORT")),
-            "mode": "Vultr inference" if os.getenv("VULTR_API_KEY") else "Local sample",
+            "scoped_repair": bool(os.getenv("ENABLE_SCOPED_REPAIR") and os.getenv("ENABLE_PUBLIC_IMPORT")
+                                  and inference_mode() != "sample"),
+            "mode": {"vultr": "Vultr inference", "local-gpu": "Local Ollama", "sample": "Local sample"}[inference_mode()],
         }
         payload = json.dumps(data).encode()
         self.send_response(200)
@@ -233,7 +260,10 @@ class Handler(SimpleHTTPRequestHandler):
             settings = json.loads(self.rfile.read(size)) if size else {}
             repository, ref = settings.get("repository", ""), settings.get("ref", "")
             profile_id = settings.get("profile", "pandas")
-            if not isinstance(profile_id, str) or profile_id not in PROFILES:
+            filename, function = settings.get("filename", ""), settings.get("function", "")
+            if not isinstance(filename, str) or not isinstance(function, str) or len(filename) > 180 or len(function) > 80:
+                raise ValueError
+            if not isinstance(profile_id, str) or (profile_id not in PROFILES and profile_id != "python"):
                 raise ValueError
             if not isinstance(repository, str) or not isinstance(ref, str) or len(repository) > 220 or len(ref) > 128:
                 raise ValueError
@@ -267,14 +297,14 @@ class Handler(SimpleHTTPRequestHandler):
 
             try:
                 if action is repair:
-                    repair(emit, run_id, repository, ref, profile_id)
+                    repair(emit, run_id, repository, ref, profile_id, filename, function)
                 else:
                     containment(emit)
             except (RuntimeError, OSError, subprocess.SubprocessError) as exc:
                 emit("error", {"message": str(exc)})
             if action is repair:
                 status = "Verified" if events[-1]["event"] == "result" else "Unverified"
-                history.save(run_id, repository or PROFILES[profile_id].title, status, events)
+                history.save(run_id, repository or (PROFILES[profile_id].title if profile_id in PROFILES else "Python scoped repair"), status, events)
             if connected and events[-1]["event"] in ("result", "error"):
                 self.wfile.write((json.dumps(events[-1]) + "\n").encode())
                 self.wfile.flush()
@@ -285,6 +315,7 @@ class Handler(SimpleHTTPRequestHandler):
 
 
 if __name__ == "__main__":
+    inference_mode()
     host, port = os.getenv("HOST", "127.0.0.1"), int(os.getenv("PORT", "8787"))
     print(f"VersionBridge AI · http://{host}:{port}", flush=True)
     ThreadingHTTPServer((host, port), Handler).serve_forever()

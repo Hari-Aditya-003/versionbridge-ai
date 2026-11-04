@@ -4,6 +4,7 @@ import os
 import sys
 import time
 
+from inference import inference_mode
 from profiles import PROFILES
 from server import repair
 
@@ -40,7 +41,7 @@ def evaluate(model):
 
 if __name__ == "__main__":
     models = list(dict.fromkeys(sys.argv[1:]))
-    if not os.getenv("VULTR_API_KEY") or not 1 <= len(models) <= 3:
+    if inference_mode() != "vultr" or not os.getenv("VULTR_API_KEY") or not 1 <= len(models) <= 3:
         raise SystemExit("Set VULTR_API_KEY in the environment and pass 1–3 available Vultr model IDs.")
     results = [evaluate(model) for model in models]
     results.sort(key=lambda item: (-item["correct_outcomes"],

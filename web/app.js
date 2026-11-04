@@ -10,6 +10,10 @@ const steps = [...document.querySelectorAll(".steps li")];
 const profile = document.querySelector("#profile");
 const projectTitle = document.querySelector("#project-title");
 const loadExample = document.querySelector("#load-example");
+const scopedOption = document.querySelector("#scoped-option");
+const pythonTarget = document.querySelector("#python-target");
+const filename = document.querySelector("#filename");
+const functionName = document.querySelector("#function");
 const repository = document.querySelector("#repository");
 const ref = document.querySelector("#ref");
 const sandboxes = document.querySelector("#sandboxes");
@@ -29,6 +33,7 @@ document.querySelector("#source").addEventListener("submit", event => {
 fetch("/api/config").then(response => response.json()).then(config => {
   repository.disabled = ref.disabled = !config.public_import;
   loadExample.hidden = !config.public_import;
+  scopedOption.hidden = scopedOption.disabled = !config.scoped_repair;
   document.querySelector("#source-note").textContent = config.public_import
     ? `${config.mode} · Python / pytest profiles`
     : `${config.mode} · this deployment runs the bundled project`;
@@ -36,8 +41,15 @@ fetch("/api/config").then(response => response.json()).then(config => {
   document.querySelector("#source-note").textContent = "Repair settings are unavailable.";
 });
 
+function updateScope() {
+  const scoped = profile.value === "python";
+  pythonTarget.hidden = filename.disabled = functionName.disabled = !scoped;
+}
+
+profile.addEventListener("change", updateScope);
 loadExample.addEventListener("click", () => {
   profile.value = "pandas";
+  updateScope();
   repository.value = "https://github.com/Hari-Aditya-003/versionbridge-ai";
   ref.value = "274b7ba6ec8fd8d418f686f37538517d4f87ca82";
 });
@@ -199,7 +211,7 @@ async function execute(isProbe) {
       if (event.event === "log") appendLog(target, `\n[${event.label}]\n${event.text}\n`);
       if (event.event === "contained") appendLog(target, `✓ ${event.message}\n`);
       if (event.event === "result") showResult(event);
-    }, isProbe ? {} : { repository: repository.value.trim(), ref: ref.value.trim(), profile: profile.value });
+    }, isProbe ? {} : { repository: repository.value.trim(), ref: ref.value.trim(), profile: profile.value, filename: filename.value.trim(), function: functionName.value.trim() });
   } catch (error) {
     appendLog(target, `\n${error.message}\n`);
     if (!isProbe) {

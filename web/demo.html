@@ -24,6 +24,7 @@
 <form id="source" class="source-form">
 <label for="profile">Repair profile</label>
 <select id="profile">
+<option value="python" id="scoped-option" hidden disabled>Python · scoped function repair</option>
 <option value="pandas">pandas 2 · removed append API</option>
 <option value="settings">Pydantic 2 · settings import</option>
 <option value="billing">Python · invoice total bug</option>
@@ -32,6 +33,10 @@
 <label for="repository">Public GitHub repository <small>Optional · leave blank for the bundled example</small></label>
 <div><input id="repository" type="url" maxlength="220" placeholder="https://github.com/owner/project" disabled>
 <input id="ref" aria-label="Branch or commit" maxlength="128" placeholder="Default branch" disabled></div>
+<div id="python-target" hidden>
+<input id="filename" aria-label="Python source path" placeholder="src/example.py" maxlength="180" disabled>
+<input id="function" aria-label="Top-level function" placeholder="calculate_total" maxlength="80" disabled>
+</div>
 <button type="button" id="load-example" class="button secondary small" hidden>Load pinned GitHub example</button>
 <p id="source-note">Checking available repair sources…</p>
 </form>

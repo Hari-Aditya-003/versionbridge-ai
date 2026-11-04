@@ -1,51 +1,56 @@
 # VersionBridge AI
 
-VersionBridge repairs a supported Python dependency failure and shows exactly what ran. Four bundled cases demonstrate a pandas 2 repair, a Pydantic settings migration, an arithmetic bug fix, and rejection of a patch that drops audit metadata. Each unchanged pytest suite runs before and after a one-line candidate patch in fresh containers.
+VersionBridge helps maintainers verify a narrow Python repair before applying it. The backend reproduces a failure in Docker, obtains a candidate patch, and reruns the same tests in a fresh container. The workspace shows both test outputs, the patch, and the lifecycle of each container. Download the diff to review or apply it yourself.
 
-Built for Vultr Agent Rush, Blast Radius Zero.
+The project targets Blast Radius Zero at Vultr Agent Rush. The judging deployment uses a Vultr VM for the app and containers and Vultr Serverless Inference for patch proposals. The credential-free local demo uses labeled sample patches and real test execution. [LabLab event and rules](https://lablab.ai/ai-hackathons/vultr-hackathon/)
 
-## Run it locally
+## Quick start
 
-Requires Python 3.10+ and Docker.
+From the repository root, use Python 3.10 or newer and a running Docker engine.
 
 ```sh
 docker build -t versionbridge-sandbox:1 -f Sandbox.Dockerfile .
 python3 server.py
 ```
 
-Open http://127.0.0.1:8787 and choose **Run the demo** to open the workspace in a new tab. Run the bundled repair, inspect the patch and sandbox IDs, then download the patch and JSON evidence. The containment lab makes real network and filesystem attempts, checks user identity and the kernel memory cap, and forces a timeout followed by a Docker cleanup check. SQLite retains the latest 100 repair runs and shows the latest 25 in the workspace. Local runs without inference credentials label the built-in patch explicitly.
+Open http://127.0.0.1:8787 and select **Run the demo** to open the workspace in a new tab. Select a repair, run it, and inspect its diff and before-and-after logs. Use the Containment Lab to observe network denial, a failed root filesystem write, the memory cap, and cleanup after an infinite loop reaches its deadline. Use **Run history** to reopen a completed repair and export its evidence.
 
-The optional public GitHub import is enabled with `ENABLE_PUBLIC_IMPORT=1`. It resolves a branch or commit to an immutable GitHub SHA and runs a bounded migration profile. The project must be small and contain exactly one supported migration line for the selected profile. The image supplies pandas, NumPy, Pydantic, pydantic-settings and pytest. Dependency installation, private repositories and automated pushes are outside this profile.
+| Try this | Expected outcome |
+| --- | --- |
+| pandas 2 migration | The original append call fails two tests. The concat repair passes both. |
+| Pydantic 2 settings migration | The old import fails two tests. The replacement passes both, including an environment override. |
+| Invoice total bug | The original expression fails four cases. The corrected total passes all four. |
+| Audit metadata regression | The candidate fixes the original failure but drops audit metadata. An existing test catches the regression and the controller rejects the candidate. |
 
-See [acceptance and model evaluation](EVALUATION.md) for the real Docker tests, a pinned GitHub import, and a Vultr model comparison command.
+Run the acceptance suite after building the image. It covers repair, regression rejection, evidence, sandbox limits and cleanup. The same command runs in GitHub Actions. [Evaluation and fixture details](EVALUATION.md) · [GitHub Actions](https://github.com/Hari-Aditya-003/versionbridge-ai/actions/workflows/smoke.yml)
 
-[Architecture](ARCHITECTURE.md) · [Security](SECURITY.md) · [Model verification](MODELS.md) · [LabLab submission kit](SUBMISSION.md) · [Comparison with AegisPR](COMPARISON.md)
-
-## Architecture
-
-```mermaid
-flowchart LR
-    UI[Browser workspace] --> VM[Vultr VM control plane]
-    VM --> DB[(SQLite run evidence)]
-    VM --> AI[Vultr Serverless Inference]
-    VM --> BASE[Baseline Docker container]
-    VM --> VERIFY[Fresh verification container]
-    VM --> LAB[Disposable containment containers]
+```sh
+python3 smoke.py
 ```
 
-The control plane streams newline-delimited JSON, validates the model's bounded expression, and records the patch, test checksum, exit codes, and sandbox lifecycle. A failed verification may trigger one retry with the previous test output. The model cannot modify tests, select shell commands, or authorize execution. The web app and orchestrator use Python and browser-native code to keep the demo deployable on one VM with Docker.
+## Verify an imported repository
 
-For live inference, set `VULTR_API_KEY` and optionally `VULTR_MODEL` in the server environment. The default candidate is Vultr's documented Qwen2.5 Coder 32B. Confirm availability for your account and override the model ID if needed. `REQUIRE_INFERENCE=1` makes missing credentials fail the repair instead of selecting the sample patch. See [Vultr deployment](deploy/README.md) for the systemd, environment, and nginx templates.
+Set `ENABLE_PUBLIC_IMPORT=1` when starting the local server. In the demo workspace, use **Load pinned GitHub example** for the public pandas fixture. The importer resolves the reference to a commit SHA before downloading the snapshot. [Pinned source fixture](https://github.com/Hari-Aditya-003/versionbridge-ai/tree/274b7ba6ec8fd8d418f686f37538517d4f87ca82)
 
-## Threat model
+The importer supports small public GitHub repositories with one matching line for the selected profile. The sandbox image provides pandas, NumPy, Pydantic, pydantic-settings, and pytest. Results describe the repository's own supplied tests. Use bundled fixtures for a controlled acceptance check and leave imports disabled on the shared demo until its execution host is hardened and tested. [Security model](SECURITY.md)
 
-- Only public GitHub URLs and bounded refs are accepted. The importer uses fixed GitHub hosts, rejects redirects and unsafe archive paths, and caps compressed size, expanded size and file count.
-- Repository code and test output are untrusted. The candidate expression is restricted to the supported pandas forms. Each container receives a read-only project copy, a non-root UID, a read-only root, no outbound network, no credentials or Docker socket, dropped capabilities, and CPU, memory, process, file and time limits.
-- Uploaded repositories can contain adversarial tests or fabricate output. Imported-project evidence describes the observed exit and the supplied tests. The bundled fixture is the controlled verification example.
-- The Docker socket is privileged and stays with the control plane. Use a dedicated Vultr VM and validate gVisor before enabling public repository execution. The public demo can run the bundled fixture with per-IP and global throttling.
+## Run with live inference
 
-## Submission
+Set `VULTR_API_KEY` on the control plane. Set `VULTR_MODEL` to an identifier available to that account and use `REQUIRE_INFERENCE=1` for judging, so a missing key stops repair before any sample patch can be used. The default candidate is Qwen2.5 Coder 32B. Compare available candidates by verified outcomes, regression rejection, elapsed time, and reported token usage. [Model policy](MODELS.md) · [Evaluation command](EVALUATION.md)
 
-Use the [recording guide](DEMO.md) after deploying to Vultr. The [LabLab event page](https://lablab.ai/ai-hackathons/vultr-hackathon/) requires the Vultr-hosted public URL, public repository, cover and presentation materials, a demo video with a containment moment, and submission on LabLab.
+For the public judging run, deploy the backend on a Vultr VM, repeat a live repair and containment run, and save the model receipt and the public HTTPS demo URL. The Docker fixtures and local browser demo have been exercised. Public Vultr deployment and authenticated model results still require an authorized environment. [Deployment instructions](deploy/README.md) · [Submission checklist](SUBMISSION.md) · [Recording guide](DEMO.md)
 
-MIT licensed. See [LICENSE](LICENSE).
+## Project map
+
+| Area | Where to look |
+| --- | --- |
+| Browser workflow | [Homepage](web/index.html) and [demo workspace](web/demo.html) |
+| Repair controller and sandbox lifecycle | [server.py](server.py) |
+| Source import and supported repairs | [projects.py](projects.py) and [profiles.py](profiles.py) |
+| Model response validation and receipts | [inference.py](inference.py) |
+| SQLite history | [history.py](history.py) |
+| End-to-end design and evidence | [Architecture](ARCHITECTURE.md) and [AegisPR comparison](COMPARISON.md) |
+
+[MIT license](LICENSE)
+
+[Private Dell inference setup](LOCAL_GPU.md) covers the lightweight Ollama profile and scoped repair trial.
