@@ -1,5 +1,8 @@
 # VersionBridge AI
 
+
+[Public project showcase and recorded demo](https://hari-aditya-003.github.io/versionbridge-ai/)
+
 VersionBridge helps maintainers verify a narrow Python repair before applying it. The backend reproduces a failure in Docker, obtains a candidate patch, and reruns the same tests in a fresh container. The workspace shows both test outputs, the patch, and the lifecycle of each container. Download the diff to review or apply it yourself.
 
 The project targets Blast Radius Zero at Vultr Agent Rush. The judging deployment uses a Vultr VM for the app and containers and Vultr Serverless Inference for patch proposals. The credential-free local demo uses labeled sample patches and real test execution. [LabLab event and rules](https://lablab.ai/ai-hackathons/vultr-hackathon/)
