@@ -9,6 +9,7 @@ from pathlib import Path
 import unittest
 from unittest.mock import patch
 
+from arithmetic import candidate_expressions, examples
 from profiles import PROFILES
 from inference import Proposal, propose, validate_replacement
 from server import containment, patch_diff, repair
@@ -161,6 +162,18 @@ class AcceptanceTests(unittest.TestCase):
         with patch.dict("os.environ", {"VERSIONBRIDGE_INFERENCE_MODE": "local-gpu", "REQUIRE_INFERENCE": "1"}):
             with self.assertRaisesRegex(RuntimeError, "requires Vultr"):
                 propose(PROFILES["billing"], "failure", "source")
+
+    def test_arithmetic_candidates_follow_observed_values(self):
+        output = "\n".join(
+            f"E   assert {actual} == {expected}\nE    +  where {actual} = total({args})"
+            for actual, expected, args in ((153, 400, "125, 3, 25"), (150, 25, "125, 0, 25"),
+                                           (126, 125, "125, 1, 0"), (28, 25, "0, 3, 25"))
+        )
+        observations = examples(output)
+        names = ("unit", "quantity", "fee")
+        self.assertIn("return (unit * quantity) + fee",
+                      candidate_expressions(names, "def total(unit, quantity, fee):", observations))
+        self.assertEqual(candidate_expressions(names, "def unrelated(unit, quantity, fee):", observations), ())
 
     def test_local_chat_transport_budget(self):
         response = {"done": True, "model": "fixture", "eval_count": 25,

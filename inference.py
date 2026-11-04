@@ -5,6 +5,7 @@ import json
 import os
 from urllib.request import Request, urlopen
 
+from arithmetic import candidate_expressions, examples
 import local_gpu
 
 
@@ -61,6 +62,14 @@ def inference_mode():
     )) else "sample"
 
 
+def local_failure_context(log):
+    comparisons = examples(log)
+    if not comparisons:
+        return log[:1300]
+    return "\n".join(f"{function}({args}) must return {expected}. Observed {actual}."
+                     for actual, expected, function, args in comparisons)
+
+
 def propose(profile, log, code, previous=None):
     key = os.getenv("VULTR_API_KEY")
     model = os.getenv("VULTR_MODEL", "qwen2.5-coder-32b-instruct")
@@ -86,20 +95,26 @@ def propose(profile, log, code, previous=None):
         "and 'replacement' (one full Python line). Preserve behavior outside the fault. "
         f"Profile: {profile.title}. Target: {profile.original!r}. {policy}"
     )
+    synthesized = ()
     if mode == "local-gpu":
+        synthesized = candidate_expressions(profile.arithmetic_names, code, examples(log))
+        if synthesized:
+            prompt += f" The following arithmetic candidates fit the observed examples: {json.dumps(synthesized)}."
         code = code[:2800]
-        log = log[:1300]
+        log = local_failure_context(log)
         if previous:
-            previous = {**previous, "failure": previous["failure"][-750:]}
+            previous = {**previous, "failure": local_failure_context(previous["failure"])}
     messages = [
         {"role": "system", "content": prompt},
         {"role": "user", "content": json.dumps({"source": code, "failure": log, "previous": previous})},
     ]
     if mode == "local-gpu":
         try:
-            allowed = () if profile.arithmetic_names else profile.candidates
-            answer, receipt = local_gpu.complete(messages, allowed)
+            allowed = synthesized if profile.arithmetic_names else profile.candidates
+            answer, receipt = local_gpu.complete(messages, allowed, arithmetic=bool(profile.arithmetic_names))
             candidate = parse_candidate(answer)
+            if synthesized:
+                receipt["synthesis_candidates"] = len(synthesized)
             return Proposal(validate_replacement(profile, candidate),
                             f"Local Ollama · {receipt['requested_model']}",
                             candidate["diagnosis"].strip(), receipt)

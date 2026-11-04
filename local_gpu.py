@@ -6,10 +6,12 @@ import os
 DEFAULT_MODEL = "qwen2.5-coder:1.5b-instruct-q4_K_M"
 
 
-def complete(messages, replacements=()):
+def complete(messages, replacements=(), arithmetic=False):
     replacement = {"type": "string", "minLength": 1, "maxLength": 240}
     if replacements:
         replacement["enum"] = [line.strip() for line in replacements]
+    if arithmetic and not replacements:
+        replacement["pattern"] = r"^ *return [a-zA-Z0-9_+*() -]+$"
     schema = {
         "type": "object",
         "properties": {
