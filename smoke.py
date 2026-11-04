@@ -3,6 +3,7 @@ import hashlib
 import io
 import json
 import re
+import subprocess
 import tempfile
 from pathlib import Path
 import unittest
@@ -10,7 +11,7 @@ from unittest.mock import patch
 
 from profiles import PROFILES
 from inference import Proposal, propose, validate_replacement
-from server import containment, repair
+from server import containment, patch_diff, repair
 from python_target import resolve_target
 
 
@@ -143,6 +144,18 @@ class AcceptanceTests(unittest.TestCase):
             )
             _, _, profile, line = resolve_target(project, "maths.py", "target")
         self.assertEqual((profile.original, line), ("    return x + 2", 7))
+
+    def test_patch_download_applies_to_crlf_and_unterminated_files(self):
+        for separator, end in (("\r\n", "\r\n"), ("\n", ""), ("\r\n", "")):
+            with self.subTest(separator=separator, end=end), tempfile.TemporaryDirectory() as folder:
+                original = separator.join(("def f(x):", "    return x + 1")) + end
+                patched = original.replace("x + 1", "x - 1")
+                (Path(folder) / "maths.py").write_bytes(original.encode())
+                result = subprocess.run(
+                    ["git", "apply", "--check"], input=patch_diff(original, patched, "maths.py").encode(),
+                    cwd=folder, capture_output=True, check=False,
+                )
+                self.assertEqual(result.returncode, 0, result.stderr.decode())
 
     def test_local_mode_never_replaces_required_vultr(self):
         with patch.dict("os.environ", {"VERSIONBRIDGE_INFERENCE_MODE": "local-gpu", "REQUIRE_INFERENCE": "1"}):

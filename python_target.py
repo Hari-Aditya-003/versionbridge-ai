@@ -16,7 +16,7 @@ def resolve_target(project, filename, function):
     if not target.is_file() or target.stat().st_size > 24000:
         raise RuntimeError("The selected source file is missing or exceeds 24 KB.")
     try:
-        source = target.read_text()
+        source = target.read_bytes().decode("utf-8")
         tree = ast.parse(source)
     except (UnicodeError, SyntaxError, OSError) as exc:
         raise RuntimeError("The selected source file must be valid UTF-8 Python.") from exc
@@ -30,7 +30,7 @@ def resolve_target(project, filename, function):
     if (len(node.body) != 1 or not isinstance(line, ast.Return) or line.value is None
             or line.lineno != line.end_lineno or line.lineno == node.lineno or not names):
         raise RuntimeError("Select a function whose body is a single return statement on its own line.")
-    original = source.split("\n")[line.lineno - 1]
+    original = source.split("\n")[line.lineno - 1].removesuffix("\r")
     if not original.lstrip().startswith("return ") or original[:line.col_offset] != " " * line.col_offset:
         raise RuntimeError("Use spaces to indent the selected return statement.")
     profile = Profile("Python · scoped function repair", "", original, (), "", names)

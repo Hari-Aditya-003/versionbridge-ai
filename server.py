@@ -71,6 +71,17 @@ def sandbox(command, emit, project=None, timeout=35):
     return exit_code, captured.decode(errors="replace")
 
 
+def patch_diff(original, patched, path):
+    def physical_lines(source):
+        lines = source.split("\n")
+        return [line + "\n" for line in lines[:-1]] + ([lines[-1]] if lines[-1] else [])
+
+    lines = difflib.unified_diff(physical_lines(original), physical_lines(patched),
+                                 f"a/{path}", f"b/{path}")
+    return "".join(line if line.endswith("\n") else line + "\n\\ No newline at end of file\n"
+                   for line in lines)
+
+
 def repair(emit, run_id, repository="", ref="", profile_id="pandas", filename="", function=""):
     scoped = profile_id == "python"
     if scoped and (not os.getenv("ENABLE_SCOPED_REPAIR") or not repository):
@@ -102,11 +113,11 @@ def repair(emit, run_id, repository="", ref="", profile_id="pandas", filename=""
                 raise RuntimeError("The selected profile needs exactly one supported migration line.")
             target = targets[0]
             try:
-                source = target.read_text()
+                source = target.read_bytes().decode("utf-8")
             except UnicodeError as exc:
                 raise RuntimeError("The selected source file must be valid UTF-8 Python.") from exc
             matching_lines = [index for index, line in enumerate(source.split("\n"), start=1)
-                              if line == profile.original]
+                              if line.removesuffix("\r") == profile.original]
             if len(matching_lines) != 1:
                 raise RuntimeError("Expected exactly one supported call in application code.")
             line_number = matching_lines[0]
@@ -138,17 +149,15 @@ def repair(emit, run_id, repository="", ref="", profile_id="pandas", filename=""
             emit("diagnosis", {"attempt": attempt, "text": proposal.diagnosis,
                                "provider": proposal.provider, "receipt": proposal.receipt})
             lines = source.split("\n")
-            if lines[line_number - 1] != profile.original:
+            original_line = lines[line_number - 1]
+            if original_line.removesuffix("\r") != profile.original:
                 raise RuntimeError("The selected return statement could not be located.")
-            lines[line_number - 1] = replacement
+            lines[line_number - 1] = replacement + ("\r" if original_line.endswith("\r") else "")
             patched = "\n".join(lines)
             if patched == source:
                 raise RuntimeError("The candidate did not change the selected statement.")
-            diff = "".join(difflib.unified_diff(
-                source.splitlines(True), patched.splitlines(True),
-                f"a/{path}", f"b/{path}",
-            ))
-            target.write_text(patched)
+            diff = patch_diff(source, patched, path)
+            target.write_bytes(patched.encode("utf-8"))
             emit("stage", {"step": 2, "message": "Running the unchanged tests in a fresh container…"})
             status, after = sandbox(command, emit, project)
             emit("log", {"label": f"Verification {attempt}", "text": after})
