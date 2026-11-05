@@ -63,3 +63,11 @@ def snapshot(repository, ref, project):
     except (ValueError, KeyError, TypeError, OSError, BadZipFile) as exc:
         raise RuntimeError("Could not read the GitHub snapshot safely.") from exc
     return revision
+
+
+PINNED_REPOSITORY = "https://github.com/Hari-Aditya-003/versionbridge-ai"
+PINNED_REVISION = "274b7ba6ec8fd8d418f686f37538517d4f87ca82"
+
+
+def is_pinned_example(repository, ref, profile):
+    return repository == PINNED_REPOSITORY and ref == PINNED_REVISION and profile == "pandas"

@@ -15,6 +15,7 @@ import history
 import jobs
 from arithmetic import candidate_expressions, examples
 from profiles import PROFILES, Profile
+from projects import is_pinned_example, PINNED_REPOSITORY, PINNED_REVISION
 from inference import Proposal, propose, validate_replacement
 from server import containment, patch_diff, repair
 from python_target import resolve_target
@@ -153,6 +154,15 @@ class AcceptanceTests(unittest.TestCase):
                     filename.write_text(json.dumps({**telemetry, **changes}))
                     with self.assertRaises(RuntimeError):
                         gpu_guard.check()
+
+    def test_public_repository_allowlist_is_exact(self):
+        self.assertTrue(is_pinned_example(PINNED_REPOSITORY, PINNED_REVISION, "pandas"))
+        for repository, ref, profile in (
+            (PINNED_REPOSITORY, "main", "pandas"),
+            (PINNED_REPOSITORY + ".git", PINNED_REVISION, "pandas"),
+            (PINNED_REPOSITORY, PINNED_REVISION, "python"),
+        ):
+            self.assertFalse(is_pinned_example(repository, ref, profile))
 
     def test_containment(self):
         events = []

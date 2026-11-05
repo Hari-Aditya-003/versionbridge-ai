@@ -35,7 +35,7 @@ Ollama reported all 29 layers offloaded to CUDA. Over 62 half-second device samp
 
 ## Expanded local release checks on November 5, 2026
 
-The updated image was exercised with `python3 smoke.py` and `python3 api_smoke.py`. Twenty acceptance methods and eighteen HTTP checks passed. The profile subtests include JavaScript, TypeScript, Go, Rust, Java, C++, SQLite, PostgreSQL, and the algorithm example. These runs use labeled sample patches and actual container execution.
+The updated image was exercised with `python3 smoke.py` and `python3 api_smoke.py`. The latest suite contains twenty-one acceptance methods and nineteen HTTP checks. Earlier runs passed twenty acceptance methods and eighteen HTTP checks before the deployment permission regressions were added. The profile subtests include JavaScript, TypeScript, Go, Rust, Java, C++, SQLite, PostgreSQL, and the algorithm example. These runs use labeled sample patches and actual container execution.
 
 The HTTP suite starts separate web and worker processes with a temporary database. It exercises authenticated access, duplicate submission handling, versioned routes, artifact checksums, containment dispatch, and rejection of a regression. The model transport test uses a test double. Live provider evaluation is recorded separately.
 

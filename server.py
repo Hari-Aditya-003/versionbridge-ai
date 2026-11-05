@@ -22,7 +22,7 @@ import history
 import jobs
 import reports
 from inference import inference_mode, propose
-from projects import snapshot
+from projects import snapshot, is_pinned_example
 from profiles import PROFILES
 from python_target import resolve_target
 from verification import PYTEST_COMMAND, REPORT_PREFIX, REPORT_WINDOW, parse_report, verification_failure
@@ -112,6 +112,8 @@ def patch_diff(original, patched, path):
 def repair(emit, run_id, repository="", ref="", profile_id="pandas", filename="", function="", attempts=2):
     if type(attempts) is not int or attempts not in (1, 2):
         raise RuntimeError("Choose one or two repair attempts.")
+    if os.getenv("PUBLIC_DEMO") == "1" and repository and not is_pinned_example(repository, ref, profile_id):
+        raise RuntimeError("The public demo accepts only the pinned example repository.")
     scoped = profile_id == "python"
     if scoped and (not os.getenv("ENABLE_SCOPED_REPAIR") or not repository):
         raise RuntimeError("Scoped Python repair requires an enabled public repository import.")
@@ -413,6 +415,7 @@ class Handler(SimpleHTTPRequestHandler):
             return super().do_GET()
         data = history.recent() if self.path == "/api/history" else {
             "public_import": bool(os.getenv("ENABLE_PUBLIC_IMPORT")),
+            "pinned_only": os.getenv("PUBLIC_DEMO") == "1",
             "scoped_repair": bool(os.getenv("ENABLE_SCOPED_REPAIR") and os.getenv("ENABLE_PUBLIC_IMPORT")
                                   and inference_mode() != "sample"),
             "job_queue": QUEUE_ENABLED,
@@ -465,7 +468,7 @@ class Handler(SimpleHTTPRequestHandler):
         except (ValueError, AttributeError, OSError, RecursionError):
             self.send_error(400, "Invalid repair settings")
             return
-        if os.getenv("PUBLIC_DEMO") == "1" and repository:
+        if os.getenv("PUBLIC_DEMO") == "1" and repository and not is_pinned_example(repository, ref, profile_id):
             self.respond_json(403, {"message": "The public demo runs curated projects. Use a private workspace for imports."})
             return
         if submit:

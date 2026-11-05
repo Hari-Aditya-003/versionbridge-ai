@@ -38,6 +38,7 @@ const historyFilter = document.querySelector("#history-filter");
 const jobKey = "versionbridge-active-job";
 let queueEnabled = false;
 let publicImport = false;
+let pinnedOnly = false;
 let activeJob;
 const markdownDownload = document.querySelector("#download-markdown");
 let report;
@@ -51,11 +52,12 @@ document.querySelector("#source").addEventListener("submit", event => {
 
 workspaceFetch("/api/config").then(response => response.json()).then(config => {
   publicImport = config.public_import;
+  pinnedOnly = config.pinned_only;
   updateScope();
   loadExample.hidden = !config.public_import;
   scopedOption.hidden = scopedOption.disabled = !config.scoped_repair;
   document.querySelector("#source-note").textContent = config.public_import
-    ? `${config.mode} · pinned GitHub imports for Python profiles`
+    ? `${config.mode} · ${pinnedOnly ? "curated projects and the pinned GitHub example" : "pinned GitHub imports for Python profiles"}`
     : `${config.mode} · this deployment runs bundled projects`;
   queueEnabled = config.job_queue;
   document.querySelector("#access").hidden = !config.auth_required || Boolean(sessionStorage.getItem("versionbridge-access-token"));
@@ -100,7 +102,7 @@ function showInventory(event) {
 function updateScope() {
   const scoped = profile.value === "python";
   const bundled = ["go", "rust", "java", "cpp", "postgresql", "typescript", "javascript", "sqlite", "algorithm"].includes(profile.value);
-  repository.disabled = ref.disabled = !publicImport || bundled;
+  repository.disabled = ref.disabled = !publicImport || bundled || pinnedOnly;
   if (bundled) repository.value = ref.value = "";
   pythonTarget.hidden = filename.disabled = functionName.disabled = !scoped;
 }

@@ -1,6 +1,6 @@
 # VersionBridge AI
 
-[Project showcase and recorded demo](https://hari-aditya-003.github.io/versionbridge-ai/) · [Architecture](ARCHITECTURE.md) · [Evaluation](EVALUATION.md) · [Deployment](DEPLOYMENT.md)
+[Live Vultr workspace](https://versionbridge.64.177.53.254.sslip.io/demo.html) · [Project showcase and recorded demo](https://hari-aditya-003.github.io/versionbridge-ai/) · [Architecture](ARCHITECTURE.md) · [Evaluation](EVALUATION.md) · [Deployment](DEPLOYMENT.md)
 
 VersionBridge reproduces a supported code failure in Docker, proposes a scoped repair, and reruns the same tests in a fresh container. Review the patch, individual test outcomes, model receipt, and sandbox lifecycle before exporting the change.
 
@@ -56,7 +56,7 @@ Results from imported repositories depend on their supplied tests. Structured re
 
 For a private development instance, set `ENABLE_PUBLIC_IMPORT=1`. Use **Load pinned GitHub example** to retrieve the controlled pandas fixture at commit `274b7ba6ec8fd8d418f686f37538517d4f87ca82`. The importer resolves references before downloading a size-limited snapshot.
 
-Supported imports require one matching source line and a compatible existing pytest suite. Optional scoped arithmetic repair also requires `ENABLE_SCOPED_REPAIR=1` and live inference. Public deployments use `PUBLIC_DEMO=1` to reject arbitrary repository imports. [Security model](SECURITY.md)
+Supported imports require one matching source line and a compatible existing pytest suite. Optional scoped arithmetic repair also requires `ENABLE_SCOPED_REPAIR=1` and live inference. Public deployments use `PUBLIC_DEMO=1` to reject arbitrary repository imports. The deployed workspace can also allow the exact pinned pandas example, with the repository URL, commit, and profile checked in both the API and worker. [Security model](SECURITY.md)
 
 ## Run live inference within an allowance
 
