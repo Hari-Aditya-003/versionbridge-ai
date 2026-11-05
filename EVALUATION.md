@@ -51,3 +51,11 @@ The controller called both Vultr models against all thirteen supported profiles 
 Both models rejected the seeded regression. DeepSeek did not return an accepted structured proposal for the Java case. GLM 5.3 Flash was selected for deployment based on observed outcomes. These are bounded fixture results, with different controlled repair policies per profile. They do not measure general repository repair capability.
 
 [Full model receipts, candidates, and test evidence](evidence/model-comparison-2026-11-05.json)
+
+## Hosted Vultr acceptance run
+
+The public HTTPS API at https://versionbridge.64.177.53.254.sslip.io processed all thirteen profiles using GLM 5.3 Flash on Vultr Serverless Inference. Twelve repairs were verified and the seeded regression was rejected. The separate containment job passed the filesystem, network, privilege, memory-cap, timeout, and cleanup checks.
+
+The worker ran on a Vultr Atlanta shared-CPU VM. The HTTP user was independently denied Docker access. The provider key file was root-owned with mode 0600. The fourteen inference requests reserved $0.347013 against the hosted application's $4 allowance under its conservative pricing assumptions. Reservations are application bookkeeping and do not represent a Vultr billing invoice.
+
+[Full hosted run events and provider receipts](evidence/vultr-live-qa-2026-11-05.json)

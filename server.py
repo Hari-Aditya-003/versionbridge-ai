@@ -36,7 +36,7 @@ QUEUE_ENABLED = False
 WORKER_THREAD = None
 
 
-def sandbox(command, emit, project=None, timeout=35, *, test_report=None, native=False):
+def sandbox(command, emit, project=None, timeout=35, *, test_report=None, native=False, image_id=None):
     name = f"versionbridge-{uuid4().hex}"
     args = [
         "docker", "run", "--rm", "--pull", "never", "--log-driver", "none",
@@ -52,8 +52,8 @@ def sandbox(command, emit, project=None, timeout=35, *, test_report=None, native
         args.extend(["--runtime", runtime])
     if project:
         args.extend(["--mount", f"type=bind,src={project},dst=/project,readonly", "-w", "/project"])
-    image = subprocess.run(["docker", "image", "inspect", "--format", "{{.Id}}", IMAGE],
-                           capture_output=True, text=True, timeout=10, check=True).stdout.strip()
+    image = image_id or subprocess.run(["docker", "image", "inspect", "--format", "{{.Id}}", IMAGE],
+                                       capture_output=True, text=True, timeout=10, check=True).stdout.strip()
     emit("sandbox", {"name": name, "status": "Dispatching", "image": image,
                      "runtime": os.environ.get("SANDBOX_RUNTIME", "Docker default"),
                      "location": os.environ.get("SANDBOX_LOCATION", "Local Docker daemon"),
@@ -61,7 +61,7 @@ def sandbox(command, emit, project=None, timeout=35, *, test_report=None, native
     captured = bytearray()
     tail = bytearray()
     timed_out = False
-    with subprocess.Popen(args + [IMAGE] + command, stdout=subprocess.PIPE,
+    with subprocess.Popen(args + [image] + command, stdout=subprocess.PIPE,
                           stderr=subprocess.STDOUT) as process:
         def drain_output():
             for chunk in iter(lambda: process.stdout.read(4096), b""):
@@ -169,8 +169,10 @@ def repair(emit, run_id, repository="", ref="", profile_id="pandas", filename=""
             test_digest.update(file.relative_to(project).as_posix().encode() + b"\0")
             test_digest.update(hashlib.sha256(file.read_bytes()).digest())
         emit("stage", {"step": 0, "message": "Reproducing the failure in a fresh container…"})
+        execution_image = subprocess.run(["docker", "image", "inspect", "--format", "{{.Id}}", IMAGE],
+                                         capture_output=True, text=True, timeout=10, check=True).stdout.strip()
         baseline_tests = {}
-        baseline, before = sandbox(PYTEST_COMMAND, emit, project, test_report=baseline_tests, native=profile.native, timeout=profile.timeout)
+        baseline, before = sandbox(PYTEST_COMMAND, emit, project, test_report=baseline_tests, native=profile.native, timeout=profile.timeout, image_id=execution_image)
         emit("log", {"label": "Baseline", "text": before})
         if baseline != 1 or (not scoped and profile.failure not in before):
             raise RuntimeError("The expected baseline failure was not reproduced. Check the execution log.")
@@ -203,7 +205,7 @@ def repair(emit, run_id, repository="", ref="", profile_id="pandas", filename=""
             target.write_bytes(patched.encode("utf-8"))
             emit("stage", {"step": 2, "message": "Running the unchanged tests in a fresh container…"})
             candidate_tests = {}
-            status, after = sandbox(PYTEST_COMMAND, emit, project, test_report=candidate_tests, native=profile.native, timeout=profile.timeout)
+            status, after = sandbox(PYTEST_COMMAND, emit, project, test_report=candidate_tests, native=profile.native, timeout=profile.timeout, image_id=execution_image)
             reason = verification_failure(baseline_tests, candidate_tests)
             if status != 0 and reason is None:
                 reason = "The verification process exited unsuccessfully."

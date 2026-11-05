@@ -3,6 +3,7 @@ import fcntl
 import os
 from pathlib import Path
 import subprocess
+import tempfile
 import threading
 
 import history
@@ -15,7 +16,8 @@ def monitor_runtime():
     while True:
         try:
             result = subprocess.run(["docker", "image", "inspect", IMAGE], capture_output=True, timeout=4)
-            jobs.heartbeat(result.returncode == 0)
+            with tempfile.TemporaryDirectory(prefix="versionbridge-readiness-"):
+                jobs.heartbeat(result.returncode == 0)
         except (OSError, subprocess.SubprocessError):
             jobs.heartbeat(False)
         threading.Event().wait(5)

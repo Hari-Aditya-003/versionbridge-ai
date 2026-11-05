@@ -1,0 +1,2319 @@
+{
+  "origin": "https://versionbridge.64.177.53.254.sslip.io",
+  "config": {
+    "public_import": false,
+    "scoped_repair": false,
+    "job_queue": true,
+    "external_worker": true,
+    "auth_required": false,
+    "profiles": [
+      {
+        "id": "go",
+        "title": "Go \u00b7 pagination boundary",
+        "language": "Go",
+        "bundled_only": true
+      },
+      {
+        "id": "rust",
+        "title": "Rust \u00b7 inclusive limit",
+        "language": "Rust",
+        "bundled_only": true
+      },
+      {
+        "id": "java",
+        "title": "Java \u00b7 role string comparison",
+        "language": "Java",
+        "bundled_only": true
+      },
+      {
+        "id": "cpp",
+        "title": "C++ \u00b7 integer overflow",
+        "language": "C++",
+        "bundled_only": true
+      },
+      {
+        "id": "typescript",
+        "title": "TypeScript \u00b7 inventory field mismatch",
+        "language": "TypeScript",
+        "bundled_only": true
+      },
+      {
+        "id": "javascript",
+        "title": "JavaScript \u00b7 enforce discount cap",
+        "language": "JavaScript",
+        "bundled_only": true
+      },
+      {
+        "id": "postgresql",
+        "title": "PostgreSQL \u00b7 count paid orders",
+        "language": "PostgreSQL SQL",
+        "bundled_only": true
+      },
+      {
+        "id": "sqlite",
+        "title": "SQLite \u00b7 count paid orders",
+        "language": "SQLite SQL",
+        "bundled_only": true
+      },
+      {
+        "id": "algorithm",
+        "title": "Algorithm \u00b7 count values at or below a threshold",
+        "language": "Python",
+        "bundled_only": true
+      },
+      {
+        "id": "billing",
+        "title": "Python \u00b7 invoice total bug",
+        "language": "Python",
+        "bundled_only": false
+      },
+      {
+        "id": "pandas",
+        "title": "pandas 2 \u00b7 removed append API",
+        "language": "Python",
+        "bundled_only": false
+      },
+      {
+        "id": "settings",
+        "title": "Pydantic 2 \u00b7 settings import",
+        "language": "Python",
+        "bundled_only": false
+      },
+      {
+        "id": "regression",
+        "title": "pandas 2 \u00b7 regression guard",
+        "language": "Python",
+        "bundled_only": false
+      }
+    ],
+    "mode": "Vultr inference"
+  },
+  "cases": [
+    {
+      "profile": "go",
+      "expected": "verified",
+      "duration_seconds": 28.73,
+      "id": "36a67ee8b78f458ea46ef6061576f522",
+      "state": "verified",
+      "cursor": 13,
+      "events": [
+        {
+          "event": "project",
+          "profile": "go",
+          "title": "Go \u00b7 pagination boundary"
+        },
+        {
+          "event": "inventory",
+          "file_count": 2,
+          "languages": [
+            "Go",
+            "Python"
+          ],
+          "manifests": [],
+          "dependencies": [],
+          "note": "Static inventory. Compatibility is established by the recorded execution tests."
+        },
+        {
+          "event": "stage",
+          "step": 0,
+          "message": "Reproducing the failure in a fresh container\u2026"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-672f715dbf8243498006d5c4e37cb251",
+          "status": "Dispatching",
+          "image": "sha256:e7babee91466b0265285a4fc32be25059fe5bb3e82beb1d043a83d6cc8a0ca03",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 75s"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-672f715dbf8243498006d5c4e37cb251",
+          "status": "Removed",
+          "exit_code": 1,
+          "timed_out": false
+        },
+        {
+          "event": "log",
+          "label": "Baseline",
+          "text": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\n..FF                                                                     [100%]\n=================================== FAILURES ===================================\n_____________________ test_compiled_contract[arguments2-3] _____________________\ntest_compiled.py:25: in test_compiled_contract\n    assert result.stdout.strip() == expected\nE   AssertionError: assert '2' == '3'\nE     \nE     - 3\nE     + 2\n_____________________ test_compiled_contract[arguments3-1] _____________________\ntest_compiled.py:25: in test_compiled_contract\n    assert result.stdout.strip() == expected\nE   AssertionError: assert '0' == '1'\nE     \nE     - 1\nE     + 0\n=========================== short test summary info ============================\nFAILED test_compiled.py::test_compiled_contract[arguments2-3] - AssertionErro...\nFAILED test_compiled.py::test_compiled_contract[arguments3-1] - AssertionErro...\n2 failed, 2 passed in 13.07s\n"
+        },
+        {
+          "event": "stage",
+          "step": 1,
+          "message": "Preparing candidate patch \u00b7 attempt 1"
+        },
+        {
+          "event": "diagnosis",
+          "attempt": 1,
+          "text": "pages() truncates instead of rounding up: e.g. 5 items with size 3 gives 2 pages instead of 3, and 3 items with size 3 gives 0 instead of 1 (per failing tests). Need ceiling division.",
+          "provider": "Vultr Serverless Inference \u00b7 glm-5.3-flash",
+          "receipt": {
+            "requested_model": "glm-5.3-flash",
+            "served_model": "glm-5.3-flash",
+            "completion_id": "chatcmpl-7356c459-539f-48cd-a194-af69674893f5",
+            "tokens": {
+              "prompt_tokens": 445,
+              "completion_tokens": 72,
+              "total_tokens": 517
+            },
+            "budget": {
+              "reservation_id": 1,
+              "reserved_usd": 0.023049
+            }
+          }
+        },
+        {
+          "event": "stage",
+          "step": 2,
+          "message": "Running the unchanged tests in a fresh container\u2026"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-af168ec8df2d4fb8b8b608921dd8caca",
+          "status": "Dispatching",
+          "image": "sha256:e7babee91466b0265285a4fc32be25059fe5bb3e82beb1d043a83d6cc8a0ca03",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 75s"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-af168ec8df2d4fb8b8b608921dd8caca",
+          "status": "Removed",
+          "exit_code": 0,
+          "timed_out": false
+        },
+        {
+          "event": "log",
+          "label": "Verification 1",
+          "text": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\n....                                                                     [100%]\n4 passed in 12.75s\n"
+        },
+        {
+          "event": "result",
+          "id": "36a67ee8b78f458ea46ef6061576f522",
+          "provider": "Vultr Serverless Inference \u00b7 glm-5.3-flash",
+          "diff": "--- a/main.go\n+++ b/main.go\n@@ -7,7 +7,7 @@\n )\n \n func pages(items int, size int) int {\n-    return items / size\n+    return (items + size - 1) / size\n }\n \n func main() {\n",
+          "diagnosis": "pages() truncates instead of rounding up: e.g. 5 items with size 3 gives 2 pages instead of 3, and 3 items with size 3 gives 0 instead of 1 (per failing tests). Need ceiling division.",
+          "inference": {
+            "requested_model": "glm-5.3-flash",
+            "served_model": "glm-5.3-flash",
+            "completion_id": "chatcmpl-7356c459-539f-48cd-a194-af69674893f5",
+            "tokens": {
+              "prompt_tokens": 445,
+              "completion_tokens": 72,
+              "total_tokens": 517
+            },
+            "budget": {
+              "reservation_id": 1,
+              "reserved_usd": 0.023049
+            }
+          },
+          "before": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\n..FF                                                                     [100%]\n=================================== FAILURES ===================================\n_____________________ test_compiled_contract[arguments2-3] _____________________\ntest_compiled.py:25: in test_compiled_contract\n    assert result.stdout.strip() == expected\nE   AssertionError: assert '2' == '3'\nE     \nE     - 3\nE     + 2\n_____________________ test_compiled_contract[arguments3-1] _____________________\ntest_compiled.py:25: in test_compiled_contract\n    assert result.stdout.strip() == expected\nE   AssertionError: assert '0' == '1'\nE     \nE     - 1\nE     + 0\n=========================== short test summary info ============================\nFAILED test_compiled.py::test_compiled_contract[arguments2-3] - AssertionErro...\nFAILED test_compiled.py::test_compiled_contract[arguments3-1] - AssertionErro...\n2 failed, 2 passed in 13.07s\n",
+          "after": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\n....                                                                     [100%]\n4 passed in 12.75s\n",
+          "attempt": 1,
+          "baseline_exit_code": 1,
+          "verification_exit_code": 0,
+          "controller_revision": "b8c6b6bb7079aa932c7ab39e00fa6ebffffed064",
+          "inventory": {
+            "file_count": 2,
+            "languages": [
+              "Go",
+              "Python"
+            ],
+            "manifests": [],
+            "dependencies": [],
+            "note": "Static inventory. Compatibility is established by the recorded execution tests."
+          },
+          "profile": "go",
+          "commit": null,
+          "file": "main.go",
+          "baseline_tests": {
+            "test_compiled.py::test_compiled_contract[arguments0-0]": "passed",
+            "test_compiled.py::test_compiled_contract[arguments1-2]": "passed",
+            "test_compiled.py::test_compiled_contract[arguments2-3]": "failed",
+            "test_compiled.py::test_compiled_contract[arguments3-1]": "failed"
+          },
+          "verification_tests": {
+            "test_compiled.py::test_compiled_contract[arguments0-0]": "passed",
+            "test_compiled.py::test_compiled_contract[arguments1-2]": "passed",
+            "test_compiled.py::test_compiled_contract[arguments2-3]": "passed",
+            "test_compiled.py::test_compiled_contract[arguments3-1]": "passed"
+          },
+          "rejection_reason": null,
+          "tests_sha256": "246eaf09b2d4e1554a321d3970129e26d7058242ef186dddad3344f893333268",
+          "patch_sha256": "952c572990b97a64adc920b480448bf0b38631b4bc72de9fd31ab130b8fb1467"
+        }
+      ]
+    },
+    {
+      "profile": "rust",
+      "expected": "verified",
+      "duration_seconds": 4.18,
+      "id": "f9d98f3a15874c81b7654ba117104025",
+      "state": "verified",
+      "cursor": 13,
+      "events": [
+        {
+          "event": "project",
+          "profile": "rust",
+          "title": "Rust \u00b7 inclusive limit"
+        },
+        {
+          "event": "inventory",
+          "file_count": 2,
+          "languages": [
+            "Python",
+            "Rust"
+          ],
+          "manifests": [],
+          "dependencies": [],
+          "note": "Static inventory. Compatibility is established by the recorded execution tests."
+        },
+        {
+          "event": "stage",
+          "step": 0,
+          "message": "Reproducing the failure in a fresh container\u2026"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-d7911ba237e44c2db571b1440acc3460",
+          "status": "Dispatching",
+          "image": "sha256:e7babee91466b0265285a4fc32be25059fe5bb3e82beb1d043a83d6cc8a0ca03",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-d7911ba237e44c2db571b1440acc3460",
+          "status": "Removed",
+          "exit_code": 1,
+          "timed_out": false
+        },
+        {
+          "event": "log",
+          "label": "Baseline",
+          "text": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\nF..F                                                                     [100%]\n=================================== FAILURES ===================================\n___________________ test_compiled_contract[arguments0-true] ____________________\ntest_compiled.py:25: in test_compiled_contract\n    assert result.stdout.strip() == expected\nE   AssertionError: assert 'false' == 'true'\nE     \nE     - true\nE     + false\n___________________ test_compiled_contract[arguments3-true] ____________________\ntest_compiled.py:25: in test_compiled_contract\n    assert result.stdout.strip() == expected\nE   AssertionError: assert 'false' == 'true'\nE     \nE     - true\nE     + false\n=========================== short test summary info ============================\nFAILED test_compiled.py::test_compiled_contract[arguments0-true] - AssertionE...\nFAILED test_compiled.py::test_compiled_contract[arguments3-true] - AssertionE...\n2 failed, 2 passed in 0.65s\n"
+        },
+        {
+          "event": "stage",
+          "step": 1,
+          "message": "Preparing candidate patch \u00b7 attempt 1"
+        },
+        {
+          "event": "diagnosis",
+          "attempt": 1,
+          "text": "The function uses a strict `<` comparison, so when value equals limit it returns false, but the failing tests expect true (inclusive boundary). Replacing the comparison with `<=` makes the limit itself count as within, matching expected outputs without affecting other cases.",
+          "provider": "Vultr Serverless Inference \u00b7 glm-5.3-flash",
+          "receipt": {
+            "requested_model": "glm-5.3-flash",
+            "served_model": "glm-5.3-flash",
+            "completion_id": "chatcmpl-f5208403-ea61-4930-af2c-aad7fcc005ce",
+            "tokens": {
+              "prompt_tokens": 441,
+              "completion_tokens": 67,
+              "total_tokens": 508
+            },
+            "budget": {
+              "reservation_id": 2,
+              "reserved_usd": 0.023004
+            }
+          }
+        },
+        {
+          "event": "stage",
+          "step": 2,
+          "message": "Running the unchanged tests in a fresh container\u2026"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-71d532bf463740adbb9ac6c4fba4e2a8",
+          "status": "Dispatching",
+          "image": "sha256:e7babee91466b0265285a4fc32be25059fe5bb3e82beb1d043a83d6cc8a0ca03",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-71d532bf463740adbb9ac6c4fba4e2a8",
+          "status": "Removed",
+          "exit_code": 0,
+          "timed_out": false
+        },
+        {
+          "event": "log",
+          "label": "Verification 1",
+          "text": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\n....                                                                     [100%]\n4 passed in 0.33s\n"
+        },
+        {
+          "event": "result",
+          "id": "f9d98f3a15874c81b7654ba117104025",
+          "provider": "Vultr Serverless Inference \u00b7 glm-5.3-flash",
+          "diff": "--- a/main.rs\n+++ b/main.rs\n@@ -1,5 +1,5 @@\n fn within_limit(value: i32, limit: i32) -> bool {\n-    value < limit\n+    value <= limit\n }\n \n fn main() {\n",
+          "diagnosis": "The function uses a strict `<` comparison, so when value equals limit it returns false, but the failing tests expect true (inclusive boundary). Replacing the comparison with `<=` makes the limit itself count as within, matching expected outputs without affecting other cases.",
+          "inference": {
+            "requested_model": "glm-5.3-flash",
+            "served_model": "glm-5.3-flash",
+            "completion_id": "chatcmpl-f5208403-ea61-4930-af2c-aad7fcc005ce",
+            "tokens": {
+              "prompt_tokens": 441,
+              "completion_tokens": 67,
+              "total_tokens": 508
+            },
+            "budget": {
+              "reservation_id": 2,
+              "reserved_usd": 0.023004
+            }
+          },
+          "before": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\nF..F                                                                     [100%]\n=================================== FAILURES ===================================\n___________________ test_compiled_contract[arguments0-true] ____________________\ntest_compiled.py:25: in test_compiled_contract\n    assert result.stdout.strip() == expected\nE   AssertionError: assert 'false' == 'true'\nE     \nE     - true\nE     + false\n___________________ test_compiled_contract[arguments3-true] ____________________\ntest_compiled.py:25: in test_compiled_contract\n    assert result.stdout.strip() == expected\nE   AssertionError: assert 'false' == 'true'\nE     \nE     - true\nE     + false\n=========================== short test summary info ============================\nFAILED test_compiled.py::test_compiled_contract[arguments0-true] - AssertionE...\nFAILED test_compiled.py::test_compiled_contract[arguments3-true] - AssertionE...\n2 failed, 2 passed in 0.65s\n",
+          "after": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\n....                                                                     [100%]\n4 passed in 0.33s\n",
+          "attempt": 1,
+          "baseline_exit_code": 1,
+          "verification_exit_code": 0,
+          "controller_revision": "b8c6b6bb7079aa932c7ab39e00fa6ebffffed064",
+          "inventory": {
+            "file_count": 2,
+            "languages": [
+              "Python",
+              "Rust"
+            ],
+            "manifests": [],
+            "dependencies": [],
+            "note": "Static inventory. Compatibility is established by the recorded execution tests."
+          },
+          "profile": "rust",
+          "commit": null,
+          "file": "main.rs",
+          "baseline_tests": {
+            "test_compiled.py::test_compiled_contract[arguments0-true]": "failed",
+            "test_compiled.py::test_compiled_contract[arguments1-true]": "passed",
+            "test_compiled.py::test_compiled_contract[arguments2-false]": "passed",
+            "test_compiled.py::test_compiled_contract[arguments3-true]": "failed"
+          },
+          "verification_tests": {
+            "test_compiled.py::test_compiled_contract[arguments0-true]": "passed",
+            "test_compiled.py::test_compiled_contract[arguments1-true]": "passed",
+            "test_compiled.py::test_compiled_contract[arguments2-false]": "passed",
+            "test_compiled.py::test_compiled_contract[arguments3-true]": "passed"
+          },
+          "rejection_reason": null,
+          "tests_sha256": "79782e16c762a9f3e87f8ee76632acce09e164b7fbe4265ad47e568a140cf200",
+          "patch_sha256": "f7586fffe0720092a8261f987d35979b54e0be77da25cb7a59bda2bda7286d7c"
+        }
+      ]
+    },
+    {
+      "profile": "java",
+      "expected": "verified",
+      "duration_seconds": 6.75,
+      "id": "cd5c51bb1c514653be9e942671922dd9",
+      "state": "verified",
+      "cursor": 13,
+      "events": [
+        {
+          "event": "project",
+          "profile": "java",
+          "title": "Java \u00b7 role string comparison"
+        },
+        {
+          "event": "inventory",
+          "file_count": 2,
+          "languages": [
+            "Java",
+            "Python"
+          ],
+          "manifests": [],
+          "dependencies": [],
+          "note": "Static inventory. Compatibility is established by the recorded execution tests."
+        },
+        {
+          "event": "stage",
+          "step": 0,
+          "message": "Reproducing the failure in a fresh container\u2026"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-5ccb164888104d4a81efa3c8b34cfa7b",
+          "status": "Dispatching",
+          "image": "sha256:e7babee91466b0265285a4fc32be25059fe5bb3e82beb1d043a83d6cc8a0ca03",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-5ccb164888104d4a81efa3c8b34cfa7b",
+          "status": "Removed",
+          "exit_code": 1,
+          "timed_out": false
+        },
+        {
+          "event": "log",
+          "label": "Baseline",
+          "text": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\nF...                                                                     [100%]\n=================================== FAILURES ===================================\n___________________ test_compiled_contract[arguments0-true] ____________________\ntest_compiled.py:25: in test_compiled_contract\n    assert result.stdout.strip() == expected\nE   AssertionError: assert 'false' == 'true'\nE     \nE     - true\nE     + false\n=========================== short test summary info ============================\nFAILED test_compiled.py::test_compiled_contract[arguments0-true] - AssertionE...\n1 failed, 3 passed in 1.45s\n"
+        },
+        {
+          "event": "stage",
+          "step": 1,
+          "message": "Preparing candidate patch \u00b7 attempt 1"
+        },
+        {
+          "event": "diagnosis",
+          "attempt": 1,
+          "text": "authorized() compares the role String with == (reference identity). Since the role is constructed as a new String (not interned), the reference differs from the literal, so authorized returns false even when the value is 'admin'. Fix by comparing values with equals().",
+          "provider": "Vultr Serverless Inference \u00b7 glm-5.3-flash",
+          "receipt": {
+            "requested_model": "glm-5.3-flash",
+            "served_model": "glm-5.3-flash",
+            "completion_id": "chatcmpl-baca8373-b960-4618-b5c6-379f08e4bc51",
+            "tokens": {
+              "prompt_tokens": 323,
+              "completion_tokens": 73,
+              "total_tokens": 396
+            },
+            "budget": {
+              "reservation_id": 3,
+              "reserved_usd": 0.021966
+            }
+          }
+        },
+        {
+          "event": "stage",
+          "step": 2,
+          "message": "Running the unchanged tests in a fresh container\u2026"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-b771577fe9304647970d28b4e5bb413e",
+          "status": "Dispatching",
+          "image": "sha256:e7babee91466b0265285a4fc32be25059fe5bb3e82beb1d043a83d6cc8a0ca03",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-b771577fe9304647970d28b4e5bb413e",
+          "status": "Removed",
+          "exit_code": 0,
+          "timed_out": false
+        },
+        {
+          "event": "log",
+          "label": "Verification 1",
+          "text": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\n....                                                                     [100%]\n4 passed in 1.31s\n"
+        },
+        {
+          "event": "result",
+          "id": "cd5c51bb1c514653be9e942671922dd9",
+          "provider": "Vultr Serverless Inference \u00b7 glm-5.3-flash",
+          "diff": "--- a/Main.java\n+++ b/Main.java\n@@ -1,6 +1,6 @@\n public class Main {\n     public static boolean authorized(String role) {\n-        return role == \"admin\";\n+        return \"admin\".equals(role);\n     }\n \n     public static void main(String[] args) {\n",
+          "diagnosis": "authorized() compares the role String with == (reference identity). Since the role is constructed as a new String (not interned), the reference differs from the literal, so authorized returns false even when the value is 'admin'. Fix by comparing values with equals().",
+          "inference": {
+            "requested_model": "glm-5.3-flash",
+            "served_model": "glm-5.3-flash",
+            "completion_id": "chatcmpl-baca8373-b960-4618-b5c6-379f08e4bc51",
+            "tokens": {
+              "prompt_tokens": 323,
+              "completion_tokens": 73,
+              "total_tokens": 396
+            },
+            "budget": {
+              "reservation_id": 3,
+              "reserved_usd": 0.021966
+            }
+          },
+          "before": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\nF...                                                                     [100%]\n=================================== FAILURES ===================================\n___________________ test_compiled_contract[arguments0-true] ____________________\ntest_compiled.py:25: in test_compiled_contract\n    assert result.stdout.strip() == expected\nE   AssertionError: assert 'false' == 'true'\nE     \nE     - true\nE     + false\n=========================== short test summary info ============================\nFAILED test_compiled.py::test_compiled_contract[arguments0-true] - AssertionE...\n1 failed, 3 passed in 1.45s\n",
+          "after": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\n....                                                                     [100%]\n4 passed in 1.31s\n",
+          "attempt": 1,
+          "baseline_exit_code": 1,
+          "verification_exit_code": 0,
+          "controller_revision": "b8c6b6bb7079aa932c7ab39e00fa6ebffffed064",
+          "inventory": {
+            "file_count": 2,
+            "languages": [
+              "Java",
+              "Python"
+            ],
+            "manifests": [],
+            "dependencies": [],
+            "note": "Static inventory. Compatibility is established by the recorded execution tests."
+          },
+          "profile": "java",
+          "commit": null,
+          "file": "Main.java",
+          "baseline_tests": {
+            "test_compiled.py::test_compiled_contract[arguments0-true]": "failed",
+            "test_compiled.py::test_compiled_contract[arguments1-false]": "passed",
+            "test_compiled.py::test_compiled_contract[arguments2-false]": "passed",
+            "test_compiled.py::test_compiled_contract[arguments3-false]": "passed"
+          },
+          "verification_tests": {
+            "test_compiled.py::test_compiled_contract[arguments0-true]": "passed",
+            "test_compiled.py::test_compiled_contract[arguments1-false]": "passed",
+            "test_compiled.py::test_compiled_contract[arguments2-false]": "passed",
+            "test_compiled.py::test_compiled_contract[arguments3-false]": "passed"
+          },
+          "rejection_reason": null,
+          "tests_sha256": "227652aad033b8a9c0fd7e31aa043327ff94d5468be5382c900383ff3d0673c2",
+          "patch_sha256": "f031c676ef157133b5db20fadf73447d9da0dce40a12b9042f30ea0ed3f8db3b"
+        }
+      ]
+    },
+    {
+      "profile": "cpp",
+      "expected": "verified",
+      "duration_seconds": 3.86,
+      "id": "bfcfe35cf06a4b86926b22ca61ca218b",
+      "state": "verified",
+      "cursor": 13,
+      "events": [
+        {
+          "event": "project",
+          "profile": "cpp",
+          "title": "C++ \u00b7 integer overflow"
+        },
+        {
+          "event": "inventory",
+          "file_count": 2,
+          "languages": [
+            "C++",
+            "Python"
+          ],
+          "manifests": [],
+          "dependencies": [],
+          "note": "Static inventory. Compatibility is established by the recorded execution tests."
+        },
+        {
+          "event": "stage",
+          "step": 0,
+          "message": "Reproducing the failure in a fresh container\u2026"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-fce24294127f4673ad055c449e3ffe88",
+          "status": "Dispatching",
+          "image": "sha256:e7babee91466b0265285a4fc32be25059fe5bb3e82beb1d043a83d6cc8a0ca03",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-fce24294127f4673ad055c449e3ffe88",
+          "status": "Removed",
+          "exit_code": 1,
+          "timed_out": false
+        },
+        {
+          "event": "log",
+          "label": "Baseline",
+          "text": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\n.F.F                                                                     [100%]\n=================================== FAILURES ===================================\n________________ test_compiled_contract[arguments1-2500000000] _________________\ntest_compiled.py:24: in test_compiled_contract\n    assert result.returncode == 0, result.stderr\nE   AssertionError: main.cpp:5:14: runtime error: signed integer overflow: 50000 * 50000 cannot be represented in type 'int'\nE     \nE   assert 1 == 0\nE    +  where 1 = CompletedProcess(args=['/build/run', '50000', '50000'], returncode=1, stdout='', stderr=\"main.cpp:5:14: runtime error: signed integer overflow: 50000 * 50000 cannot be represented in type 'int'\\n\").returncode\n________________ test_compiled_contract[arguments3--2500000000] ________________\ntest_compiled.py:24: in test_compiled_contract\n    assert result.returncode == 0, result.stderr\nE   AssertionError: main.cpp:5:14: runtime error: signed integer overflow: -50000 * 50000 cannot be represented in type 'int'\nE     \nE   assert 1 == 0\nE    +  where 1 = CompletedProcess(args=['/build/run', '-50000', '50000'], returncode=1, stdout='', stderr=\"main.cpp:5:14: runtime error: signed integer overflow: -50000 * 50000 cannot be represented in type 'int'\\n\").returncode\n=========================== short test summary info ============================\nFAILED test_compiled.py::test_compiled_contract[arguments1-2500000000] - Asse...\nFAILED test_compiled.py::test_compiled_contract[arguments3--2500000000] - Ass...\n2 failed, 2 passed in 0.51s\n"
+        },
+        {
+          "event": "stage",
+          "step": 1,
+          "message": "Preparing candidate patch \u00b7 attempt 1"
+        },
+        {
+          "event": "diagnosis",
+          "attempt": 1,
+          "text": "product() multiplies two ints; 50000*50000 (2.5e9) exceeds INT_MAX (2147483647), causing signed integer overflow (UB, UBSan trap) before widening to long long. Widen one operand to long long before multiplying.",
+          "provider": "Vultr Serverless Inference \u00b7 glm-5.3-flash",
+          "receipt": {
+            "requested_model": "glm-5.3-flash",
+            "served_model": "glm-5.3-flash",
+            "completion_id": "chatcmpl-8b60d198-bb5f-4d6c-bf84-a86f30c22b50",
+            "tokens": {
+              "prompt_tokens": 634,
+              "completion_tokens": 82,
+              "total_tokens": 716
+            },
+            "budget": {
+              "reservation_id": 4,
+              "reserved_usd": 0.024882
+            }
+          }
+        },
+        {
+          "event": "stage",
+          "step": 2,
+          "message": "Running the unchanged tests in a fresh container\u2026"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-7ebd415b939c42f6bcff9a37c96b6136",
+          "status": "Dispatching",
+          "image": "sha256:e7babee91466b0265285a4fc32be25059fe5bb3e82beb1d043a83d6cc8a0ca03",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-7ebd415b939c42f6bcff9a37c96b6136",
+          "status": "Removed",
+          "exit_code": 0,
+          "timed_out": false
+        },
+        {
+          "event": "log",
+          "label": "Verification 1",
+          "text": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\n....                                                                     [100%]\n4 passed in 0.43s\n"
+        },
+        {
+          "event": "result",
+          "id": "bfcfe35cf06a4b86926b22ca61ca218b",
+          "provider": "Vultr Serverless Inference \u00b7 glm-5.3-flash",
+          "diff": "--- a/main.cpp\n+++ b/main.cpp\n@@ -2,7 +2,7 @@\n #include <cstdlib>\n \n long long product(int a, int b) {\n-    return a * b;\n+    return static_cast<long long>(a) * b;\n }\n \n int main(int argc, char** argv) {\n",
+          "diagnosis": "product() multiplies two ints; 50000*50000 (2.5e9) exceeds INT_MAX (2147483647), causing signed integer overflow (UB, UBSan trap) before widening to long long. Widen one operand to long long before multiplying.",
+          "inference": {
+            "requested_model": "glm-5.3-flash",
+            "served_model": "glm-5.3-flash",
+            "completion_id": "chatcmpl-8b60d198-bb5f-4d6c-bf84-a86f30c22b50",
+            "tokens": {
+              "prompt_tokens": 634,
+              "completion_tokens": 82,
+              "total_tokens": 716
+            },
+            "budget": {
+              "reservation_id": 4,
+              "reserved_usd": 0.024882
+            }
+          },
+          "before": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\n.F.F                                                                     [100%]\n=================================== FAILURES ===================================\n________________ test_compiled_contract[arguments1-2500000000] _________________\ntest_compiled.py:24: in test_compiled_contract\n    assert result.returncode == 0, result.stderr\nE   AssertionError: main.cpp:5:14: runtime error: signed integer overflow: 50000 * 50000 cannot be represented in type 'int'\nE     \nE   assert 1 == 0\nE    +  where 1 = CompletedProcess(args=['/build/run', '50000', '50000'], returncode=1, stdout='', stderr=\"main.cpp:5:14: runtime error: signed integer overflow: 50000 * 50000 cannot be represented in type 'int'\\n\").returncode\n________________ test_compiled_contract[arguments3--2500000000] ________________\ntest_compiled.py:24: in test_compiled_contract\n    assert result.returncode == 0, result.stderr\nE   AssertionError: main.cpp:5:14: runtime error: signed integer overflow: -50000 * 50000 cannot be represented in type 'int'\nE     \nE   assert 1 == 0\nE    +  where 1 = CompletedProcess(args=['/build/run', '-50000', '50000'], returncode=1, stdout='', stderr=\"main.cpp:5:14: runtime error: signed integer overflow: -50000 * 50000 cannot be represented in type 'int'\\n\").returncode\n=========================== short test summary info ============================\nFAILED test_compiled.py::test_compiled_contract[arguments1-2500000000] - Asse...\nFAILED test_compiled.py::test_compiled_contract[arguments3--2500000000] - Ass...\n2 failed, 2 passed in 0.51s\n",
+          "after": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\n....                                                                     [100%]\n4 passed in 0.43s\n",
+          "attempt": 1,
+          "baseline_exit_code": 1,
+          "verification_exit_code": 0,
+          "controller_revision": "b8c6b6bb7079aa932c7ab39e00fa6ebffffed064",
+          "inventory": {
+            "file_count": 2,
+            "languages": [
+              "C++",
+              "Python"
+            ],
+            "manifests": [],
+            "dependencies": [],
+            "note": "Static inventory. Compatibility is established by the recorded execution tests."
+          },
+          "profile": "cpp",
+          "commit": null,
+          "file": "main.cpp",
+          "baseline_tests": {
+            "test_compiled.py::test_compiled_contract[arguments0-6]": "passed",
+            "test_compiled.py::test_compiled_contract[arguments1-2500000000]": "failed",
+            "test_compiled.py::test_compiled_contract[arguments2-0]": "passed",
+            "test_compiled.py::test_compiled_contract[arguments3--2500000000]": "failed"
+          },
+          "verification_tests": {
+            "test_compiled.py::test_compiled_contract[arguments0-6]": "passed",
+            "test_compiled.py::test_compiled_contract[arguments1-2500000000]": "passed",
+            "test_compiled.py::test_compiled_contract[arguments2-0]": "passed",
+            "test_compiled.py::test_compiled_contract[arguments3--2500000000]": "passed"
+          },
+          "rejection_reason": null,
+          "tests_sha256": "9717fe6435913d389bf7aaf8aab2ec9a6f1a60d5e9fd4bc0fe37dffea37c2c36",
+          "patch_sha256": "5cb35089c8ed99d000e6615b85ccab910c823ce07084ff418f97fa7c49e239d4"
+        }
+      ]
+    },
+    {
+      "profile": "typescript",
+      "expected": "verified",
+      "duration_seconds": 13.74,
+      "id": "5f1a48bf2c174ad2bd1e2f89cac1d404",
+      "state": "verified",
+      "cursor": 13,
+      "events": [
+        {
+          "event": "project",
+          "profile": "typescript",
+          "title": "TypeScript \u00b7 inventory field mismatch"
+        },
+        {
+          "event": "inventory",
+          "file_count": 2,
+          "languages": [
+            "Python",
+            "TypeScript"
+          ],
+          "manifests": [],
+          "dependencies": [],
+          "note": "Static inventory. Compatibility is established by the recorded execution tests."
+        },
+        {
+          "event": "stage",
+          "step": 0,
+          "message": "Reproducing the failure in a fresh container\u2026"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-d6bb554b7b3d47a3b3a653892f81da76",
+          "status": "Dispatching",
+          "image": "sha256:e7babee91466b0265285a4fc32be25059fe5bb3e82beb1d043a83d6cc8a0ca03",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-d6bb554b7b3d47a3b3a653892f81da76",
+          "status": "Removed",
+          "exit_code": 1,
+          "timed_out": false
+        },
+        {
+          "event": "log",
+          "label": "Baseline",
+          "text": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\nFF..                                                                     [100%]\n=================================== FAILURES ===================================\n___________________________ test_typescript_contract ___________________________\ntest_inventory.py:13: in test_typescript_contract\n    assert result.returncode == 0, result.stdout + result.stderr\nE   AssertionError: inventory.ts(5,16): error TS2339: Property 'quantity' does not exist on type 'Item'.\nE     \nE   assert 2 == 0\nE    +  where 2 = CompletedProcess(args=['node', '/opt/versionbridge/typescript/lib/tsc.js', '--strict', '--noEmit', '--target', 'es2022...turncode=2, stdout=\"inventory.ts(5,16): error TS2339: Property 'quantity' does not exist on type 'Item'.\\n\", stderr='').returncode\n______________________ test_inventory_lookup[items0-B-9] _______________________\ntest_inventory.py:33: in test_inventory_lookup\n    assert result.returncode == 0, result.stderr\nE   AssertionError: node:internal/modules/run_main:123\nE         triggerUncaughtException(\nE         ^\nE     \nE     AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\nE     \nE     0 !== 9\nE     \nE         at file:///project/[eval1]:5:16\nE         at ModuleJob.run (node:internal/modules/esm/module_job:343:25)\nE         at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:282:26)\nE         at async ModuleLoader.executeModuleJob (node:internal/modules/esm/loader:278:20)\nE         at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5) {\nE       generatedMessage: true,\nE       code: 'ERR_ASSERTION',\nE       actual: 0,\nE       expected: 9,\nE       operator: 'strictEqual',\nE       diff: 'simple'\nE     }\nE     \nE     Node.js v22.23.4\nE     \nE   assert 1 == 0\nE    +  where 1 = CompletedProcess(args=['node', '--experimental-strip-types', '--input-type=module', '-e', \"\\n        import assert fro...'ERR_ASSERTION',\\n  actual: 0,\\n  expected: 9,\\n  operator: 'strictEqual',\\n  diff: 'simple'\\n}\\n\\nNode.js v22.23.4\\n\").returncode\n=========================== short test summary info ============================\nFAILED test_inventory.py::test_typescript_contract - AssertionError: inventor...\nFAILED test_inventory.py::test_inventory_lookup[items0-B-9] - AssertionError:...\n2 failed, 2 passed in 4.23s\n"
+        },
+        {
+          "event": "stage",
+          "step": 1,
+          "message": "Preparing candidate patch \u00b7 attempt 1"
+        },
+        {
+          "event": "diagnosis",
+          "attempt": 1,
+          "text": "The function references 'item?.quantity', but Item only defines 'sku' and 'available'. TypeScript (TS2339) rejects the missing property at compile time, and at runtime the undefined quantity returns 0 instead of the expected value (e.g., 9). Use the declared 'available' field instead.",
+          "provider": "Vultr Serverless Inference \u00b7 glm-5.3-flash",
+          "receipt": {
+            "requested_model": "glm-5.3-flash",
+            "served_model": "glm-5.3-flash",
+            "completion_id": "chatcmpl-24eee301-feed-4491-b1b9-03be65a25949",
+            "tokens": {
+              "prompt_tokens": 830,
+              "completion_tokens": 84,
+              "total_tokens": 914
+            },
+            "budget": {
+              "reservation_id": 5,
+              "reserved_usd": 0.027276
+            }
+          }
+        },
+        {
+          "event": "stage",
+          "step": 2,
+          "message": "Running the unchanged tests in a fresh container\u2026"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-1f3feb3720ea48009f3e1af07cf358eb",
+          "status": "Dispatching",
+          "image": "sha256:e7babee91466b0265285a4fc32be25059fe5bb3e82beb1d043a83d6cc8a0ca03",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-1f3feb3720ea48009f3e1af07cf358eb",
+          "status": "Removed",
+          "exit_code": 0,
+          "timed_out": false
+        },
+        {
+          "event": "log",
+          "label": "Verification 1",
+          "text": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\n....                                                                     [100%]\n4 passed in 3.87s\n"
+        },
+        {
+          "event": "result",
+          "id": "5f1a48bf2c174ad2bd1e2f89cac1d404",
+          "provider": "Vultr Serverless Inference \u00b7 glm-5.3-flash",
+          "diff": "--- a/inventory.ts\n+++ b/inventory.ts\n@@ -2,5 +2,5 @@\n \n export function availableFor(items: readonly Item[], sku: string): number {\n   const item = items.find(entry => entry.sku === sku);\n-  return item?.quantity ?? 0;\n+  return item?.available ?? 0;\n }\n",
+          "diagnosis": "The function references 'item?.quantity', but Item only defines 'sku' and 'available'. TypeScript (TS2339) rejects the missing property at compile time, and at runtime the undefined quantity returns 0 instead of the expected value (e.g., 9). Use the declared 'available' field instead.",
+          "inference": {
+            "requested_model": "glm-5.3-flash",
+            "served_model": "glm-5.3-flash",
+            "completion_id": "chatcmpl-24eee301-feed-4491-b1b9-03be65a25949",
+            "tokens": {
+              "prompt_tokens": 830,
+              "completion_tokens": 84,
+              "total_tokens": 914
+            },
+            "budget": {
+              "reservation_id": 5,
+              "reserved_usd": 0.027276
+            }
+          },
+          "before": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\nFF..                                                                     [100%]\n=================================== FAILURES ===================================\n___________________________ test_typescript_contract ___________________________\ntest_inventory.py:13: in test_typescript_contract\n    assert result.returncode == 0, result.stdout + result.stderr\nE   AssertionError: inventory.ts(5,16): error TS2339: Property 'quantity' does not exist on type 'Item'.\nE     \nE   assert 2 == 0\nE    +  where 2 = CompletedProcess(args=['node', '/opt/versionbridge/typescript/lib/tsc.js', '--strict', '--noEmit', '--target', 'es2022...turncode=2, stdout=\"inventory.ts(5,16): error TS2339: Property 'quantity' does not exist on type 'Item'.\\n\", stderr='').returncode\n______________________ test_inventory_lookup[items0-B-9] _______________________\ntest_inventory.py:33: in test_inventory_lookup\n    assert result.returncode == 0, result.stderr\nE   AssertionError: node:internal/modules/run_main:123\nE         triggerUncaughtException(\nE         ^\nE     \nE     AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\nE     \nE     0 !== 9\nE     \nE         at file:///project/[eval1]:5:16\nE         at ModuleJob.run (node:internal/modules/esm/module_job:343:25)\nE         at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:282:26)\nE         at async ModuleLoader.executeModuleJob (node:internal/modules/esm/loader:278:20)\nE         at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5) {\nE       generatedMessage: true,\nE       code: 'ERR_ASSERTION',\nE       actual: 0,\nE       expected: 9,\nE       operator: 'strictEqual',\nE       diff: 'simple'\nE     }\nE     \nE     Node.js v22.23.4\nE     \nE   assert 1 == 0\nE    +  where 1 = CompletedProcess(args=['node', '--experimental-strip-types', '--input-type=module', '-e', \"\\n        import assert fro...'ERR_ASSERTION',\\n  actual: 0,\\n  expected: 9,\\n  operator: 'strictEqual',\\n  diff: 'simple'\\n}\\n\\nNode.js v22.23.4\\n\").returncode\n=========================== short test summary info ============================\nFAILED test_inventory.py::test_typescript_contract - AssertionError: inventor...\nFAILED test_inventory.py::test_inventory_lookup[items0-B-9] - AssertionError:...\n2 failed, 2 passed in 4.23s\n",
+          "after": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\n....                                                                     [100%]\n4 passed in 3.87s\n",
+          "attempt": 1,
+          "baseline_exit_code": 1,
+          "verification_exit_code": 0,
+          "controller_revision": "b8c6b6bb7079aa932c7ab39e00fa6ebffffed064",
+          "inventory": {
+            "file_count": 2,
+            "languages": [
+              "Python",
+              "TypeScript"
+            ],
+            "manifests": [],
+            "dependencies": [],
+            "note": "Static inventory. Compatibility is established by the recorded execution tests."
+          },
+          "profile": "typescript",
+          "commit": null,
+          "file": "inventory.ts",
+          "baseline_tests": {
+            "test_inventory.py::test_typescript_contract": "failed",
+            "test_inventory.py::test_inventory_lookup[items0-B-9]": "failed",
+            "test_inventory.py::test_inventory_lookup[items1-A-0]": "passed",
+            "test_inventory.py::test_inventory_lookup[items2-missing-0]": "passed"
+          },
+          "verification_tests": {
+            "test_inventory.py::test_typescript_contract": "passed",
+            "test_inventory.py::test_inventory_lookup[items0-B-9]": "passed",
+            "test_inventory.py::test_inventory_lookup[items1-A-0]": "passed",
+            "test_inventory.py::test_inventory_lookup[items2-missing-0]": "passed"
+          },
+          "rejection_reason": null,
+          "tests_sha256": "80865598ad7f60d4f8e3b6bcf90d812fbbdc575ed3705bbedf0f3c019f81e7c1",
+          "patch_sha256": "61acae129f73ba731f18395341a7d3a326b0443cb89c21c2f4ab4ab461586dd6"
+        }
+      ]
+    },
+    {
+      "profile": "javascript",
+      "expected": "verified",
+      "duration_seconds": 5.34,
+      "id": "8c5547787ef54ab6bb51dc8841d84cfe",
+      "state": "verified",
+      "cursor": 13,
+      "events": [
+        {
+          "event": "project",
+          "profile": "javascript",
+          "title": "JavaScript \u00b7 enforce discount cap"
+        },
+        {
+          "event": "inventory",
+          "file_count": 2,
+          "languages": [
+            "JavaScript",
+            "Python"
+          ],
+          "manifests": [],
+          "dependencies": [],
+          "note": "Static inventory. Compatibility is established by the recorded execution tests."
+        },
+        {
+          "event": "stage",
+          "step": 0,
+          "message": "Reproducing the failure in a fresh container\u2026"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-301aa7ea78614eed886ae40116fc196b",
+          "status": "Dispatching",
+          "image": "sha256:e7babee91466b0265285a4fc32be25059fe5bb3e82beb1d043a83d6cc8a0ca03",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-301aa7ea78614eed886ae40116fc196b",
+          "status": "Removed",
+          "exit_code": 1,
+          "timed_out": false
+        },
+        {
+          "event": "log",
+          "label": "Baseline",
+          "text": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\nF..F                                                                     [100%]\n=================================== FAILURES ===================================\n____________________ test_discount_total[1000-300-200-800] _____________________\ntest_discount.py:24: in test_discount_total\n    assert result.returncode == 0, result.stderr\nE   AssertionError: node:internal/modules/run_main:123\nE         triggerUncaughtException(\nE         ^\nE     \nE     AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\nE     \nE     700 !== 800\nE     \nE         at file:///project/[eval1]:5:16\nE         at ModuleJob.run (node:internal/modules/esm/module_job:343:25)\nE         at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:282:26)\nE         at async ModuleLoader.executeModuleJob (node:internal/modules/esm/loader:278:20)\nE         at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5) {\nE       generatedMessage: true,\nE       code: 'ERR_ASSERTION',\nE       actual: 700,\nE       expected: 800,\nE       operator: 'strictEqual',\nE       diff: 'simple'\nE     }\nE     \nE     Node.js v22.23.4\nE     \nE   assert 1 == 0\nE    +  where 1 = CompletedProcess(args=['node', '--input-type=module', '-e', \"\\n        import assert from 'node:assert/strict';\\n     ..._ASSERTION',\\n  actual: 700,\\n  expected: 800,\\n  operator: 'strictEqual',\\n  diff: 'simple'\\n}\\n\\nNode.js v22.23.4\\n\").returncode\n_____________________ test_discount_total[1000-300-0-1000] _____________________\ntest_discount.py:24: in test_discount_total\n    assert result.returncode == 0, result.stderr\nE   AssertionError: node:internal/modules/run_main:123\nE         triggerUncaughtException(\nE         ^\nE     \nE     AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\nE     \nE     700 !== 1000\nE     \nE         at file:///project/[eval1]:5:16\nE         at ModuleJob.run (node:internal/modules/esm/module_job:343:25)\nE         at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:282:26)\nE         at async ModuleLoader.executeModuleJob (node:internal/modules/esm/loader:278:20)\nE         at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5) {\nE       generatedMessage: true,\nE       code: 'ERR_ASSERTION',\nE       actual: 700,\nE       expected: 1000,\nE       operator: 'strictEqual',\nE       diff: 'simple'\nE     }\nE     \nE     Node.js v22.23.4\nE     \nE   assert 1 == 0\nE    +  where 1 = CompletedProcess(args=['node', '--input-type=module', '-e', \"\\n        import assert from 'node:assert/strict';\\n     ...ASSERTION',\\n  actual: 700,\\n  expected: 1000,\\n  operator: 'strictEqual',\\n  diff: 'simple'\\n}\\n\\nNode.js v22.23.4\\n\").returncode\n=========================== short test summary info ============================\nFAILED test_discount.py::test_discount_total[1000-300-200-800] - AssertionErr...\nFAILED test_discount.py::test_discount_total[1000-300-0-1000] - AssertionErro...\n2 failed, 2 passed in 0.22s\n"
+        },
+        {
+          "event": "stage",
+          "step": 1,
+          "message": "Preparing candidate patch \u00b7 attempt 1"
+        },
+        {
+          "event": "diagnosis",
+          "attempt": 1,
+          "text": "discountTotal ignores the cap parameter, so deductions are only bounded by subtotal and discount. With subtotal=1000, discount=300, cap=200 the function returns 700 instead of 800, and with cap=0 it returns 700 instead of 1000. The Math.min must include cap to enforce the discount cap.",
+          "provider": "Vultr Serverless Inference \u00b7 glm-5.3-flash",
+          "receipt": {
+            "requested_model": "glm-5.3-flash",
+            "served_model": "glm-5.3-flash",
+            "completion_id": "chatcmpl-f61f29bf-1b4e-4fd5-99df-828ee0e3e61b",
+            "tokens": {
+              "prompt_tokens": 1070,
+              "completion_tokens": 91,
+              "total_tokens": 1161
+            },
+            "budget": {
+              "reservation_id": 6,
+              "reserved_usd": 0.029526
+            }
+          }
+        },
+        {
+          "event": "stage",
+          "step": 2,
+          "message": "Running the unchanged tests in a fresh container\u2026"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-6459dad0cca444bf9ffaf4c08dea37ea",
+          "status": "Dispatching",
+          "image": "sha256:e7babee91466b0265285a4fc32be25059fe5bb3e82beb1d043a83d6cc8a0ca03",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-6459dad0cca444bf9ffaf4c08dea37ea",
+          "status": "Removed",
+          "exit_code": 0,
+          "timed_out": false
+        },
+        {
+          "event": "log",
+          "label": "Verification 1",
+          "text": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\n....                                                                     [100%]\n4 passed in 0.22s\n"
+        },
+        {
+          "event": "result",
+          "id": "8c5547787ef54ab6bb51dc8841d84cfe",
+          "provider": "Vultr Serverless Inference \u00b7 glm-5.3-flash",
+          "diff": "--- a/discount.mjs\n+++ b/discount.mjs\n@@ -1,4 +1,4 @@\n export function discountTotal(subtotal, discount, cap) {\n-  const deduction = Math.min(subtotal, discount);\n+  const deduction = Math.min(subtotal, discount, cap);\n   return subtotal - deduction;\n }\n",
+          "diagnosis": "discountTotal ignores the cap parameter, so deductions are only bounded by subtotal and discount. With subtotal=1000, discount=300, cap=200 the function returns 700 instead of 800, and with cap=0 it returns 700 instead of 1000. The Math.min must include cap to enforce the discount cap.",
+          "inference": {
+            "requested_model": "glm-5.3-flash",
+            "served_model": "glm-5.3-flash",
+            "completion_id": "chatcmpl-f61f29bf-1b4e-4fd5-99df-828ee0e3e61b",
+            "tokens": {
+              "prompt_tokens": 1070,
+              "completion_tokens": 91,
+              "total_tokens": 1161
+            },
+            "budget": {
+              "reservation_id": 6,
+              "reserved_usd": 0.029526
+            }
+          },
+          "before": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\nF..F                                                                     [100%]\n=================================== FAILURES ===================================\n____________________ test_discount_total[1000-300-200-800] _____________________\ntest_discount.py:24: in test_discount_total\n    assert result.returncode == 0, result.stderr\nE   AssertionError: node:internal/modules/run_main:123\nE         triggerUncaughtException(\nE         ^\nE     \nE     AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\nE     \nE     700 !== 800\nE     \nE         at file:///project/[eval1]:5:16\nE         at ModuleJob.run (node:internal/modules/esm/module_job:343:25)\nE         at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:282:26)\nE         at async ModuleLoader.executeModuleJob (node:internal/modules/esm/loader:278:20)\nE         at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5) {\nE       generatedMessage: true,\nE       code: 'ERR_ASSERTION',\nE       actual: 700,\nE       expected: 800,\nE       operator: 'strictEqual',\nE       diff: 'simple'\nE     }\nE     \nE     Node.js v22.23.4\nE     \nE   assert 1 == 0\nE    +  where 1 = CompletedProcess(args=['node', '--input-type=module', '-e', \"\\n        import assert from 'node:assert/strict';\\n     ..._ASSERTION',\\n  actual: 700,\\n  expected: 800,\\n  operator: 'strictEqual',\\n  diff: 'simple'\\n}\\n\\nNode.js v22.23.4\\n\").returncode\n_____________________ test_discount_total[1000-300-0-1000] _____________________\ntest_discount.py:24: in test_discount_total\n    assert result.returncode == 0, result.stderr\nE   AssertionError: node:internal/modules/run_main:123\nE         triggerUncaughtException(\nE         ^\nE     \nE     AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\nE     \nE     700 !== 1000\nE     \nE         at file:///project/[eval1]:5:16\nE         at ModuleJob.run (node:internal/modules/esm/module_job:343:25)\nE         at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:282:26)\nE         at async ModuleLoader.executeModuleJob (node:internal/modules/esm/loader:278:20)\nE         at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5) {\nE       generatedMessage: true,\nE       code: 'ERR_ASSERTION',\nE       actual: 700,\nE       expected: 1000,\nE       operator: 'strictEqual',\nE       diff: 'simple'\nE     }\nE     \nE     Node.js v22.23.4\nE     \nE   assert 1 == 0\nE    +  where 1 = CompletedProcess(args=['node', '--input-type=module', '-e', \"\\n        import assert from 'node:assert/strict';\\n     ...ASSERTION',\\n  actual: 700,\\n  expected: 1000,\\n  operator: 'strictEqual',\\n  diff: 'simple'\\n}\\n\\nNode.js v22.23.4\\n\").returncode\n=========================== short test summary info ============================\nFAILED test_discount.py::test_discount_total[1000-300-200-800] - AssertionErr...\nFAILED test_discount.py::test_discount_total[1000-300-0-1000] - AssertionErro...\n2 failed, 2 passed in 0.22s\n",
+          "after": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\n....                                                                     [100%]\n4 passed in 0.22s\n",
+          "attempt": 1,
+          "baseline_exit_code": 1,
+          "verification_exit_code": 0,
+          "controller_revision": "b8c6b6bb7079aa932c7ab39e00fa6ebffffed064",
+          "inventory": {
+            "file_count": 2,
+            "languages": [
+              "JavaScript",
+              "Python"
+            ],
+            "manifests": [],
+            "dependencies": [],
+            "note": "Static inventory. Compatibility is established by the recorded execution tests."
+          },
+          "profile": "javascript",
+          "commit": null,
+          "file": "discount.mjs",
+          "baseline_tests": {
+            "test_discount.py::test_discount_total[1000-300-200-800]": "failed",
+            "test_discount.py::test_discount_total[1000-0-200-1000]": "passed",
+            "test_discount.py::test_discount_total[100-500-200-0]": "passed",
+            "test_discount.py::test_discount_total[1000-300-0-1000]": "failed"
+          },
+          "verification_tests": {
+            "test_discount.py::test_discount_total[1000-300-200-800]": "passed",
+            "test_discount.py::test_discount_total[1000-0-200-1000]": "passed",
+            "test_discount.py::test_discount_total[100-500-200-0]": "passed",
+            "test_discount.py::test_discount_total[1000-300-0-1000]": "passed"
+          },
+          "rejection_reason": null,
+          "tests_sha256": "4630d07ecc1c40e48936efef146c2cb1ad549a064107925df4fbb975cfbc0085",
+          "patch_sha256": "de2ed5f0613fd44fc1a005ee8473e1df95b5dfcd3df2c0adb54d554f2d477724"
+        }
+      ]
+    },
+    {
+      "profile": "postgresql",
+      "expected": "verified",
+      "duration_seconds": 4.51,
+      "id": "3d725da79c934f97a030e5aa783ab9ef",
+      "state": "verified",
+      "cursor": 13,
+      "events": [
+        {
+          "event": "project",
+          "profile": "postgresql",
+          "title": "PostgreSQL \u00b7 count paid orders"
+        },
+        {
+          "event": "inventory",
+          "file_count": 2,
+          "languages": [
+            "Python",
+            "SQL"
+          ],
+          "manifests": [],
+          "dependencies": [],
+          "note": "Static inventory. Compatibility is established by the recorded execution tests."
+        },
+        {
+          "event": "stage",
+          "step": 0,
+          "message": "Reproducing the failure in a fresh container\u2026"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-c08f5c11f2a14ee7ad01285ef5d724ff",
+          "status": "Dispatching",
+          "image": "sha256:e7babee91466b0265285a4fc32be25059fe5bb3e82beb1d043a83d6cc8a0ca03",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-c08f5c11f2a14ee7ad01285ef5d724ff",
+          "status": "Removed",
+          "exit_code": 1,
+          "timed_out": false
+        },
+        {
+          "event": "log",
+          "label": "Baseline",
+          "text": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\n.FF.                                                                     [100%]\n=================================== FAILURES ===================================\n_______________________ test_customer_totals[no-orders] ________________________\ntest_customer_totals.py:58: in test_customer_totals\n    assert [tuple(map(int, row)) for row in rows] == expected\nE   assert [(1, 1, 0)] == [(1, 0, 0)]\nE     \nE     At index 0 diff: (1, 1, 0) != (1, 0, 0)\nE     Use -v to get more diff\n__________________ test_customer_totals[duplicates-and-void] ___________________\ntest_customer_totals.py:58: in test_customer_totals\n    assert [tuple(map(int, row)) for row in rows] == expected\nE   assert [(1, 2, 600), (2, 1, 0)] == [(1, 2, 600), (2, 0, 0)]\nE     \nE     At index 1 diff: (2, 1, 0) != (2, 0, 0)\nE     Use -v to get more diff\n=========================== short test summary info ============================\nFAILED test_customer_totals.py::test_customer_totals[no-orders] - assert [(1,...\nFAILED test_customer_totals.py::test_customer_totals[duplicates-and-void] - a...\n2 failed, 2 passed in 0.99s\n"
+        },
+        {
+          "event": "stage",
+          "step": 1,
+          "message": "Preparing candidate patch \u00b7 attempt 1"
+        },
+        {
+          "event": "diagnosis",
+          "attempt": 1,
+          "text": "COUNT(*) counts every LEFT JOIN row, so customers with no paid orders get 1 instead of 0 (the NULL-extended join row). Count only matched order rows: COUNT(o.id), which ignores NULLs from unmatched LEFT JOIN rows.",
+          "provider": "Vultr Serverless Inference \u00b7 glm-5.3-flash",
+          "receipt": {
+            "requested_model": "glm-5.3-flash",
+            "served_model": "glm-5.3-flash",
+            "completion_id": "chatcmpl-99fe2512-c569-43ec-8163-46fb02c1a2f9",
+            "tokens": {
+              "prompt_tokens": 557,
+              "completion_tokens": 89,
+              "total_tokens": 646
+            },
+            "budget": {
+              "reservation_id": 7,
+              "reserved_usd": 0.023781
+            }
+          }
+        },
+        {
+          "event": "stage",
+          "step": 2,
+          "message": "Running the unchanged tests in a fresh container\u2026"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-ccc853e61be544ba866b837a08eddf46",
+          "status": "Dispatching",
+          "image": "sha256:e7babee91466b0265285a4fc32be25059fe5bb3e82beb1d043a83d6cc8a0ca03",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-ccc853e61be544ba866b837a08eddf46",
+          "status": "Removed",
+          "exit_code": 0,
+          "timed_out": false
+        },
+        {
+          "event": "log",
+          "label": "Verification 1",
+          "text": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\n....                                                                     [100%]\n4 passed in 0.93s\n"
+        },
+        {
+          "event": "result",
+          "id": "3d725da79c934f97a030e5aa783ab9ef",
+          "provider": "Vultr Serverless Inference \u00b7 glm-5.3-flash",
+          "diff": "--- a/customer_totals.sql\n+++ b/customer_totals.sql\n@@ -1,4 +1,4 @@\n-SELECT c.id, COUNT(*) AS paid_orders, COALESCE(SUM(o.cents), 0) AS total_cents\n+SELECT c.id, COUNT(o.id) AS paid_orders, COALESCE(SUM(o.cents), 0) AS total_cents\n FROM customers AS c\n LEFT JOIN orders AS o ON o.customer_id = c.id AND o.status = 'paid'\n GROUP BY c.id\n",
+          "diagnosis": "COUNT(*) counts every LEFT JOIN row, so customers with no paid orders get 1 instead of 0 (the NULL-extended join row). Count only matched order rows: COUNT(o.id), which ignores NULLs from unmatched LEFT JOIN rows.",
+          "inference": {
+            "requested_model": "glm-5.3-flash",
+            "served_model": "glm-5.3-flash",
+            "completion_id": "chatcmpl-99fe2512-c569-43ec-8163-46fb02c1a2f9",
+            "tokens": {
+              "prompt_tokens": 557,
+              "completion_tokens": 89,
+              "total_tokens": 646
+            },
+            "budget": {
+              "reservation_id": 7,
+              "reserved_usd": 0.023781
+            }
+          },
+          "before": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\n.FF.                                                                     [100%]\n=================================== FAILURES ===================================\n_______________________ test_customer_totals[no-orders] ________________________\ntest_customer_totals.py:58: in test_customer_totals\n    assert [tuple(map(int, row)) for row in rows] == expected\nE   assert [(1, 1, 0)] == [(1, 0, 0)]\nE     \nE     At index 0 diff: (1, 1, 0) != (1, 0, 0)\nE     Use -v to get more diff\n__________________ test_customer_totals[duplicates-and-void] ___________________\ntest_customer_totals.py:58: in test_customer_totals\n    assert [tuple(map(int, row)) for row in rows] == expected\nE   assert [(1, 2, 600), (2, 1, 0)] == [(1, 2, 600), (2, 0, 0)]\nE     \nE     At index 1 diff: (2, 1, 0) != (2, 0, 0)\nE     Use -v to get more diff\n=========================== short test summary info ============================\nFAILED test_customer_totals.py::test_customer_totals[no-orders] - assert [(1,...\nFAILED test_customer_totals.py::test_customer_totals[duplicates-and-void] - a...\n2 failed, 2 passed in 0.99s\n",
+          "after": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\n....                                                                     [100%]\n4 passed in 0.93s\n",
+          "attempt": 1,
+          "baseline_exit_code": 1,
+          "verification_exit_code": 0,
+          "controller_revision": "b8c6b6bb7079aa932c7ab39e00fa6ebffffed064",
+          "inventory": {
+            "file_count": 2,
+            "languages": [
+              "Python",
+              "SQL"
+            ],
+            "manifests": [],
+            "dependencies": [],
+            "note": "Static inventory. Compatibility is established by the recorded execution tests."
+          },
+          "profile": "postgresql",
+          "commit": null,
+          "file": "customer_totals.sql",
+          "baseline_tests": {
+            "test_customer_totals.py::test_customer_totals[empty]": "passed",
+            "test_customer_totals.py::test_customer_totals[no-orders]": "failed",
+            "test_customer_totals.py::test_customer_totals[duplicates-and-void]": "failed",
+            "test_customer_totals.py::test_customer_totals[null-amount]": "passed"
+          },
+          "verification_tests": {
+            "test_customer_totals.py::test_customer_totals[empty]": "passed",
+            "test_customer_totals.py::test_customer_totals[no-orders]": "passed",
+            "test_customer_totals.py::test_customer_totals[duplicates-and-void]": "passed",
+            "test_customer_totals.py::test_customer_totals[null-amount]": "passed"
+          },
+          "rejection_reason": null,
+          "tests_sha256": "96f5ce40d3503604f7899148445a714de0c9802c45fbb00fa275ef7c2e511747",
+          "patch_sha256": "4bd47c8b1fa7e6cffdff830913de545db39d6ef4d23e6d043e030e1bd4e08251"
+        }
+      ]
+    },
+    {
+      "profile": "sqlite",
+      "expected": "verified",
+      "duration_seconds": 4.12,
+      "id": "25deed088aa64a9e9ad19c8844b87ae5",
+      "state": "verified",
+      "cursor": 13,
+      "events": [
+        {
+          "event": "project",
+          "profile": "sqlite",
+          "title": "SQLite \u00b7 count paid orders"
+        },
+        {
+          "event": "inventory",
+          "file_count": 2,
+          "languages": [
+            "Python",
+            "SQL"
+          ],
+          "manifests": [],
+          "dependencies": [],
+          "note": "Static inventory. Compatibility is established by the recorded execution tests."
+        },
+        {
+          "event": "stage",
+          "step": 0,
+          "message": "Reproducing the failure in a fresh container\u2026"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-7dd75f618ddb462e901a5a5ad2e0d582",
+          "status": "Dispatching",
+          "image": "sha256:e7babee91466b0265285a4fc32be25059fe5bb3e82beb1d043a83d6cc8a0ca03",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-7dd75f618ddb462e901a5a5ad2e0d582",
+          "status": "Removed",
+          "exit_code": 1,
+          "timed_out": false
+        },
+        {
+          "event": "log",
+          "label": "Baseline",
+          "text": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\n.FF.                                                                     [100%]\n=================================== FAILURES ===================================\n______________ test_customer_totals[customers1-orders1-expected1] ______________\ntest_customer_totals.py:27: in test_customer_totals\n    assert db.execute(QUERY).fetchall() == expected\nE   assert [(1, 1, 0)] == [(1, 0, 0)]\nE     \nE     At index 0 diff: (1, 1, 0) != (1, 0, 0)\nE     Use -v to get more diff\n______________ test_customer_totals[customers2-orders2-expected2] ______________\ntest_customer_totals.py:27: in test_customer_totals\n    assert db.execute(QUERY).fetchall() == expected\nE   assert [(1, 2, 600), (2, 1, 0)] == [(1, 2, 600), (2, 0, 0)]\nE     \nE     At index 1 diff: (2, 1, 0) != (2, 0, 0)\nE     Use -v to get more diff\n=========================== short test summary info ============================\nFAILED test_customer_totals.py::test_customer_totals[customers1-orders1-expected1]\nFAILED test_customer_totals.py::test_customer_totals[customers2-orders2-expected2]\n2 failed, 2 passed in 0.03s\n"
+        },
+        {
+          "event": "stage",
+          "step": 1,
+          "message": "Preparing candidate patch \u00b7 attempt 1"
+        },
+        {
+          "event": "diagnosis",
+          "attempt": 1,
+          "text": "COUNT(*) counts the customer row itself even when the LEFT JOIN finds no matching paid order, so customers with zero paid orders report paid_orders=1. Since orders.id is NULL in unmatched rows, COUNT(o.id) correctly returns 0 while sums stay right.",
+          "provider": "Vultr Serverless Inference \u00b7 glm-5.3-flash",
+          "receipt": {
+            "requested_model": "glm-5.3-flash",
+            "served_model": "glm-5.3-flash",
+            "completion_id": "chatcmpl-126fbd96-f34b-47dd-8273-4d01ace0f781",
+            "tokens": {
+              "prompt_tokens": 555,
+              "completion_tokens": 92,
+              "total_tokens": 647
+            },
+            "budget": {
+              "reservation_id": 8,
+              "reserved_usd": 0.023709
+            }
+          }
+        },
+        {
+          "event": "stage",
+          "step": 2,
+          "message": "Running the unchanged tests in a fresh container\u2026"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-ee11275e68e74702a247f1883366ea8b",
+          "status": "Dispatching",
+          "image": "sha256:e7babee91466b0265285a4fc32be25059fe5bb3e82beb1d043a83d6cc8a0ca03",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-ee11275e68e74702a247f1883366ea8b",
+          "status": "Removed",
+          "exit_code": 0,
+          "timed_out": false
+        },
+        {
+          "event": "log",
+          "label": "Verification 1",
+          "text": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\n....                                                                     [100%]\n4 passed in 0.02s\n"
+        },
+        {
+          "event": "result",
+          "id": "25deed088aa64a9e9ad19c8844b87ae5",
+          "provider": "Vultr Serverless Inference \u00b7 glm-5.3-flash",
+          "diff": "--- a/customer_totals.sql\n+++ b/customer_totals.sql\n@@ -1,4 +1,4 @@\n-SELECT c.id, COUNT(*) AS paid_orders, COALESCE(SUM(o.cents), 0) AS total_cents\n+SELECT c.id, COUNT(o.id) AS paid_orders, COALESCE(SUM(o.cents), 0) AS total_cents\n FROM customers AS c\n LEFT JOIN orders AS o ON o.customer_id = c.id AND o.status = 'paid'\n GROUP BY c.id\n",
+          "diagnosis": "COUNT(*) counts the customer row itself even when the LEFT JOIN finds no matching paid order, so customers with zero paid orders report paid_orders=1. Since orders.id is NULL in unmatched rows, COUNT(o.id) correctly returns 0 while sums stay right.",
+          "inference": {
+            "requested_model": "glm-5.3-flash",
+            "served_model": "glm-5.3-flash",
+            "completion_id": "chatcmpl-126fbd96-f34b-47dd-8273-4d01ace0f781",
+            "tokens": {
+              "prompt_tokens": 555,
+              "completion_tokens": 92,
+              "total_tokens": 647
+            },
+            "budget": {
+              "reservation_id": 8,
+              "reserved_usd": 0.023709
+            }
+          },
+          "before": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\n.FF.                                                                     [100%]\n=================================== FAILURES ===================================\n______________ test_customer_totals[customers1-orders1-expected1] ______________\ntest_customer_totals.py:27: in test_customer_totals\n    assert db.execute(QUERY).fetchall() == expected\nE   assert [(1, 1, 0)] == [(1, 0, 0)]\nE     \nE     At index 0 diff: (1, 1, 0) != (1, 0, 0)\nE     Use -v to get more diff\n______________ test_customer_totals[customers2-orders2-expected2] ______________\ntest_customer_totals.py:27: in test_customer_totals\n    assert db.execute(QUERY).fetchall() == expected\nE   assert [(1, 2, 600), (2, 1, 0)] == [(1, 2, 600), (2, 0, 0)]\nE     \nE     At index 1 diff: (2, 1, 0) != (2, 0, 0)\nE     Use -v to get more diff\n=========================== short test summary info ============================\nFAILED test_customer_totals.py::test_customer_totals[customers1-orders1-expected1]\nFAILED test_customer_totals.py::test_customer_totals[customers2-orders2-expected2]\n2 failed, 2 passed in 0.03s\n",
+          "after": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\n....                                                                     [100%]\n4 passed in 0.02s\n",
+          "attempt": 1,
+          "baseline_exit_code": 1,
+          "verification_exit_code": 0,
+          "controller_revision": "b8c6b6bb7079aa932c7ab39e00fa6ebffffed064",
+          "inventory": {
+            "file_count": 2,
+            "languages": [
+              "Python",
+              "SQL"
+            ],
+            "manifests": [],
+            "dependencies": [],
+            "note": "Static inventory. Compatibility is established by the recorded execution tests."
+          },
+          "profile": "sqlite",
+          "commit": null,
+          "file": "customer_totals.sql",
+          "baseline_tests": {
+            "test_customer_totals.py::test_customer_totals[customers0-orders0-expected0]": "passed",
+            "test_customer_totals.py::test_customer_totals[customers1-orders1-expected1]": "failed",
+            "test_customer_totals.py::test_customer_totals[customers2-orders2-expected2]": "failed",
+            "test_customer_totals.py::test_customer_totals[customers3-orders3-expected3]": "passed"
+          },
+          "verification_tests": {
+            "test_customer_totals.py::test_customer_totals[customers0-orders0-expected0]": "passed",
+            "test_customer_totals.py::test_customer_totals[customers1-orders1-expected1]": "passed",
+            "test_customer_totals.py::test_customer_totals[customers2-orders2-expected2]": "passed",
+            "test_customer_totals.py::test_customer_totals[customers3-orders3-expected3]": "passed"
+          },
+          "rejection_reason": null,
+          "tests_sha256": "f7423ccd2350db4e951a973c32faf5cade4b96790edc8371180bd3e0b3c47e9b",
+          "patch_sha256": "4bd47c8b1fa7e6cffdff830913de545db39d6ef4d23e6d043e030e1bd4e08251"
+        }
+      ]
+    },
+    {
+      "profile": "algorithm",
+      "expected": "verified",
+      "duration_seconds": 5.41,
+      "id": "a7a303441a0a4f928ce52eada7a62b97",
+      "state": "verified",
+      "cursor": 13,
+      "events": [
+        {
+          "event": "project",
+          "profile": "algorithm",
+          "title": "Algorithm \u00b7 count values at or below a threshold"
+        },
+        {
+          "event": "inventory",
+          "file_count": 2,
+          "languages": [
+            "Python"
+          ],
+          "manifests": [],
+          "dependencies": [],
+          "note": "Static inventory. Compatibility is established by the recorded execution tests."
+        },
+        {
+          "event": "stage",
+          "step": 0,
+          "message": "Reproducing the failure in a fresh container\u2026"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-5e0ac8bb572e4a9d87815b9339dd592c",
+          "status": "Dispatching",
+          "image": "sha256:e7babee91466b0265285a4fc32be25059fe5bb3e82beb1d043a83d6cc8a0ca03",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-5e0ac8bb572e4a9d87815b9339dd592c",
+          "status": "Removed",
+          "exit_code": 1,
+          "timed_out": false
+        },
+        {
+          "event": "log",
+          "label": "Baseline",
+          "text": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\n.F..F                                                                    [100%]\n=================================== FAILURES ===================================\n_______________________ test_rank_boundaries[values1-2] ________________________\ntest_rank.py:12: in test_rank_boundaries\n    assert count_at_most(values, threshold) == sum(value <= threshold for value in values)\nE   assert 0 == 3\nE    +  where 0 = count_at_most([2, 2, 2], 2)\nE    +  and   3 = sum(<generator object test_rank_boundaries.<locals>.<genexpr> at 0x7b57241428e0>)\n_____________________________ test_rank_reference ______________________________\ntest_rank.py:20: in test_rank_reference\n    assert count_at_most(values, threshold) == sum(value <= threshold for value in values)\nE   assert 71 == 75\nE    +  where 71 = count_at_most([-25, -23, -21, -21, -20, -20, ...], 22)\nE    +  and   75 = sum(<generator object test_rank_reference.<locals>.<genexpr> at 0x7b57240ae4d0>)\n=========================== short test summary info ============================\nFAILED test_rank.py::test_rank_boundaries[values1-2] - assert 0 == 3\nFAILED test_rank.py::test_rank_reference - assert 71 == 75\n2 failed, 3 passed in 0.03s\n"
+        },
+        {
+          "event": "stage",
+          "step": 1,
+          "message": "Preparing candidate patch \u00b7 attempt 1"
+        },
+        {
+          "event": "diagnosis",
+          "attempt": 1,
+          "text": "count_at_most undercounts values equal to threshold because bisect_left returns the insertion point before equal elements, excluding them from the count (e.g. count_at_most([2,2,2],2) returns 0 instead of 3). bisect_right includes all equal elements, matching 'less than or equal'.",
+          "provider": "Vultr Serverless Inference \u00b7 glm-5.3-flash",
+          "receipt": {
+            "requested_model": "glm-5.3-flash",
+            "served_model": "glm-5.3-flash",
+            "completion_id": "chatcmpl-968a5744-4781-44a2-addd-7d67b47c0388",
+            "tokens": {
+              "prompt_tokens": 529,
+              "completion_tokens": 87,
+              "total_tokens": 616
+            },
+            "budget": {
+              "reservation_id": 9,
+              "reserved_usd": 0.023817
+            }
+          }
+        },
+        {
+          "event": "stage",
+          "step": 2,
+          "message": "Running the unchanged tests in a fresh container\u2026"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-754083460caf466ea0014d4bf762b94d",
+          "status": "Dispatching",
+          "image": "sha256:e7babee91466b0265285a4fc32be25059fe5bb3e82beb1d043a83d6cc8a0ca03",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-754083460caf466ea0014d4bf762b94d",
+          "status": "Removed",
+          "exit_code": 0,
+          "timed_out": false
+        },
+        {
+          "event": "log",
+          "label": "Verification 1",
+          "text": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\n.....                                                                    [100%]\n5 passed in 0.02s\n"
+        },
+        {
+          "event": "result",
+          "id": "a7a303441a0a4f928ce52eada7a62b97",
+          "provider": "Vultr Serverless Inference \u00b7 glm-5.3-flash",
+          "diff": "--- a/rank.py\n+++ b/rank.py\n@@ -3,4 +3,4 @@\n \n def count_at_most(ordered, threshold):\n     \"\"\"Count values less than or equal to threshold in a sorted sequence.\"\"\"\n-    return bisect_left(ordered, threshold)\n+    return bisect_right(ordered, threshold)\n",
+          "diagnosis": "count_at_most undercounts values equal to threshold because bisect_left returns the insertion point before equal elements, excluding them from the count (e.g. count_at_most([2,2,2],2) returns 0 instead of 3). bisect_right includes all equal elements, matching 'less than or equal'.",
+          "inference": {
+            "requested_model": "glm-5.3-flash",
+            "served_model": "glm-5.3-flash",
+            "completion_id": "chatcmpl-968a5744-4781-44a2-addd-7d67b47c0388",
+            "tokens": {
+              "prompt_tokens": 529,
+              "completion_tokens": 87,
+              "total_tokens": 616
+            },
+            "budget": {
+              "reservation_id": 9,
+              "reserved_usd": 0.023817
+            }
+          },
+          "before": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\n.F..F                                                                    [100%]\n=================================== FAILURES ===================================\n_______________________ test_rank_boundaries[values1-2] ________________________\ntest_rank.py:12: in test_rank_boundaries\n    assert count_at_most(values, threshold) == sum(value <= threshold for value in values)\nE   assert 0 == 3\nE    +  where 0 = count_at_most([2, 2, 2], 2)\nE    +  and   3 = sum(<generator object test_rank_boundaries.<locals>.<genexpr> at 0x7b57241428e0>)\n_____________________________ test_rank_reference ______________________________\ntest_rank.py:20: in test_rank_reference\n    assert count_at_most(values, threshold) == sum(value <= threshold for value in values)\nE   assert 71 == 75\nE    +  where 71 = count_at_most([-25, -23, -21, -21, -20, -20, ...], 22)\nE    +  and   75 = sum(<generator object test_rank_reference.<locals>.<genexpr> at 0x7b57240ae4d0>)\n=========================== short test summary info ============================\nFAILED test_rank.py::test_rank_boundaries[values1-2] - assert 0 == 3\nFAILED test_rank.py::test_rank_reference - assert 71 == 75\n2 failed, 3 passed in 0.03s\n",
+          "after": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\n.....                                                                    [100%]\n5 passed in 0.02s\n",
+          "attempt": 1,
+          "baseline_exit_code": 1,
+          "verification_exit_code": 0,
+          "controller_revision": "b8c6b6bb7079aa932c7ab39e00fa6ebffffed064",
+          "inventory": {
+            "file_count": 2,
+            "languages": [
+              "Python"
+            ],
+            "manifests": [],
+            "dependencies": [],
+            "note": "Static inventory. Compatibility is established by the recorded execution tests."
+          },
+          "profile": "algorithm",
+          "commit": null,
+          "file": "rank.py",
+          "baseline_tests": {
+            "test_rank.py::test_rank_boundaries[values0-0]": "passed",
+            "test_rank.py::test_rank_boundaries[values1-2]": "failed",
+            "test_rank.py::test_rank_boundaries[values2--5]": "passed",
+            "test_rank.py::test_rank_boundaries[values3-3]": "passed",
+            "test_rank.py::test_rank_reference": "failed"
+          },
+          "verification_tests": {
+            "test_rank.py::test_rank_boundaries[values0-0]": "passed",
+            "test_rank.py::test_rank_boundaries[values1-2]": "passed",
+            "test_rank.py::test_rank_boundaries[values2--5]": "passed",
+            "test_rank.py::test_rank_boundaries[values3-3]": "passed",
+            "test_rank.py::test_rank_reference": "passed"
+          },
+          "rejection_reason": null,
+          "tests_sha256": "6f6c8190bdf8d8588b06d0cbcbfd9843565500aa95565a9dddb57e27c7879d63",
+          "patch_sha256": "f49bfdad9162e705f2c6c1f8ea9e4a67c2ebc2c16c467186724494d81d600305"
+        }
+      ]
+    },
+    {
+      "profile": "billing",
+      "expected": "verified",
+      "duration_seconds": 5.55,
+      "id": "be7111702e3d4b2ba34aa1180153225d",
+      "state": "verified",
+      "cursor": 13,
+      "events": [
+        {
+          "event": "project",
+          "profile": "billing",
+          "title": "Python \u00b7 invoice total bug"
+        },
+        {
+          "event": "inventory",
+          "file_count": 2,
+          "languages": [
+            "Python"
+          ],
+          "manifests": [],
+          "dependencies": [],
+          "note": "Static inventory. Compatibility is established by the recorded execution tests."
+        },
+        {
+          "event": "stage",
+          "step": 0,
+          "message": "Reproducing the failure in a fresh container\u2026"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-45ee26cad4e8493db4c7ef123fc16614",
+          "status": "Dispatching",
+          "image": "sha256:e7babee91466b0265285a4fc32be25059fe5bb3e82beb1d043a83d6cc8a0ca03",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-45ee26cad4e8493db4c7ef123fc16614",
+          "status": "Removed",
+          "exit_code": 1,
+          "timed_out": false
+        },
+        {
+          "event": "log",
+          "label": "Baseline",
+          "text": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\nFFFF                                                                     [100%]\n=================================== FAILURES ===================================\n_______________________ test_invoice_total[125-3-25-400] _______________________\ntest_invoice.py:13: in test_invoice_total\n    assert total_cents(unit, quantity, fee) == expected\nE   assert 153 == 400\nE    +  where 153 = total_cents(125, 3, 25)\n_______________________ test_invoice_total[125-0-25-25] ________________________\ntest_invoice.py:13: in test_invoice_total\n    assert total_cents(unit, quantity, fee) == expected\nE   assert 150 == 25\nE    +  where 150 = total_cents(125, 0, 25)\n_______________________ test_invoice_total[125-1-0-125] ________________________\ntest_invoice.py:13: in test_invoice_total\n    assert total_cents(unit, quantity, fee) == expected\nE   assert 126 == 125\nE    +  where 126 = total_cents(125, 1, 0)\n________________________ test_invoice_total[0-3-25-25] _________________________\ntest_invoice.py:13: in test_invoice_total\n    assert total_cents(unit, quantity, fee) == expected\nE   assert 28 == 25\nE    +  where 28 = total_cents(0, 3, 25)\n=========================== short test summary info ============================\nFAILED test_invoice.py::test_invoice_total[125-3-25-400] - assert 153 == 400\nFAILED test_invoice.py::test_invoice_total[125-0-25-25] - assert 150 == 25\nFAILED test_invoice.py::test_invoice_total[125-1-0-125] - assert 126 == 125\nFAILED test_invoice.py::test_invoice_total[0-3-25-25] - assert 28 == 25\n4 failed in 0.03s\n"
+        },
+        {
+          "event": "stage",
+          "step": 1,
+          "message": "Preparing candidate patch \u00b7 attempt 1"
+        },
+        {
+          "event": "diagnosis",
+          "attempt": 1,
+          "text": "total_cents adds quantity instead of multiplying unit_cents by quantity: (125,3,25)\u2192153 vs 400, (0,3,25)\u219228 vs 25. Correct contract is unit_cents * quantity + fee_cents, which matches all four cases (400, 25, 125, 25).",
+          "provider": "Vultr Serverless Inference \u00b7 glm-5.3-flash",
+          "receipt": {
+            "requested_model": "glm-5.3-flash",
+            "served_model": "glm-5.3-flash",
+            "completion_id": "chatcmpl-067f7606-315a-4bf0-9e21-1b7d6942d6c8",
+            "tokens": {
+              "prompt_tokens": 666,
+              "completion_tokens": 94,
+              "total_tokens": 760
+            },
+            "budget": {
+              "reservation_id": 10,
+              "reserved_usd": 0.025194
+            }
+          }
+        },
+        {
+          "event": "stage",
+          "step": 2,
+          "message": "Running the unchanged tests in a fresh container\u2026"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-7e2a332755fb41f894d81a26dc57cfa8",
+          "status": "Dispatching",
+          "image": "sha256:e7babee91466b0265285a4fc32be25059fe5bb3e82beb1d043a83d6cc8a0ca03",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-7e2a332755fb41f894d81a26dc57cfa8",
+          "status": "Removed",
+          "exit_code": 0,
+          "timed_out": false
+        },
+        {
+          "event": "log",
+          "label": "Verification 1",
+          "text": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\n....                                                                     [100%]\n4 passed in 0.01s\n"
+        },
+        {
+          "event": "result",
+          "id": "be7111702e3d4b2ba34aa1180153225d",
+          "provider": "Vultr Serverless Inference \u00b7 glm-5.3-flash",
+          "diff": "--- a/invoice.py\n+++ b/invoice.py\n@@ -1,3 +1,3 @@\n def total_cents(unit_cents: int, quantity: int, fee_cents: int) -> int:\n     \"\"\"Charge the unit price for each item and add the flat fee once. Prices stay in cents.\"\"\"\n-    return unit_cents + quantity + fee_cents\n+    return unit_cents * quantity + fee_cents\n",
+          "diagnosis": "total_cents adds quantity instead of multiplying unit_cents by quantity: (125,3,25)\u2192153 vs 400, (0,3,25)\u219228 vs 25. Correct contract is unit_cents * quantity + fee_cents, which matches all four cases (400, 25, 125, 25).",
+          "inference": {
+            "requested_model": "glm-5.3-flash",
+            "served_model": "glm-5.3-flash",
+            "completion_id": "chatcmpl-067f7606-315a-4bf0-9e21-1b7d6942d6c8",
+            "tokens": {
+              "prompt_tokens": 666,
+              "completion_tokens": 94,
+              "total_tokens": 760
+            },
+            "budget": {
+              "reservation_id": 10,
+              "reserved_usd": 0.025194
+            }
+          },
+          "before": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\nFFFF                                                                     [100%]\n=================================== FAILURES ===================================\n_______________________ test_invoice_total[125-3-25-400] _______________________\ntest_invoice.py:13: in test_invoice_total\n    assert total_cents(unit, quantity, fee) == expected\nE   assert 153 == 400\nE    +  where 153 = total_cents(125, 3, 25)\n_______________________ test_invoice_total[125-0-25-25] ________________________\ntest_invoice.py:13: in test_invoice_total\n    assert total_cents(unit, quantity, fee) == expected\nE   assert 150 == 25\nE    +  where 150 = total_cents(125, 0, 25)\n_______________________ test_invoice_total[125-1-0-125] ________________________\ntest_invoice.py:13: in test_invoice_total\n    assert total_cents(unit, quantity, fee) == expected\nE   assert 126 == 125\nE    +  where 126 = total_cents(125, 1, 0)\n________________________ test_invoice_total[0-3-25-25] _________________________\ntest_invoice.py:13: in test_invoice_total\n    assert total_cents(unit, quantity, fee) == expected\nE   assert 28 == 25\nE    +  where 28 = total_cents(0, 3, 25)\n=========================== short test summary info ============================\nFAILED test_invoice.py::test_invoice_total[125-3-25-400] - assert 153 == 400\nFAILED test_invoice.py::test_invoice_total[125-0-25-25] - assert 150 == 25\nFAILED test_invoice.py::test_invoice_total[125-1-0-125] - assert 126 == 125\nFAILED test_invoice.py::test_invoice_total[0-3-25-25] - assert 28 == 25\n4 failed in 0.03s\n",
+          "after": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\n....                                                                     [100%]\n4 passed in 0.01s\n",
+          "attempt": 1,
+          "baseline_exit_code": 1,
+          "verification_exit_code": 0,
+          "controller_revision": "b8c6b6bb7079aa932c7ab39e00fa6ebffffed064",
+          "inventory": {
+            "file_count": 2,
+            "languages": [
+              "Python"
+            ],
+            "manifests": [],
+            "dependencies": [],
+            "note": "Static inventory. Compatibility is established by the recorded execution tests."
+          },
+          "profile": "billing",
+          "commit": null,
+          "file": "invoice.py",
+          "baseline_tests": {
+            "test_invoice.py::test_invoice_total[125-3-25-400]": "failed",
+            "test_invoice.py::test_invoice_total[125-0-25-25]": "failed",
+            "test_invoice.py::test_invoice_total[125-1-0-125]": "failed",
+            "test_invoice.py::test_invoice_total[0-3-25-25]": "failed"
+          },
+          "verification_tests": {
+            "test_invoice.py::test_invoice_total[125-3-25-400]": "passed",
+            "test_invoice.py::test_invoice_total[125-0-25-25]": "passed",
+            "test_invoice.py::test_invoice_total[125-1-0-125]": "passed",
+            "test_invoice.py::test_invoice_total[0-3-25-25]": "passed"
+          },
+          "rejection_reason": null,
+          "tests_sha256": "b9bb303d1d098a19bd93dc954e217eae5ffb223a8ca7d1bdeac5aa61e6d88015",
+          "patch_sha256": "f147f95e004704ecb1e1439b0396050b57bc6a5f328379592a8c9070efd9fc88"
+        }
+      ]
+    },
+    {
+      "profile": "pandas",
+      "expected": "verified",
+      "duration_seconds": 6.66,
+      "id": "c7393d79d8ec426998c501edb24379c2",
+      "state": "verified",
+      "cursor": 13,
+      "events": [
+        {
+          "event": "project",
+          "profile": "pandas",
+          "title": "pandas 2 \u00b7 removed append API"
+        },
+        {
+          "event": "inventory",
+          "file_count": 2,
+          "languages": [
+            "Python"
+          ],
+          "manifests": [],
+          "dependencies": [],
+          "note": "Static inventory. Compatibility is established by the recorded execution tests."
+        },
+        {
+          "event": "stage",
+          "step": 0,
+          "message": "Reproducing the failure in a fresh container\u2026"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-6ab0b06c332042188468292149951323",
+          "status": "Dispatching",
+          "image": "sha256:e7babee91466b0265285a4fc32be25059fe5bb3e82beb1d043a83d6cc8a0ca03",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-6ab0b06c332042188468292149951323",
+          "status": "Removed",
+          "exit_code": 1,
+          "timed_out": false
+        },
+        {
+          "event": "log",
+          "label": "Baseline",
+          "text": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\nFF                                                                       [100%]\n=================================== FAILURES ===================================\n______________________________ test_append_event _______________________________\ntest_pipeline.py:7: in test_append_event\n    result = append_event(events, {\"event\": \"closed\"})\npipeline.py:5: in append_event\n    return events.append(event, ignore_index=True)\n/usr/local/lib/python3.12/site-packages/pandas/core/generic.py:6299: in __getattr__\n    return object.__getattribute__(self, name)\nE   AttributeError: 'DataFrame' object has no attribute 'append'. Did you mean: '_append'?\n_______________________ test_append_event_to_empty_frame _______________________\ntest_pipeline.py:14: in test_append_event_to_empty_frame\n    result = append_event(pd.DataFrame(columns=[\"event\"]), {\"event\": \"created\"})\npipeline.py:5: in append_event\n    return events.append(event, ignore_index=True)\n/usr/local/lib/python3.12/site-packages/pandas/core/generic.py:6299: in __getattr__\n    return object.__getattribute__(self, name)\nE   AttributeError: 'DataFrame' object has no attribute 'append'. Did you mean: '_append'?\n=========================== short test summary info ============================\nFAILED test_pipeline.py::test_append_event - AttributeError: 'DataFrame' obje...\nFAILED test_pipeline.py::test_append_event_to_empty_frame - AttributeError: '...\n2 failed in 0.82s\n"
+        },
+        {
+          "event": "stage",
+          "step": 1,
+          "message": "Preparing candidate patch \u00b7 attempt 1"
+        },
+        {
+          "event": "diagnosis",
+          "attempt": 1,
+          "text": "DataFrame.append was removed in pandas 2.0; both tests raise AttributeError ('DataFrame' object has no attribute 'append'). Fix by concatenating the event as a one-row DataFrame with ignore_index=True, preserving the function's behavior for empty and non-empty frames.",
+          "provider": "Vultr Serverless Inference \u00b7 glm-5.3-flash",
+          "receipt": {
+            "requested_model": "glm-5.3-flash",
+            "served_model": "glm-5.3-flash",
+            "completion_id": "chatcmpl-5705b4c2-64eb-48e7-b8d6-3a99c3d9391d",
+            "tokens": {
+              "prompt_tokens": 518,
+              "completion_tokens": 81,
+              "total_tokens": 599
+            },
+            "budget": {
+              "reservation_id": 11,
+              "reserved_usd": 0.024945
+            }
+          }
+        },
+        {
+          "event": "stage",
+          "step": 2,
+          "message": "Running the unchanged tests in a fresh container\u2026"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-e7109cde0f644c49a23d3d007c79f21f",
+          "status": "Dispatching",
+          "image": "sha256:e7babee91466b0265285a4fc32be25059fe5bb3e82beb1d043a83d6cc8a0ca03",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-e7109cde0f644c49a23d3d007c79f21f",
+          "status": "Removed",
+          "exit_code": 0,
+          "timed_out": false
+        },
+        {
+          "event": "log",
+          "label": "Verification 1",
+          "text": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\n..                                                                       [100%]\n2 passed in 0.41s\n"
+        },
+        {
+          "event": "result",
+          "id": "c7393d79d8ec426998c501edb24379c2",
+          "provider": "Vultr Serverless Inference \u00b7 glm-5.3-flash",
+          "diff": "--- a/pipeline.py\n+++ b/pipeline.py\n@@ -2,4 +2,4 @@\n \n \n def append_event(events, event):\n-    return events.append(event, ignore_index=True)\n+    return pd.concat([events, pd.DataFrame([event])], ignore_index=True)\n",
+          "diagnosis": "DataFrame.append was removed in pandas 2.0; both tests raise AttributeError ('DataFrame' object has no attribute 'append'). Fix by concatenating the event as a one-row DataFrame with ignore_index=True, preserving the function's behavior for empty and non-empty frames.",
+          "inference": {
+            "requested_model": "glm-5.3-flash",
+            "served_model": "glm-5.3-flash",
+            "completion_id": "chatcmpl-5705b4c2-64eb-48e7-b8d6-3a99c3d9391d",
+            "tokens": {
+              "prompt_tokens": 518,
+              "completion_tokens": 81,
+              "total_tokens": 599
+            },
+            "budget": {
+              "reservation_id": 11,
+              "reserved_usd": 0.024945
+            }
+          },
+          "before": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\nFF                                                                       [100%]\n=================================== FAILURES ===================================\n______________________________ test_append_event _______________________________\ntest_pipeline.py:7: in test_append_event\n    result = append_event(events, {\"event\": \"closed\"})\npipeline.py:5: in append_event\n    return events.append(event, ignore_index=True)\n/usr/local/lib/python3.12/site-packages/pandas/core/generic.py:6299: in __getattr__\n    return object.__getattribute__(self, name)\nE   AttributeError: 'DataFrame' object has no attribute 'append'. Did you mean: '_append'?\n_______________________ test_append_event_to_empty_frame _______________________\ntest_pipeline.py:14: in test_append_event_to_empty_frame\n    result = append_event(pd.DataFrame(columns=[\"event\"]), {\"event\": \"created\"})\npipeline.py:5: in append_event\n    return events.append(event, ignore_index=True)\n/usr/local/lib/python3.12/site-packages/pandas/core/generic.py:6299: in __getattr__\n    return object.__getattribute__(self, name)\nE   AttributeError: 'DataFrame' object has no attribute 'append'. Did you mean: '_append'?\n=========================== short test summary info ============================\nFAILED test_pipeline.py::test_append_event - AttributeError: 'DataFrame' obje...\nFAILED test_pipeline.py::test_append_event_to_empty_frame - AttributeError: '...\n2 failed in 0.82s\n",
+          "after": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\n..                                                                       [100%]\n2 passed in 0.41s\n",
+          "attempt": 1,
+          "baseline_exit_code": 1,
+          "verification_exit_code": 0,
+          "controller_revision": "b8c6b6bb7079aa932c7ab39e00fa6ebffffed064",
+          "inventory": {
+            "file_count": 2,
+            "languages": [
+              "Python"
+            ],
+            "manifests": [],
+            "dependencies": [],
+            "note": "Static inventory. Compatibility is established by the recorded execution tests."
+          },
+          "profile": "pandas",
+          "commit": null,
+          "file": "pipeline.py",
+          "baseline_tests": {
+            "test_pipeline.py::test_append_event": "failed",
+            "test_pipeline.py::test_append_event_to_empty_frame": "failed"
+          },
+          "verification_tests": {
+            "test_pipeline.py::test_append_event": "passed",
+            "test_pipeline.py::test_append_event_to_empty_frame": "passed"
+          },
+          "rejection_reason": null,
+          "tests_sha256": "198b2e2e14e5f16264436dfadb6a38db2ec8cc8cd8071723d5bbce24991b6a75",
+          "patch_sha256": "3a7e85b20e3f8c33eb75556e813700650100fbeba72b256020fff2185e7f6cf6"
+        }
+      ]
+    },
+    {
+      "profile": "settings",
+      "expected": "verified",
+      "duration_seconds": 4.6,
+      "id": "d0df24914c314b9ca68f2b2d61c692d0",
+      "state": "verified",
+      "cursor": 13,
+      "events": [
+        {
+          "event": "project",
+          "profile": "settings",
+          "title": "Pydantic 2 \u00b7 settings import"
+        },
+        {
+          "event": "inventory",
+          "file_count": 2,
+          "languages": [
+            "Python"
+          ],
+          "manifests": [],
+          "dependencies": [],
+          "note": "Static inventory. Compatibility is established by the recorded execution tests."
+        },
+        {
+          "event": "stage",
+          "step": 0,
+          "message": "Reproducing the failure in a fresh container\u2026"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-39b58d16915d499eb2064309dcc22e19",
+          "status": "Dispatching",
+          "image": "sha256:e7babee91466b0265285a4fc32be25059fe5bb3e82beb1d043a83d6cc8a0ca03",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-39b58d16915d499eb2064309dcc22e19",
+          "status": "Removed",
+          "exit_code": 1,
+          "timed_out": false
+        },
+        {
+          "event": "log",
+          "label": "Baseline",
+          "text": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\nFF                                                                       [100%]\n=================================== FAILURES ===================================\n____________________________ test_default_settings _____________________________\ntest_app_settings.py:5: in test_default_settings\n    from app_settings import AppSettings\napp_settings.py:1: in <module>\n    from pydantic import BaseSettings\n/usr/local/lib/python3.12/site-packages/pydantic/__init__.py:426: in __getattr__\n    return _getattr_migration(attr_name)\n/usr/local/lib/python3.12/site-packages/pydantic/_migration.py:296: in wrapper\n    raise PydanticImportError(\nE   pydantic.errors.PydanticImportError: `BaseSettings` has been moved to the `pydantic-settings` package. See https://docs.pydantic.dev/2.11/migration/#basesettings-has-moved-to-pydantic-settings for more details.\nE   \nE   For further information visit https://errors.pydantic.dev/2.11/u/import-error\n__________________________ test_environment_override ___________________________\ntest_app_settings.py:12: in test_environment_override\n    from app_settings import AppSettings\napp_settings.py:1: in <module>\n    from pydantic import BaseSettings\n/usr/local/lib/python3.12/site-packages/pydantic/__init__.py:426: in __getattr__\n    return _getattr_migration(attr_name)\n/usr/local/lib/python3.12/site-packages/pydantic/_migration.py:296: in wrapper\n    raise PydanticImportError(\nE   pydantic.errors.PydanticImportError: `BaseSettings` has been moved to the `pydantic-settings` package. See https://docs.pydantic.dev/2.11/migration/#basesettings-has-moved-to-pydantic-settings for more details.\nE   \nE   For further information visit https://errors.pydantic.dev/2.11/u/import-error\n=========================== short test summary info ============================\nFAILED test_app_settings.py::test_default_settings - pydantic.errors.Pydantic...\nFAILED test_app_settings.py::test_environment_override - pydantic.errors.Pyda...\n2 failed in 0.07s\n"
+        },
+        {
+          "event": "stage",
+          "step": 1,
+          "message": "Preparing candidate patch \u00b7 attempt 1"
+        },
+        {
+          "event": "diagnosis",
+          "attempt": 1,
+          "text": "Pydantic 2 removed BaseSettings from the pydantic package; importing it triggers PydanticImportError telling it moved to pydantic-settings. Both tests fail at app_settings.py line 1. The docker config.json warning is unrelated noise. Replace the import with pydantic_settings.",
+          "provider": "Vultr Serverless Inference \u00b7 glm-5.3-flash",
+          "receipt": {
+            "requested_model": "glm-5.3-flash",
+            "served_model": "glm-5.3-flash",
+            "completion_id": "chatcmpl-46311bf7-d445-4f8a-8517-65658db319a3",
+            "tokens": {
+              "prompt_tokens": 651,
+              "completion_tokens": 81,
+              "total_tokens": 732
+            },
+            "budget": {
+              "reservation_id": 12,
+              "reserved_usd": 0.025926
+            }
+          }
+        },
+        {
+          "event": "stage",
+          "step": 2,
+          "message": "Running the unchanged tests in a fresh container\u2026"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-94ea63a9347b4d2898a2321181afc167",
+          "status": "Dispatching",
+          "image": "sha256:e7babee91466b0265285a4fc32be25059fe5bb3e82beb1d043a83d6cc8a0ca03",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-94ea63a9347b4d2898a2321181afc167",
+          "status": "Removed",
+          "exit_code": 0,
+          "timed_out": false
+        },
+        {
+          "event": "log",
+          "label": "Verification 1",
+          "text": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\n..                                                                       [100%]\n2 passed in 0.22s\n"
+        },
+        {
+          "event": "result",
+          "id": "d0df24914c314b9ca68f2b2d61c692d0",
+          "provider": "Vultr Serverless Inference \u00b7 glm-5.3-flash",
+          "diff": "--- a/app_settings.py\n+++ b/app_settings.py\n@@ -1,4 +1,4 @@\n-from pydantic import BaseSettings\n+from pydantic_settings import BaseSettings\n \n \n class AppSettings(BaseSettings):\n",
+          "diagnosis": "Pydantic 2 removed BaseSettings from the pydantic package; importing it triggers PydanticImportError telling it moved to pydantic-settings. Both tests fail at app_settings.py line 1. The docker config.json warning is unrelated noise. Replace the import with pydantic_settings.",
+          "inference": {
+            "requested_model": "glm-5.3-flash",
+            "served_model": "glm-5.3-flash",
+            "completion_id": "chatcmpl-46311bf7-d445-4f8a-8517-65658db319a3",
+            "tokens": {
+              "prompt_tokens": 651,
+              "completion_tokens": 81,
+              "total_tokens": 732
+            },
+            "budget": {
+              "reservation_id": 12,
+              "reserved_usd": 0.025926
+            }
+          },
+          "before": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\nFF                                                                       [100%]\n=================================== FAILURES ===================================\n____________________________ test_default_settings _____________________________\ntest_app_settings.py:5: in test_default_settings\n    from app_settings import AppSettings\napp_settings.py:1: in <module>\n    from pydantic import BaseSettings\n/usr/local/lib/python3.12/site-packages/pydantic/__init__.py:426: in __getattr__\n    return _getattr_migration(attr_name)\n/usr/local/lib/python3.12/site-packages/pydantic/_migration.py:296: in wrapper\n    raise PydanticImportError(\nE   pydantic.errors.PydanticImportError: `BaseSettings` has been moved to the `pydantic-settings` package. See https://docs.pydantic.dev/2.11/migration/#basesettings-has-moved-to-pydantic-settings for more details.\nE   \nE   For further information visit https://errors.pydantic.dev/2.11/u/import-error\n__________________________ test_environment_override ___________________________\ntest_app_settings.py:12: in test_environment_override\n    from app_settings import AppSettings\napp_settings.py:1: in <module>\n    from pydantic import BaseSettings\n/usr/local/lib/python3.12/site-packages/pydantic/__init__.py:426: in __getattr__\n    return _getattr_migration(attr_name)\n/usr/local/lib/python3.12/site-packages/pydantic/_migration.py:296: in wrapper\n    raise PydanticImportError(\nE   pydantic.errors.PydanticImportError: `BaseSettings` has been moved to the `pydantic-settings` package. See https://docs.pydantic.dev/2.11/migration/#basesettings-has-moved-to-pydantic-settings for more details.\nE   \nE   For further information visit https://errors.pydantic.dev/2.11/u/import-error\n=========================== short test summary info ============================\nFAILED test_app_settings.py::test_default_settings - pydantic.errors.Pydantic...\nFAILED test_app_settings.py::test_environment_override - pydantic.errors.Pyda...\n2 failed in 0.07s\n",
+          "after": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\n..                                                                       [100%]\n2 passed in 0.22s\n",
+          "attempt": 1,
+          "baseline_exit_code": 1,
+          "verification_exit_code": 0,
+          "controller_revision": "b8c6b6bb7079aa932c7ab39e00fa6ebffffed064",
+          "inventory": {
+            "file_count": 2,
+            "languages": [
+              "Python"
+            ],
+            "manifests": [],
+            "dependencies": [],
+            "note": "Static inventory. Compatibility is established by the recorded execution tests."
+          },
+          "profile": "settings",
+          "commit": null,
+          "file": "app_settings.py",
+          "baseline_tests": {
+            "test_app_settings.py::test_default_settings": "failed",
+            "test_app_settings.py::test_environment_override": "failed"
+          },
+          "verification_tests": {
+            "test_app_settings.py::test_default_settings": "passed",
+            "test_app_settings.py::test_environment_override": "passed"
+          },
+          "rejection_reason": null,
+          "tests_sha256": "f25a429f2ec769ca132534e185ac7dab3242b55f38528130d642e89e7bf18906",
+          "patch_sha256": "7b1be73767b717e19c311b5e1d27aba88e7c85ef047d92d2035cfe09b0b71d8d"
+        }
+      ]
+    },
+    {
+      "profile": "regression",
+      "expected": "unverified",
+      "duration_seconds": 12.32,
+      "id": "3ddff86b016b4f2f995674b7aec0a72f",
+      "state": "unverified",
+      "cursor": 21,
+      "events": [
+        {
+          "event": "project",
+          "profile": "regression",
+          "title": "pandas 2 \u00b7 regression guard"
+        },
+        {
+          "event": "inventory",
+          "file_count": 2,
+          "languages": [
+            "Python"
+          ],
+          "manifests": [],
+          "dependencies": [],
+          "note": "Static inventory. Compatibility is established by the recorded execution tests."
+        },
+        {
+          "event": "stage",
+          "step": 0,
+          "message": "Reproducing the failure in a fresh container\u2026"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-c6d3c1ce20c346129f2b30d95d670fd8",
+          "status": "Dispatching",
+          "image": "sha256:e7babee91466b0265285a4fc32be25059fe5bb3e82beb1d043a83d6cc8a0ca03",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-c6d3c1ce20c346129f2b30d95d670fd8",
+          "status": "Removed",
+          "exit_code": 1,
+          "timed_out": false
+        },
+        {
+          "event": "log",
+          "label": "Baseline",
+          "text": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\nF.                                                                       [100%]\n=================================== FAILURES ===================================\n________________________ test_standard_frame_migration _________________________\ntest_regression_pipeline.py:16: in test_standard_frame_migration\n    assert append_event(events, {\"event\": \"closed\"})[\"event\"].tolist() == [\"opened\", \"closed\"]\nregression_pipeline.py:5: in append_event\n    return events.append(event, ignore_index=True)\n/usr/local/lib/python3.12/site-packages/pandas/core/generic.py:6299: in __getattr__\n    return object.__getattribute__(self, name)\nE   AttributeError: 'DataFrame' object has no attribute 'append'. Did you mean: '_append'?\n=========================== short test summary info ============================\nFAILED test_regression_pipeline.py::test_standard_frame_migration - Attribute...\n1 failed, 1 passed in 0.60s\n"
+        },
+        {
+          "event": "stage",
+          "step": 1,
+          "message": "Preparing candidate patch \u00b7 attempt 1"
+        },
+        {
+          "event": "diagnosis",
+          "attempt": 1,
+          "text": "DataFrame.append was removed in pandas 2.0, raising AttributeError. Replace it with pd.concat combining the existing frame with the new event wrapped in a one-row DataFrame, preserving ignore_index=True semantics.",
+          "provider": "Vultr Serverless Inference \u00b7 glm-5.3-flash",
+          "receipt": {
+            "requested_model": "glm-5.3-flash",
+            "served_model": "glm-5.3-flash",
+            "completion_id": "chatcmpl-1785bad0-d807-404e-a530-4fcc5f951cf8",
+            "tokens": {
+              "prompt_tokens": 390,
+              "completion_tokens": 68,
+              "total_tokens": 458
+            },
+            "budget": {
+              "reservation_id": 13,
+              "reserved_usd": 0.023328
+            }
+          }
+        },
+        {
+          "event": "stage",
+          "step": 2,
+          "message": "Running the unchanged tests in a fresh container\u2026"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-0162bdfca3174516a51c573cf66f8a43",
+          "status": "Dispatching",
+          "image": "sha256:e7babee91466b0265285a4fc32be25059fe5bb3e82beb1d043a83d6cc8a0ca03",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-0162bdfca3174516a51c573cf66f8a43",
+          "status": "Removed",
+          "exit_code": 1,
+          "timed_out": false
+        },
+        {
+          "event": "log",
+          "label": "Verification 1",
+          "text": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\n.F                                                                       [100%]\n=================================== FAILURES ===================================\n_____________________ test_preserve_adapter_audit_metadata _____________________\ntest_regression_pipeline.py:23: in test_preserve_adapter_audit_metadata\n    assert result.attrs.get(\"audit_stream\") == \"billing\"\nE   AssertionError: assert None == 'billing'\nE    +  where None = <built-in method get of dict object at 0x7f7590298f40>('audit_stream')\nE    +    where <built-in method get of dict object at 0x7f7590298f40> = {}.get\nE    +      where {} =     event\\n0  opened\\n1  closed.attrs\n=========================== short test summary info ============================\nFAILED test_regression_pipeline.py::test_preserve_adapter_audit_metadata - As...\n1 failed, 1 passed in 0.46s\n"
+        },
+        {
+          "event": "rejected",
+          "id": "3ddff86b016b4f2f995674b7aec0a72f",
+          "provider": "Vultr Serverless Inference \u00b7 glm-5.3-flash",
+          "diff": "--- a/regression_pipeline.py\n+++ b/regression_pipeline.py\n@@ -2,4 +2,4 @@\n \n \n def append_event(events, event):\n-    return events.append(event, ignore_index=True)\n+    return pd.concat([events, pd.DataFrame([event])], ignore_index=True)\n",
+          "diagnosis": "DataFrame.append was removed in pandas 2.0, raising AttributeError. Replace it with pd.concat combining the existing frame with the new event wrapped in a one-row DataFrame, preserving ignore_index=True semantics.",
+          "inference": {
+            "requested_model": "glm-5.3-flash",
+            "served_model": "glm-5.3-flash",
+            "completion_id": "chatcmpl-1785bad0-d807-404e-a530-4fcc5f951cf8",
+            "tokens": {
+              "prompt_tokens": 390,
+              "completion_tokens": 68,
+              "total_tokens": 458
+            },
+            "budget": {
+              "reservation_id": 13,
+              "reserved_usd": 0.023328
+            }
+          },
+          "before": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\nF.                                                                       [100%]\n=================================== FAILURES ===================================\n________________________ test_standard_frame_migration _________________________\ntest_regression_pipeline.py:16: in test_standard_frame_migration\n    assert append_event(events, {\"event\": \"closed\"})[\"event\"].tolist() == [\"opened\", \"closed\"]\nregression_pipeline.py:5: in append_event\n    return events.append(event, ignore_index=True)\n/usr/local/lib/python3.12/site-packages/pandas/core/generic.py:6299: in __getattr__\n    return object.__getattribute__(self, name)\nE   AttributeError: 'DataFrame' object has no attribute 'append'. Did you mean: '_append'?\n=========================== short test summary info ============================\nFAILED test_regression_pipeline.py::test_standard_frame_migration - Attribute...\n1 failed, 1 passed in 0.60s\n",
+          "after": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\n.F                                                                       [100%]\n=================================== FAILURES ===================================\n_____________________ test_preserve_adapter_audit_metadata _____________________\ntest_regression_pipeline.py:23: in test_preserve_adapter_audit_metadata\n    assert result.attrs.get(\"audit_stream\") == \"billing\"\nE   AssertionError: assert None == 'billing'\nE    +  where None = <built-in method get of dict object at 0x7f7590298f40>('audit_stream')\nE    +    where <built-in method get of dict object at 0x7f7590298f40> = {}.get\nE    +      where {} =     event\\n0  opened\\n1  closed.attrs\n=========================== short test summary info ============================\nFAILED test_regression_pipeline.py::test_preserve_adapter_audit_metadata - As...\n1 failed, 1 passed in 0.46s\n",
+          "attempt": 1,
+          "baseline_exit_code": 1,
+          "verification_exit_code": 1,
+          "controller_revision": "b8c6b6bb7079aa932c7ab39e00fa6ebffffed064",
+          "inventory": {
+            "file_count": 2,
+            "languages": [
+              "Python"
+            ],
+            "manifests": [],
+            "dependencies": [],
+            "note": "Static inventory. Compatibility is established by the recorded execution tests."
+          },
+          "profile": "regression",
+          "commit": null,
+          "file": "regression_pipeline.py",
+          "baseline_tests": {
+            "test_regression_pipeline.py::test_standard_frame_migration": "failed",
+            "test_regression_pipeline.py::test_preserve_adapter_audit_metadata": "passed"
+          },
+          "verification_tests": {
+            "test_regression_pipeline.py::test_standard_frame_migration": "passed",
+            "test_regression_pipeline.py::test_preserve_adapter_audit_metadata": "failed"
+          },
+          "rejection_reason": "The verification suite did not pass.",
+          "tests_sha256": "a6be0f1eee127757d9f1281a2b4226277525f7688ea64c5e0d260500ab94fc47",
+          "patch_sha256": "1083078cc6cf39d7126ec230c5dcfd0a5c5c6845406be45869d58d6acebefbab"
+        },
+        {
+          "event": "stage",
+          "step": 1,
+          "message": "Preparing candidate patch \u00b7 attempt 2"
+        },
+        {
+          "event": "diagnosis",
+          "attempt": 2,
+          "text": "Original code used the removed DataFrame.append API, raising AttributeError on pandas 2. The prior pd.DataFrame([event]) repair fixed that but the concat result dropped the source frame's attrs (audit_stream metadata), failing the attrs regression test. Building the row via pd.Series(event).to_frame().T and concatenating preserves the events frame's attrs.",
+          "provider": "Vultr Serverless Inference \u00b7 glm-5.3-flash",
+          "receipt": {
+            "requested_model": "glm-5.3-flash",
+            "served_model": "glm-5.3-flash",
+            "completion_id": "chatcmpl-42a99e9b-b47f-46b8-9ae5-93469d4135fb",
+            "tokens": {
+              "prompt_tokens": 627,
+              "completion_tokens": 809,
+              "total_tokens": 1436
+            },
+            "budget": {
+              "reservation_id": 14,
+              "reserved_usd": 0.02661
+            }
+          }
+        },
+        {
+          "event": "stage",
+          "step": 2,
+          "message": "Running the unchanged tests in a fresh container\u2026"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-8d8a62d7ae0146538b10b15dcc040783",
+          "status": "Dispatching",
+          "image": "sha256:e7babee91466b0265285a4fc32be25059fe5bb3e82beb1d043a83d6cc8a0ca03",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-8d8a62d7ae0146538b10b15dcc040783",
+          "status": "Removed",
+          "exit_code": 1,
+          "timed_out": false
+        },
+        {
+          "event": "log",
+          "label": "Verification 2",
+          "text": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\n.F                                                                       [100%]\n=================================== FAILURES ===================================\n_____________________ test_preserve_adapter_audit_metadata _____________________\ntest_regression_pipeline.py:23: in test_preserve_adapter_audit_metadata\n    assert result.attrs.get(\"audit_stream\") == \"billing\"\nE   AssertionError: assert None == 'billing'\nE    +  where None = <built-in method get of dict object at 0x7ecc98654780>('audit_stream')\nE    +    where <built-in method get of dict object at 0x7ecc98654780> = {}.get\nE    +      where {} =     event\\n0  opened\\n1  closed.attrs\n=========================== short test summary info ============================\nFAILED test_regression_pipeline.py::test_preserve_adapter_audit_metadata - As...\n1 failed, 1 passed in 0.47s\n"
+        },
+        {
+          "event": "rejected",
+          "id": "3ddff86b016b4f2f995674b7aec0a72f",
+          "provider": "Vultr Serverless Inference \u00b7 glm-5.3-flash",
+          "diff": "--- a/regression_pipeline.py\n+++ b/regression_pipeline.py\n@@ -2,4 +2,4 @@\n \n \n def append_event(events, event):\n-    return events.append(event, ignore_index=True)\n+    return pd.concat([events, pd.Series(event).to_frame().T], ignore_index=True)\n",
+          "diagnosis": "Original code used the removed DataFrame.append API, raising AttributeError on pandas 2. The prior pd.DataFrame([event]) repair fixed that but the concat result dropped the source frame's attrs (audit_stream metadata), failing the attrs regression test. Building the row via pd.Series(event).to_frame().T and concatenating preserves the events frame's attrs.",
+          "inference": {
+            "requested_model": "glm-5.3-flash",
+            "served_model": "glm-5.3-flash",
+            "completion_id": "chatcmpl-42a99e9b-b47f-46b8-9ae5-93469d4135fb",
+            "tokens": {
+              "prompt_tokens": 627,
+              "completion_tokens": 809,
+              "total_tokens": 1436
+            },
+            "budget": {
+              "reservation_id": 14,
+              "reserved_usd": 0.02661
+            }
+          },
+          "before": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\nF.                                                                       [100%]\n=================================== FAILURES ===================================\n________________________ test_standard_frame_migration _________________________\ntest_regression_pipeline.py:16: in test_standard_frame_migration\n    assert append_event(events, {\"event\": \"closed\"})[\"event\"].tolist() == [\"opened\", \"closed\"]\nregression_pipeline.py:5: in append_event\n    return events.append(event, ignore_index=True)\n/usr/local/lib/python3.12/site-packages/pandas/core/generic.py:6299: in __getattr__\n    return object.__getattribute__(self, name)\nE   AttributeError: 'DataFrame' object has no attribute 'append'. Did you mean: '_append'?\n=========================== short test summary info ============================\nFAILED test_regression_pipeline.py::test_standard_frame_migration - Attribute...\n1 failed, 1 passed in 0.60s\n",
+          "after": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\n.F                                                                       [100%]\n=================================== FAILURES ===================================\n_____________________ test_preserve_adapter_audit_metadata _____________________\ntest_regression_pipeline.py:23: in test_preserve_adapter_audit_metadata\n    assert result.attrs.get(\"audit_stream\") == \"billing\"\nE   AssertionError: assert None == 'billing'\nE    +  where None = <built-in method get of dict object at 0x7ecc98654780>('audit_stream')\nE    +    where <built-in method get of dict object at 0x7ecc98654780> = {}.get\nE    +      where {} =     event\\n0  opened\\n1  closed.attrs\n=========================== short test summary info ============================\nFAILED test_regression_pipeline.py::test_preserve_adapter_audit_metadata - As...\n1 failed, 1 passed in 0.47s\n",
+          "attempt": 2,
+          "baseline_exit_code": 1,
+          "verification_exit_code": 1,
+          "controller_revision": "b8c6b6bb7079aa932c7ab39e00fa6ebffffed064",
+          "inventory": {
+            "file_count": 2,
+            "languages": [
+              "Python"
+            ],
+            "manifests": [],
+            "dependencies": [],
+            "note": "Static inventory. Compatibility is established by the recorded execution tests."
+          },
+          "profile": "regression",
+          "commit": null,
+          "file": "regression_pipeline.py",
+          "baseline_tests": {
+            "test_regression_pipeline.py::test_standard_frame_migration": "failed",
+            "test_regression_pipeline.py::test_preserve_adapter_audit_metadata": "passed"
+          },
+          "verification_tests": {
+            "test_regression_pipeline.py::test_standard_frame_migration": "passed",
+            "test_regression_pipeline.py::test_preserve_adapter_audit_metadata": "failed"
+          },
+          "rejection_reason": "The verification suite did not pass.",
+          "tests_sha256": "a6be0f1eee127757d9f1281a2b4226277525f7688ea64c5e0d260500ab94fc47",
+          "patch_sha256": "931eb8c8d51f28f4aa7b79f4da9c3f10523cb0f36aee48c2b2d5b5d58ed7dfe1"
+        },
+        {
+          "event": "error",
+          "message": "Candidate rejected. The verification gate did not pass."
+        }
+      ]
+    },
+    {
+      "profile": "containment",
+      "expected": "contained",
+      "duration_seconds": 4.52,
+      "id": "153a54a1138442c3a1ebf6380f7f02ae",
+      "state": "contained",
+      "cursor": 12,
+      "events": [
+        {
+          "event": "stage",
+          "step": 0,
+          "message": "Probing the container\u2019s network and filesystem\u2026"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-230d5f4fc3114206a86d6ecefe191a9e",
+          "status": "Dispatching",
+          "image": "sha256:e7babee91466b0265285a4fc32be25059fe5bb3e82beb1d043a83d6cc8a0ca03",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-230d5f4fc3114206a86d6ecefe191a9e",
+          "status": "Removed",
+          "exit_code": 0,
+          "timed_out": false
+        },
+        {
+          "event": "log",
+          "label": "Containment probe",
+          "text": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\nOutbound connection to 192.0.2.1 blocked: [Errno 101] Network is unreachable\nOutbound connection to 2001:db8::1 blocked: [Errno 101] Network is unreachable\nRoot filesystem write blocked: [Errno 30] Read-only file system: '/probe'\nNon-root user confirmed. Inference key absent.\n"
+        },
+        {
+          "event": "stage",
+          "step": 1,
+          "message": "Running an infinite loop against a 3-second deadline\u2026"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-fbc9e7e43d8e4752b7f36b65398ad2a8",
+          "status": "Dispatching",
+          "image": "sha256:e7babee91466b0265285a4fc32be25059fe5bb3e82beb1d043a83d6cc8a0ca03",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 3s"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-fbc9e7e43d8e4752b7f36b65398ad2a8",
+          "status": "Removed",
+          "exit_code": 124,
+          "timed_out": true
+        },
+        {
+          "event": "log",
+          "label": "Timeout probe",
+          "text": "The infinite loop hit its deadline. Docker confirms the container is gone."
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-138f923010094affa614f0132c73970a",
+          "status": "Dispatching",
+          "image": "sha256:e7babee91466b0265285a4fc32be25059fe5bb3e82beb1d043a83d6cc8a0ca03",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-138f923010094affa614f0132c73970a",
+          "status": "Removed",
+          "exit_code": 0,
+          "timed_out": false
+        },
+        {
+          "event": "log",
+          "label": "Memory policy",
+          "text": "WARNING: Error loading config file: open /home/versionbridge-worker/.docker/config.json: permission denied\nKernel cgroup memory cap: 402653184 bytes (384 MiB).\n"
+        },
+        {
+          "event": "contained",
+          "message": "Containment checks passed"
+        }
+      ]
+    }
+  ]
+}
