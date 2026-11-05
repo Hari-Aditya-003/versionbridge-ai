@@ -17,7 +17,7 @@ The installer initially uses labeled sample proposals. To enable judged live inf
 ```text
 REQUIRE_INFERENCE=1
 VULTR_API_KEY=YOUR_SUBSCRIPTION_KEY
-VULTR_MODEL=deepseek-v4.1-flash-1017
+VULTR_MODEL=glm-5.3-flash
 INFERENCE_BUDGET_USD=4
 INFERENCE_DAILY_REQUESTS=30
 ```

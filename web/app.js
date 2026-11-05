@@ -58,7 +58,7 @@ workspaceFetch("/api/config").then(response => response.json()).then(config => {
     ? `${config.mode} · pinned GitHub imports for Python profiles`
     : `${config.mode} · this deployment runs bundled projects`;
   queueEnabled = config.job_queue;
-  document.querySelector("#access").hidden = !config.auth_required;
+  document.querySelector("#access").hidden = !config.auth_required || Boolean(sessionStorage.getItem("versionbridge-access-token"));
   loadUsage();
   if (queueEnabled && sessionStorage.getItem(jobKey) && !run.disabled) {
     execute(sessionStorage.getItem("versionbridge-active-task") === "containment", sessionStorage.getItem(jobKey));
@@ -360,7 +360,8 @@ async function execute(isProbe, resumeId) {
       if (event.event === "result") showResult(event);
     };
     const settings = { repository: repository.value.trim(), ref: ref.value.trim(), profile: profile.value,
-      filename: filename.value.trim(), function: functionName.value.trim() };
+      filename: filename.value.trim(), function: functionName.value.trim(),
+      attempts: Number(document.querySelector("#attempts").value) };
     if (queueEnabled) await followJob(onEvent, { ...settings, task: isProbe ? "containment" : "repair" }, resumeId);
     else await streamEvents(isProbe ? "/api/containment" : "/api/repair", onEvent, isProbe ? {} : settings);
   } catch (error) {

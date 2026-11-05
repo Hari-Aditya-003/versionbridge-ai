@@ -75,7 +75,7 @@ def local_failure_context(log):
 
 def propose(profile, log, code, previous=None):
     key = os.getenv("VULTR_API_KEY")
-    model = os.getenv("VULTR_MODEL", "deepseek-v4.1-flash-1017")
+    model = os.getenv("VULTR_MODEL", "glm-5.3-flash")
     mode = inference_mode()
     if mode == "sample":
         if not profile.candidates:

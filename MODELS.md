@@ -22,3 +22,7 @@ Keep model calls for the judged application on Vultr Serverless Inference. The p
 - AegisPR compares test behavior across PR revisions, publishes bounded model receipts, and uses CUDA to rank context separately from remote Nemotron calls. VersionBridge verifies a scoped patch by rerunning the repository's existing tests. [AegisPR](https://github.com/Hari-Aditya-003/AegisPR) · [Project comparison](COMPARISON.md)
 - ARCHON reports individual repair attempts, acceptance outcomes and costs. VersionBridge follows that evidence pattern by pairing each candidate with a diff, test outputs, and provider information when available. [ARCHON](https://github.com/CodeWithEugene/Archon)
 - AgentForge AI illustrates a bounded repair loop with human review. Agent CrashLab records executed assertions and scenario inputs. VersionBridge gives the maintainer a patch to review and exposes the observed failure that led to rejection. [AgentForge AI](https://devpost.com/software/agentforge-ai-yoif19) · [Agent CrashLab](https://devpost.com/software/agent-crashlab)
+
+## Observed release selection
+
+The November 5 comparison selected `glm-5.3-flash` after all 13 fixture outcomes matched expectations. `deepseek-v4.1-flash-1017` achieved 12 of 13. The requests used structured JSON, minimal reasoning effort, bounded output, and up to two proposals per case. Larger reasoning budgets should be evaluated separately before changing the deployed request policy. [Recorded comparison](EVALUATION.md)

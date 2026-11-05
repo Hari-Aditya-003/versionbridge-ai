@@ -107,7 +107,9 @@ def patch_diff(original, patched, path):
                    for line in lines)
 
 
-def repair(emit, run_id, repository="", ref="", profile_id="pandas", filename="", function=""):
+def repair(emit, run_id, repository="", ref="", profile_id="pandas", filename="", function="", attempts=2):
+    if type(attempts) is not int or attempts not in (1, 2):
+        raise RuntimeError("Choose one or two repair attempts.")
     scoped = profile_id == "python"
     if scoped and (not os.getenv("ENABLE_SCOPED_REPAIR") or not repository):
         raise RuntimeError("Scoped Python repair requires an enabled public repository import.")
@@ -171,7 +173,7 @@ def repair(emit, run_id, repository="", ref="", profile_id="pandas", filename=""
         if "failed" not in baseline_tests.values():
             raise RuntimeError("The baseline did not report a completed failing test inventory.")
         previous = None
-        for attempt in range(1, 3):
+        for attempt in range(1, attempts + 1):
             emit("stage", {"step": 1, "message": f"Preparing candidate patch · attempt {attempt}"})
             if len(source.encode()) > 24000:
                 raise RuntimeError("The patch target is too large for the bounded model prompt.")
@@ -335,7 +337,7 @@ class Handler(SimpleHTTPRequestHandler):
 
     def authorized(self):
         token = os.getenv("VERSIONBRIDGE_ACCESS_TOKEN")
-        if not token or hmac.compare_digest(self.headers.get("Authorization", ""), "Bearer " + token):
+        if not token or hmac.compare_digest(self.headers.get("Authorization", "").encode(), ("Bearer " + token).encode()):
             return True
         self.respond_json(401, {"message": "This workspace requires an access token."})
         return False
@@ -446,6 +448,9 @@ class Handler(SimpleHTTPRequestHandler):
             profile_id = settings.get("profile", "pandas")
             filename, function = settings.get("filename", ""), settings.get("function", "")
             task = settings.get("task", "repair")
+            attempts = settings.get("attempts", 2)
+            if type(attempts) is not int or attempts not in (1, 2):
+                raise ValueError
             if task not in ("repair", "containment"):
                 raise ValueError
             if not isinstance(filename, str) or not isinstance(function, str) or len(filename) > 180 or len(function) > 80:
@@ -467,8 +472,7 @@ class Handler(SimpleHTTPRequestHandler):
                 return
             try:
                 job_settings = [repository, ref, profile_id, filename, function]
-                if task == "containment":
-                    job_settings.append(task)
+                job_settings.append(task if task == "containment" else attempts)
                 job_id = jobs.submit(job_settings, key)
             except ValueError as exc:
                 self.respond_json(409, {"message": str(exc)})

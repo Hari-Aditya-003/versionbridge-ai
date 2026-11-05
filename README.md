@@ -60,7 +60,7 @@ Supported imports require one matching source line and a compatible existing pyt
 
 ## Run live inference within an allowance
 
-Set worker-only `VULTR_API_KEY` and `VULTR_MODEL`, then use `REQUIRE_INFERENCE=1` to require live Vultr proposals. The current configured candidate is `deepseek-v4.1-flash-1017`. Select the deployed model using measured repair results. [Model policy](MODELS.md)
+Set worker-only `VULTR_API_KEY` and `VULTR_MODEL`, then use `REQUIRE_INFERENCE=1` to require live Vultr proposals. GLM 5.3 Flash is the selected model after achieving all 13 expected fixture outcomes in live evaluation. DeepSeek V4.1 Flash 1017 achieved 12 of 13 on the same cases. [Model policy](MODELS.md)
 
 ```sh
 python3 evaluate_models.py deepseek-v4.1-flash-1017 glm-5.3-flash > model-evidence.json

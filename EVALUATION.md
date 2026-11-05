@@ -38,3 +38,16 @@ Ollama reported all 29 layers offloaded to CUDA. Over 62 half-second device samp
 The updated image was exercised with `python3 smoke.py` and `python3 api_smoke.py`. Twenty acceptance methods and eighteen HTTP checks passed. The profile subtests include JavaScript, TypeScript, Go, Rust, Java, C++, SQLite, PostgreSQL, and the algorithm example. These runs use labeled sample patches and actual container execution.
 
 The HTTP suite starts separate web and worker processes with a temporary database. It exercises authenticated access, duplicate submission handling, versioned routes, artifact checksums, containment dispatch, and rejection of a regression. The model transport test uses a test double. Live provider evaluation is recorded separately.
+
+## Live Vultr model comparison on November 5, 2026
+
+The controller called both Vultr models against all thirteen supported profiles and verified the candidates in fresh local Docker containers.
+
+| Model | Expected outcomes | Reported total tokens | Total fixture time |
+| --- | --- | --- | --- |
+| GLM 5.3 Flash | 13 / 13 | 9,113 | 73.71 seconds |
+| DeepSeek V4.1 Flash 1017 | 12 / 13 | 9,591 | 53.00 seconds |
+
+Both models rejected the seeded regression. DeepSeek did not return an accepted structured proposal for the Java case. GLM 5.3 Flash was selected for deployment based on observed outcomes. These are bounded fixture results, with different controlled repair policies per profile. They do not measure general repository repair capability.
+
+[Full model receipts, candidates, and test evidence](evidence/model-comparison-2026-11-05.json)
