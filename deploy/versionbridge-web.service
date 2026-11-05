@@ -1,0 +1,23 @@
+[Unit]
+Description=VersionBridge HTTP API
+After=network-online.target versionbridge-worker.service
+
+[Service]
+Type=simple
+User=versionbridge-web
+Group=versionbridge
+WorkingDirectory=/opt/versionbridge
+EnvironmentFile=/etc/versionbridge-web.env
+ExecStart=/usr/bin/python3 /opt/versionbridge/server.py
+Restart=on-failure
+RestartSec=3
+UMask=0007
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/versionbridge
+PrivateTmp=true
+MemoryMax=256M
+
+[Install]
+WantedBy=multi-user.target

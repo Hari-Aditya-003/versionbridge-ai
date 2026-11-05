@@ -32,3 +32,9 @@ The application called Qwen2.5 Coder 1.5B Instruct Q4_K_M on the Dell RTX 3050 T
 | Audit metadata regression | Both candidates failed the unchanged suite and were rejected | 5.91 s |
 
 Ollama reported all 29 layers offloaded to CUDA. Over 62 half-second device samples, peak total device memory use was 1,267 MiB, peak temperature was 58°C, and utilization reached 95% briefly. The model list reported zero resident models after the run. These measurements describe one test session. Vultr model and deployment results are pending.
+
+## Expanded local release checks on November 5, 2026
+
+The updated image was exercised with `python3 smoke.py` and `python3 api_smoke.py`. Twenty acceptance methods and eighteen HTTP checks passed. The profile subtests include JavaScript, TypeScript, Go, Rust, Java, C++, SQLite, PostgreSQL, and the algorithm example. These runs use labeled sample patches and actual container execution.
+
+The HTTP suite starts separate web and worker processes with a temporary database. It exercises authenticated access, duplicate submission handling, versioned routes, artifact checksums, containment dispatch, and rejection of a regression. The model transport test uses a test double. Live provider evaluation is recorded separately.

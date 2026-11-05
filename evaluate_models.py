@@ -1,4 +1,4 @@
-"""Compare account-approved Vultr model IDs against the four Docker fixtures."""
+"""Compare account-approved Vultr model IDs against the supported Docker fixtures."""
 import json
 import os
 import sys

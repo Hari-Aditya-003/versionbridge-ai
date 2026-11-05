@@ -3,10 +3,13 @@ import http.client
 import json
 import os
 
+import gpu_guard
+
 DEFAULT_MODEL = "qwen2.5-coder:1.5b-instruct-q4_K_M"
 
 
 def complete(messages, replacements=(), arithmetic=False):
+    gpu_guard.check()
     replacement = {"type": "string", "minLength": 1, "maxLength": 240}
     if replacements:
         replacement["enum"] = [line.strip() for line in replacements]
@@ -48,5 +51,5 @@ def complete(messages, replacements=(), arithmetic=False):
                        ("prompt_tokens", "prompt_eval_count"), ("completion_tokens", "eval_count"),
                    ) if type(result.get(field)) is int}}
         return answer, receipt
-    except (OSError, ValueError, KeyError, TypeError, OverflowError, http.client.HTTPException) as exc:
+    except (OSError, ValueError, KeyError, TypeError, OverflowError, RecursionError, http.client.HTTPException) as exc:
         raise RuntimeError("Local inference failed. Check the Ollama model and SSH tunnel.") from exc

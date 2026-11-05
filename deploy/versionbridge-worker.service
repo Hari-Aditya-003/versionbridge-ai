@@ -1,0 +1,24 @@
+[Unit]
+Description=VersionBridge isolated execution controller
+Requires=docker.service
+After=docker.service network-online.target
+
+[Service]
+Type=simple
+User=versionbridge-worker
+Group=versionbridge
+SupplementaryGroups=docker
+WorkingDirectory=/opt/versionbridge
+EnvironmentFile=/etc/versionbridge-worker.env
+ExecStart=/usr/bin/python3 /opt/versionbridge/worker.py
+Restart=on-failure
+RestartSec=3
+UMask=0007
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/versionbridge
+MemoryMax=384M
+
+[Install]
+WantedBy=multi-user.target

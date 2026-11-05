@@ -1,83 +1,107 @@
 # VersionBridge AI
 
+[Project showcase and recorded demo](https://hari-aditya-003.github.io/versionbridge-ai/) · [Architecture](ARCHITECTURE.md) · [Evaluation](EVALUATION.md) · [Deployment](DEPLOYMENT.md)
 
-[Public project showcase and recorded demo](https://hari-aditya-003.github.io/versionbridge-ai/)
+VersionBridge reproduces a supported code failure in Docker, proposes a scoped repair, and reruns the same tests in a fresh container. Review the patch, individual test outcomes, model receipt, and sandbox lifecycle before exporting the change.
 
-VersionBridge helps maintainers verify a narrow Python repair before applying it. The backend reproduces a failure in Docker, obtains a candidate patch, and reruns the same tests in a fresh container. The workspace shows both test outputs, the patch, and the lifecycle of each container. Download the diff to review or apply it yourself.
+The release includes a persistent job queue, browser refresh recovery, cancellation, an optional workspace access token, project metadata inspection, a usage dashboard, and downloadable JSON, Markdown, and patch artifacts. The HTTP service and execution worker can run under separate OS users. Only the worker needs Docker access and inference credentials.
 
-The project targets Blast Radius Zero at Vultr Agent Rush. The judging deployment uses a Vultr VM for the app and containers and Vultr Serverless Inference for patch proposals. The credential-free local demo uses labeled sample patches and real test execution. [LabLab event and rules](https://lablab.ai/ai-hackathons/vultr-hackathon/)
+## Run locally
 
-## Quick start
-
-From the repository root, use Python 3.10 or newer and a running Docker engine.
+Use Python 3.10 or newer and a running Docker engine.
 
 ```sh
 docker build -t versionbridge-sandbox:1 -f Sandbox.Dockerfile .
-python3 server.py
+ENABLE_JOB_QUEUE=1 python3 server.py
 ```
 
-Open http://127.0.0.1:8787 and select **Run the demo** to open the workspace in a new tab. Select a repair, run it, and inspect its diff and before-and-after logs. Use the Containment Lab to observe network denial, a failed root filesystem write, the memory cap, and cleanup after an infinite loop reaches its deadline. Use **Run history** to reopen a completed repair and export its evidence.
+Open http://127.0.0.1:8787. **Run the demo** opens the workspace in a new tab. Choose an example, run it, then inspect its patch and before-and-after tests. Run the Containment Lab to observe network denial, filesystem protection, memory restrictions, timeout enforcement, and container cleanup.
 
-| Try this | Expected outcome |
+The sandbox image includes Python libraries, Node 22, TypeScript 5.9.3, Go, Rust, Java, C++, and PostgreSQL. The initial build downloads the toolchains. Test execution has no network access.
+
+| Profile | Verification |
 | --- | --- |
-| pandas 2 migration | The original append call fails two tests. The concat repair passes both. |
-| Pydantic 2 settings migration | The old import fails two tests. The replacement passes both, including an environment override. |
-| Invoice total bug | The original expression fails four cases. The corrected total passes all four. |
-| Audit metadata regression | The candidate fixes the original failure but drops audit metadata. An existing test catches the regression and the controller rejects the candidate. |
+| pandas 2 migration | Two existing tests verify the removed append API replacement. |
+| Pydantic settings migration | Two tests cover loading settings and an environment override. |
+| Invoice arithmetic | Four cases check the repaired total. |
+| JavaScript discount cap | Node executes four cases against the actual module. |
+| TypeScript inventory field | Strict type checking and three runtime cases verify the repair. |
+| Go pagination | Four cases cover exact and partial pages. |
+| Rust inclusive boundary | Four cases exercise equality and adjacent values. |
+| Java role comparison | Four cases cover string content, case, and empty values. |
+| C++ integer overflow | Four cases include large signed products with undefined-behavior sanitization. |
+| SQLite and PostgreSQL query repairs | Separate disposable databases check empty inputs, missing matches, duplicates, and NULL amounts. PostgreSQL uses a local socket inside the container. |
+| Binary search boundary | Four boundary tests and a comparison against 200 seeded inputs. |
+| Regression rejection | The candidate fixes the original failure but breaks audit metadata. The verifier rejects it. |
 
-Run the acceptance suite after building the image. It covers repair, regression rejection, evidence, sandbox limits and cleanup. The same command runs in GitHub Actions. [Evaluation and fixture details](EVALUATION.md) · [GitHub Actions](https://github.com/Hari-Aditya-003/versionbridge-ai/actions/workflows/smoke.yml)
+These language examples are scoped, bundled repair profiles. General projects, dependency installation, and unrestricted multi-file repairs need additional adapters and validation.
+
+## Test the application
 
 ```sh
 python3 smoke.py
+python3 api_smoke.py
+node --check web/app.js
 ```
 
-## Verify an imported repository
+The acceptance suite checks all repair profiles, rejection of weakened tests, sandbox teardown, model validation, queue behavior, inference allowances, and GPU telemetry policy. The HTTP suite starts a separate worker with a temporary database and checks authentication, idempotency, artifact checksums, queued containment, and regression rejection. It uses sample proposals and real sandbox execution, consuming no inference credits. GitHub Actions runs both suites.
 
-Set `ENABLE_PUBLIC_IMPORT=1` when starting the local server. In the demo workspace, use **Load pinned GitHub example** for the public pandas fixture. The importer resolves the reference to a commit SHA before downloading the snapshot. [Pinned source fixture](https://github.com/Hari-Aditya-003/versionbridge-ai/tree/274b7ba6ec8fd8d418f686f37538517d4f87ca82)
+## Inspect verification evidence
 
-The importer supports small public GitHub repositories with one matching line for the selected profile. The sandbox image provides pandas, NumPy, Pydantic, pydantic-settings, and pytest. Results describe the repository's own supplied tests. Use bundled fixtures for a controlled acceptance check and leave imports disabled on the shared demo until its execution host is hardened and tested. [Security model](SECURITY.md)
+A candidate must preserve the collected test inventory and the set of skipped or expected-failure tests. Every remaining test must pass and the process must exit successfully. Exports include the original and candidate outcomes, patch and test hashes, execution logs, container teardown events, and provider receipt when available.
 
-## Run with live inference
+Results from imported repositories depend on their supplied tests. Structured reporting improves consistency checking but does not establish correctness outside the tested behavior.
 
-Set `VULTR_API_KEY` on the control plane. Set `VULTR_MODEL` to an identifier available to that account and use `REQUIRE_INFERENCE=1` for judging, so a missing key stops repair before any sample patch can be used. The default candidate is Qwen2.5 Coder 32B. Compare available candidates by verified outcomes, regression rejection, elapsed time, and reported token usage. [Model policy](MODELS.md) · [Evaluation command](EVALUATION.md)
+## Import a pinned Python repository
 
-For the public judging run, deploy the backend on a Vultr VM, repeat a live repair and containment run, and save the model receipt and the public HTTPS demo URL. The Docker fixtures and local browser demo have been exercised. Public Vultr deployment and authenticated model results still require an authorized environment. [Deployment instructions](deploy/README.md) · [Submission checklist](SUBMISSION.md) · [Recording guide](DEMO.md)
+For a private development instance, set `ENABLE_PUBLIC_IMPORT=1`. Use **Load pinned GitHub example** to retrieve the controlled pandas fixture at commit `274b7ba6ec8fd8d418f686f37538517d4f87ca82`. The importer resolves references before downloading a size-limited snapshot.
 
-## Roadmap
+Supported imports require one matching source line and a compatible existing pytest suite. Optional scoped arithmetic repair also requires `ENABLE_SCOPED_REPAIR=1` and live inference. Public deployments use `PUBLIC_DEMO=1` to reject arbitrary repository imports. [Security model](SECURITY.md)
 
-The current release supports bounded Python repairs, pinned public GitHub snapshots, Docker verification, and private Dell inference. The local Dell evaluation verified three repairs and rejected the seeded regression. GitHub Pages hosts the showcase and recording. Public Vultr deployment and authenticated Vultr model evaluation are pending. [Observed results](EVALUATION.md)
+## Run live inference within an allowance
 
-The versions below are proposed milestones. A language or SQL engine becomes supported once its adapter passes the release tests.
+Set worker-only `VULTR_API_KEY` and `VULTR_MODEL`, then use `REQUIRE_INFERENCE=1` to require live Vultr proposals. The current configured candidate is `deepseek-v4.1-flash-1017`. Select the deployed model using measured repair results. [Model policy](MODELS.md)
 
-| Version | Build | Release tests |
-| --- | --- | --- |
-| **0.2 — Shared execution** | Extract the Python runner into a reusable adapter. Add queued jobs, cancellation, deadlines, and structured test reports. Verify the public Vultr path. | Preserve the existing Python checks. Recover from worker failure, clean up canceled sandboxes, apply exported diffs, and record a live Vultr repair and containment run. |
-| **0.3 — JavaScript and TypeScript** | Add a pinned Node toolchain, lockfile-based installs, type checking, Jest or Vitest, and bounded multi-file patches. | Repair a package upgrade and a type failure. Reject a candidate that passes a targeted test but breaks the full suite. |
-| **0.4 — SQL** | Add PostgreSQL query verification first, then SQLite and MySQL. Test schema migrations on disposable databases with seeded data. | Check NULLs, duplicates, joins, ordering, decimal precision, and date boundaries. Deny writes in query mode and verify data integrity after migrations. |
-| **0.5 — Compiled languages** | Add Go and Java, then Rust and C/C++. Evaluate C# and Kotlin as follow-on adapters. | For each toolchain, reproduce a build failure, verify a fix, reject a regression, and record the runtime and image version. |
-| **0.6 — Algorithms and model evaluation** | Add reference solutions, property tests, fuzzing, and time and memory budgets. Compare deterministic transforms, model-authored edits, and test-guided search. | Catch hidden wrong answers, overflow, flaky results, and resource overruns. Compare models on the same cases and budgets. |
-| **1.0 — GitHub and team workflows** | Add PR base/head comparisons, private repository access through a GitHub App, check results, approval gates, and draft repair PRs. | Verify tenant isolation, duplicate webhook handling, stale commits, review approvals, and recovery after failed jobs. |
+```sh
+python3 evaluate_models.py deepseek-v4.1-flash-1017 glm-5.3-flash > model-evidence.json
+```
 
-### How new adapters fit
+The application reserves an allowance before each request. Defaults are $5 total and 30 inference requests per UTC day. Reservations remain charged against the allowance even if a request fails. Conservative input/output token prices are configurable and must cover the selected model's current rates. VM, backup, bandwidth, and other Vultr account charges are separate. [Budget configuration](.env.example)
 
-- The shared controller owns job state, sandbox lifecycle, retries, and evidence. Each adapter defines toolchain discovery, build and test commands, result parsing, and patch validation.
-- Each run records the source commit, toolchain, sandbox image, test inventory, candidate diff, and model receipt when available. Verification checks for skipped or weakened tests as well as passing results.
-- SQL verification compares results under the engine's ordering and duplicate rules. Algorithm verification adds reference outputs, properties, and resource budgets.
-- Evaluate repair strategies on both seeded fixtures and held-out pinned repositories. Include unfixable cases and rank models by verified repairs and false acceptances before latency and cost. [Architecture](ARCHITECTURE.md) · [Model evaluation plan](MODELS.md)
+## Separate the web service and worker
 
-**Next build:** extract the Python adapter, then ship one end-to-end TypeScript repair through the same controller. Follow it with PostgreSQL query verification.
+Start both processes against the same private database directory.
 
-## Project map
+```sh
+ENABLE_JOB_QUEUE=1 EXTERNAL_WORKER=1 python3 server.py
+python3 worker.py
+```
 
-| Area | Where to look |
+The deployment installer creates separate web and worker users. The web user has no Docker group membership or inference key. The worker holds the execution privileges and publishes results through SQLite. Use one worker per database. The worker process lock prevents duplicate worker startup.
+
+Queued jobs survive a restart. Running jobs become interrupted after their recorded containers are cleaned up. Cancellation stops an active job at the next step boundary. The queue holds at most five active jobs and retains 100 completed jobs. Public mode permits up to 100 new jobs per UTC day. Idempotency keys prevent duplicate submissions.
+
+## Private Dell inference
+
+The optional Ollama mode uses a small quantized model through a loopback SSH tunnel. GPU quiet mode can require fresh telemetry, pause above 65°C, pause when utilization reaches 30%, and require 1,536 MiB of free GPU memory before dispatch. These are admission checks. Runtime power and cooling are managed by the device. [Setup and observed Dell results](LOCAL_GPU.md)
+
+## Release scope and next work
+
+The implemented release covers the listed scoped repair examples, Python snapshot imports, persistent jobs, bounded execution, test comparison, artifacts, model receipts, and a containment lab.
+
+Broader repository adapters, arbitrary package installation, GitHub App authentication, automated repair PRs, organizations and roles, scheduled monitoring, general multi-file patches, and independent generated regression tests remain future work. Each requires its own release tests before being offered as a supported capability.
+
+| Area | Files |
 | --- | --- |
-| Browser workflow | [Homepage](web/index.html) and [demo workspace](web/demo.html) |
-| Repair controller and sandbox lifecycle | [server.py](server.py) |
-| Source import and supported repairs | [projects.py](projects.py) and [profiles.py](profiles.py) |
-| Model response validation and receipts | [inference.py](inference.py) |
-| SQLite history | [history.py](history.py) |
-| End-to-end design and evidence | [Architecture](ARCHITECTURE.md) and [AegisPR comparison](COMPARISON.md) |
+| Browser and showcase | `web/`, `showcase/` |
+| Public API and controller | `server.py` |
+| Separate execution worker | `worker.py` |
+| Persistent queue and history | `jobs.py`, `history.py` |
+| Inference policy and allowance | `inference.py`, `budget.py` |
+| Verification and reports | `pytest_runner.py`, `verification.py`, `reports.py` |
+| Source retrieval and inspection | `projects.py`, `inspection.py`, `profiles.py` |
+| Private GPU tools | `local_gpu.py`, `gpu_guard.py`, `gpu_monitor.py` |
+| Reproducible examples | `fixture/`, `scenarios/` |
+| Deployment and QA | `deploy/`, `smoke.py`, `api_smoke.py` |
 
-[MIT license](LICENSE)
-
-[Private Dell inference setup](LOCAL_GPU.md) covers the lightweight Ollama profile and scoped repair trial.
+[MIT license](LICENSE) · [Hackathon submission checklist](SUBMISSION.md) · [AegisPR comparison](COMPARISON.md)

@@ -12,3 +12,7 @@ jobs:
         run: docker build -t versionbridge-sandbox:1 -f Sandbox.Dockerfile .
       - name: Verify repair, evidence and containment
         run: python3 smoke.py
+      - name: Verify authenticated API and separate worker
+        run: python3 api_smoke.py
+      - name: Check browser JavaScript syntax
+        run: node --check web/app.js

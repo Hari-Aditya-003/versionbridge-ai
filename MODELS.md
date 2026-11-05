@@ -4,7 +4,7 @@ VersionBridge uses a model to propose a repair for a reproduced Python failure. 
 
 ## Vultr judging profile
 
-Use the model IDs shown in the Vultr account's console. Qwen2.5 Coder 32B is the configured baseline. Compare DeepSeek V4.1 Flash and GLM 5.2 if the account exposes them. Choose the deployment model after measuring the same repair and regression cases across the candidates. [Vultr coding model list](https://docs.vultr.com/support/products/serverless/can-i-run-inference-workloads-for-models-other-than-llms-on-vultr-serverless-inference) · [Vultr model overview](https://docs.vultr.com/product-overviews/serverless-inference)
+Use the model IDs shown in the Vultr account's console. DeepSeek V4.1 Flash 1017 is the current configured candidate. Compare GLM 5.3 Flash on the same cases before selecting a deployment model. Choose the deployment model after measuring the same repair and regression cases across the candidates. [Vultr coding model list](https://docs.vultr.com/support/products/serverless/can-i-run-inference-workloads-for-models-other-than-llms-on-vultr-serverless-inference) · [Vultr model overview](https://docs.vultr.com/product-overviews/serverless-inference)
 
 | What to compare | Evidence |
 | --- | --- |
@@ -13,7 +13,7 @@ Use the model IDs shown in the Vultr account's console. Qwen2.5 Coder 32B is the
 | Resource use | Elapsed time and token usage when returned by the provider |
 | Model attribution | Requested and served model, provider completion ID, and attempt count when available |
 
-The evaluation command covers four cases, allows at most two patch attempts per case, and accepts up to three models. It sorts by correct outcomes and then elapsed time. Treat this as an evaluation of the supported workflow and fixtures. The current local test and demo evidence uses labeled sample patches. Authenticated comparison results and a production model choice are pending. [Evaluation and commands](EVALUATION.md)
+The evaluation command covers supported profile cases, allows at most two patch attempts per case, and accepts up to three models. It sorts by correct outcomes and then elapsed time. Treat this as an evaluation of the supported workflow and fixtures. The current local test and demo evidence uses labeled sample patches. Authenticated comparison results and a production model choice are pending. [Evaluation and commands](EVALUATION.md)
 
 Keep model calls for the judged application on Vultr Serverless Inference. The private Ollama mode uses a quantized Qwen2.5 Coder 1.5B model on a trusted Dell. It is a separate development profile. [Private Dell setup](LOCAL_GPU.md). [LabLab Blast Radius Zero rules](https://lablab.ai/ai-hackathons/vultr-hackathon/)
 

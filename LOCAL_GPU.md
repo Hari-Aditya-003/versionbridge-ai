@@ -27,3 +27,9 @@ VERSIONBRIDGE_INFERENCE_MODE=local-gpu VERSIONBRIDGE_OLLAMA_PORT=11435 python3 s
 The demo labels proposals with the provider and requested model. Each patch still has to pass the unchanged tests in a new sandbox. Add `ENABLE_PUBLIC_IMPORT=1 ENABLE_SCOPED_REPAIR=1` for a private trial of scoped Python repair. Enter the public repository, pinned commit, Python file path, and top-level function. The target function must have a single return statement. The candidate can use its named arguments, small integer constants, and addition, subtraction or multiplication. Imported tests and source must fit the prebuilt sandbox image.
 
 To stop inference, end the Dell service and SSH forwarding sessions. If the Ollama service runs as a transient systemd user unit, stop it with `systemctl --user stop versionbridge-ollama` on the Dell. Set `REQUIRE_INFERENCE=1` on the Vultr deployment to require Vultr and reject local mode.
+
+## Optional quiet-mode admission checks
+
+Run `python3 gpu_monitor.py YOUR_EXISTING_DELL_SSH_TARGET` on the controller host using an existing trusted SSH connection. Set `VERSIONBRIDGE_GPU_STATUS_FILE` to the resulting `data/gpu-status.json` before starting the worker. The local inference client refuses dispatch when telemetry is older than 15 seconds, the temperature is at least 65°C, utilization is at least 30%, or free GPU memory is below 1,536 MiB.
+
+The monitor exits if SSH or telemetry parsing fails. The admission guard then rejects stale data. This mechanism checks conditions before a request. It does not change GPU power limits or interrupt an inference already in progress.

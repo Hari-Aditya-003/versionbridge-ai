@@ -10,7 +10,7 @@ server {
     ssl_certificate_key /etc/letsencrypt/live/demo.example.com/privkey.pem;
     client_max_body_size 2k;
 
-    location ~ ^/api/(repair|containment)$ {
+    location ~ ^/api/(v1/)?(repair|containment|jobs)$ {
         limit_req zone=versionbridge_per_ip burst=2 nodelay;
         limit_req zone=versionbridge_global burst=4 nodelay;
         limit_req_status 429;

@@ -17,9 +17,21 @@
 <nav aria-label="Demo"><a href="#workspace">Repair</a><a href="#containment">Containment</a><a href="#history">Run history</a></nav>
 <a class="button secondary small" href="/">Project overview</a></div></header>
 <main id="top">
+<section class="shell section" id="access" hidden>
+<form id="access-form" class="source-form"><label>Workspace access token
+<input id="access-token" type="password" autocomplete="off" maxlength="256" required></label>
+<button class="button secondary" type="submit">Unlock workspace</button>
+<p id="access-status" role="status">Enter the operator token to access this private workspace.</p></form>
+</section>
+<section class="shell section" aria-label="Recent repair overview">
+<div class="cards"><article><p class="micro">RETAINED RUNS</p><h2 id="stat-runs">—</h2></article>
+<article><p class="micro">VERIFIED</p><h2 id="stat-verified">—</h2></article>
+<article><p class="micro">UNVERIFIED</p><h2 id="stat-unverified">—</h2></article></div>
+<p id="budget-note" class="muted">Loading workspace usage…</p>
+</section>
 <section class="shell section" id="workspace">
 <div class="section-index">01 <span>/</span> REPAIR WORKSPACE</div>
-<div class="section-head"><div><h2>Run your first repair.</h2><p>Run a Python dependency migration or test whether the verifier catches a regression.</p></div><span class="tag">BUNDLED EXAMPLE</span></div>
+<div class="section-head"><div><h2>Run your first repair.</h2><p>Try a Python migration, a JavaScript, TypeScript, or SQLite repair, or an algorithm boundary case. Run the regression guard to see a patch rejected.</p></div><span class="tag">BUNDLED EXAMPLE</span></div>
 <div class="workspace">
 <form id="source" class="source-form">
 <label for="profile">Repair profile</label>
@@ -28,6 +40,15 @@
 <option value="pandas">pandas 2 · removed append API</option>
 <option value="settings">Pydantic 2 · settings import</option>
 <option value="billing">Python · invoice total bug</option>
+<option value="go">Go beta · pagination boundary</option>
+<option value="rust">Rust beta · inclusive limit</option>
+<option value="java">Java beta · role comparison</option>
+<option value="cpp">C++ beta · integer overflow</option>
+<option value="typescript">TypeScript beta · repair inventory field</option>
+<option value="javascript">JavaScript beta · enforce discount cap</option>
+<option value="postgresql">PostgreSQL beta · count paid orders</option>
+<option value="sqlite">SQLite beta · count paid orders</option>
+<option value="algorithm">Algorithm beta · binary search boundary</option>
 <option value="regression">pandas 2 · regression guard</option>
 </select>
 <label for="repository">Public GitHub repository <small>Optional · leave blank for the bundled example</small></label>
@@ -44,7 +65,9 @@
 <div class="workspace-body"><aside class="steps"><p class="micro">EXECUTION PLAN</p><ol><li><b>01</b><span>Reproduce failure<small>Run the original tests</small></span></li><li><b>02</b><span>Prepare patch<small>Propose a scoped repair</small></span></li><li><b>03</b><span>Verify result<small>Rerun the unchanged tests</small></span></li></ol></aside>
 <div class="terminal"><div class="terminal-head"><span>⌘ &nbsp; EXECUTION LOG</span><span id="state">READY</span></div><pre id="logs" tabindex="0">Choose a profile and run it to capture baseline and verification output.</pre></div></div>
 <section class="runtime" aria-labelledby="runtime-title"><div id="runtime-title" class="micro">SANDBOX ACTIVITY</div><div id="sandboxes" role="status">Containers appear here when a repair starts.</div></section>
-<div class="workspace-foot"><span id="status" role="status">Ready to start a sandbox run.</span><button class="button secondary small" id="download" hidden>Download evidence ↓</button><button class="button secondary small" id="download-patch" hidden>Download patch ↓</button></div>
+<div class="workspace-foot"><span id="status" role="status">Ready to start a sandbox run.</span><button class="button secondary small" id="cancel-run" hidden>Cancel run</button><button class="button secondary small" id="download" hidden>Download evidence ↓</button><button class="button secondary small" id="download-markdown" hidden>Markdown report ↓</button><button class="button secondary small" id="download-patch" hidden>Download patch ↓</button></div>
+<details id="inventory-panel" hidden><summary>Inspect project metadata</summary><pre id="inventory"></pre></details>
+<details id="test-panel" hidden><summary>Compare test outcomes</summary><pre id="test-outcomes"></pre></details>
 <details id="patch-panel" hidden><summary>View verified patch</summary><pre id="patch"></pre></details>
 </div></section>
 <section class="shell section" id="containment">

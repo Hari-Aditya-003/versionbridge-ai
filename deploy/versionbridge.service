@@ -1,22 +1,3 @@
-[Unit]
-Description=VersionBridge AI control plane
-Requires=docker.service
-After=docker.service network-online.target
-
-[Service]
-Type=simple
-User=versionbridge
-Group=versionbridge
-SupplementaryGroups=docker
-WorkingDirectory=/opt/versionbridge
-EnvironmentFile=/etc/versionbridge.env
-Environment=HOST=127.0.0.1 PORT=8787 VERSIONBRIDGE_DB=/var/lib/versionbridge/runs.sqlite3
-ExecStart=/usr/bin/python3 /opt/versionbridge/server.py
-Restart=on-failure
-StateDirectory=versionbridge
-NoNewPrivileges=true
-ProtectSystem=strict
-ProtectHome=true
-
-[Install]
-WantedBy=multi-user.target
+# Legacy service retired. Use versionbridge-web.service and
+# versionbridge-worker.service through deploy/install.sh.
+# The HTTP service must not receive Docker access or inference credentials.

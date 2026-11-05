@@ -9,8 +9,12 @@ from pathlib import Path
 import unittest
 from unittest.mock import patch
 
+import budget
+import gpu_guard
+import history
+import jobs
 from arithmetic import candidate_expressions, examples
-from profiles import PROFILES
+from profiles import PROFILES, Profile
 from inference import Proposal, propose, validate_replacement
 from server import containment, patch_diff, repair
 from python_target import resolve_target
@@ -21,6 +25,13 @@ def record(events):
 
 
 class AcceptanceTests(unittest.TestCase):
+    def setUp(self):
+        folder = tempfile.TemporaryDirectory()
+        self.addCleanup(folder.cleanup)
+        database = patch.object(history, "DB", Path(folder.name) / "test.sqlite3")
+        database.start()
+        self.addCleanup(database.stop)
+
     def test_two_supported_migrations(self):
         for profile in ("pandas", "settings"):
             with self.subTest(profile=profile):
@@ -56,6 +67,93 @@ class AcceptanceTests(unittest.TestCase):
         self.assertFalse(any(event["event"] == "result" for event in events))
         self.assert_cleanup(events, 2)
 
+    def test_bundled_beta_repairs(self):
+        for profile, count in (("go", 4), ("rust", 4), ("java", 4), ("cpp", 4), ("postgresql", 4), ("typescript", 4), ("javascript", 4), ("sqlite", 4), ("algorithm", 5)):
+            with self.subTest(profile=profile):
+                events = []
+                repair(record(events), profile, profile_id=profile)
+                report = events[-1]
+                self.assertEqual(report["event"], "result")
+                self.assertIn("failed", report["baseline_tests"].values())
+                self.assertEqual(list(report["verification_tests"].values()), ["passed"] * count)
+                self.assert_cleanup(events, 2)
+
+    def test_reject_patch_that_turns_failure_into_skip(self):
+        events = []
+        profile = Profile("Test integrity", "", "FLAG = 0", ("FLAG = 1",), "test_feature")
+
+        def snapshot(repository, ref, folder):
+            (folder / "feature.py").write_text("FLAG = 0\n")
+            (folder / "test_feature.py").write_text(
+                "import pytest\nfrom feature import FLAG\n"
+                "def test_feature():\n    if FLAG:\n        pytest.skip('feature disabled')\n"
+                "    assert False\ndef test_unrelated():\n    assert True\n"
+            )
+            return "a" * 40
+
+        with patch.dict(PROFILES, {"skip_guard": profile}), patch("server.snapshot", snapshot):
+            with patch.dict("os.environ", {"ENABLE_PUBLIC_IMPORT": "1"}):
+                with self.assertRaisesRegex(RuntimeError, "Candidate rejected"):
+                    repair(record(events), "skip", repository="example", profile_id="skip_guard")
+        rejected = events[-1]
+        self.assertEqual(rejected["verification_exit_code"], 0)
+        self.assertEqual(rejected["event"], "rejected")
+        self.assertIn("skipped", rejected["rejection_reason"])
+        self.assert_cleanup(events, 2)
+
+    def test_queue_cancel_and_restart(self):
+        with tempfile.TemporaryDirectory() as folder, patch.object(history, "DB", Path(folder) / "runs.db"):
+            running = jobs.submit(["run"])
+            queued = jobs.submit(["queued"])
+            cancelled = jobs.submit(["cancel"])
+            self.assertEqual(jobs.claim(), (running, ["run"]))
+            jobs.publish(running, [{"event": "stage"}])
+            self.assertTrue(jobs.cancel(cancelled))
+            jobs.interrupted()
+            self.assertEqual(jobs.get(running, 0)["state"], "interrupted")
+            self.assertEqual(jobs.get(running, 1)["events"], [])
+            self.assertEqual(jobs.get(cancelled, 0)["state"], "cancelled")
+            self.assertEqual(jobs.claim(), (queued, ["queued"]))
+            self.assertTrue(jobs.cancel(queued))
+            jobs.publish(queued, [{"event": "result"}], project="Test")
+            self.assertEqual(jobs.get(queued, 0)["state"], "cancelled")
+            self.assertEqual(history.recent(), [])
+
+    def test_paid_inference_reservation_rejects_before_transport(self):
+        with patch.dict("os.environ", {"INFERENCE_BUDGET_USD": "0", "VULTR_API_KEY": "fixture-key",
+                                       "VULTR_MODEL": "fixture-model"}):
+            with patch("inference.urlopen") as transport:
+                with self.assertRaises(budget.BudgetExceeded):
+                    propose(PROFILES["billing"], "failure", "source")
+                transport.assert_not_called()
+
+    def test_queue_idempotency_and_budget_persistence(self):
+        settings = ["", "", "billing", "", ""]
+        first = jobs.submit(settings, "request-key-123456")
+        self.assertEqual(jobs.submit(settings, "request-key-123456"), first)
+        with self.assertRaises(ValueError):
+            jobs.submit(["different"], "request-key-123456")
+        with patch.dict("os.environ", {"INFERENCE_BUDGET_USD": "1", "INFERENCE_DAILY_REQUESTS": "1"}):
+            budget.reserve(1000, 700)
+            self.assertEqual(budget.status()["requests_today"], 1)
+            with self.assertRaises(budget.BudgetExceeded):
+                budget.reserve(1000, 700)
+
+    def test_gpu_quiet_mode_pauses_on_busy_or_stale_metrics(self):
+        import time
+        with tempfile.TemporaryDirectory() as folder:
+            filename = Path(folder) / "gpu.json"
+            telemetry = {"timestamp": time.time(), "temperature_c": 50, "memory_total_mb": 4096,
+                         "memory_used_mb": 500, "utilization_percent": 0}
+            filename.write_text(json.dumps(telemetry))
+            with patch.dict("os.environ", {"VERSIONBRIDGE_GPU_STATUS_FILE": str(filename)}):
+                gpu_guard.check()
+                for changes in ({"temperature_c": 70}, {"utilization_percent": 90}, {"timestamp": 0},
+                                {"memory_used_mb": 4000}):
+                    filename.write_text(json.dumps({**telemetry, **changes}))
+                    with self.assertRaises(RuntimeError):
+                        gpu_guard.check()
+
     def test_containment(self):
         events = []
         containment(record(events))
@@ -84,6 +182,7 @@ class AcceptanceTests(unittest.TestCase):
                 proposal = propose(PROFILES["billing"], "failing test", "source")
         self.assertEqual(transport.call_args.args[0].full_url,
                          "https://api.vultrinference.com/v1/chat/completions")
+        self.assertGreater(proposal.receipt.pop("budget")["reserved_usd"], 0)
         self.assertEqual(proposal.receipt, {"requested_model": "fixture-model", "served_model": "served-model",
                                            "completion_id": "test-receipt", "tokens": {"total_tokens": 123}})
 
