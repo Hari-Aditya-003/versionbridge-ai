@@ -43,6 +43,7 @@ The $200 credit is the overall authorization ceiling. Application allowances do 
 
 ## Operations
 
+- Keep the worker workspace directory at `/var/lib/versionbridge/workspaces`, owned by the worker with mode 0700. Set worker-only `TMPDIR` to that path so sandbox source mounts remain visible to Docker under systemd filesystem restrictions.
 - Keep the shared state directory at mode 2770 with group `versionbridge`.
 - Keep both environment files root-owned at mode 0600.
 - Use one worker per database. Its process lock prevents duplicates.

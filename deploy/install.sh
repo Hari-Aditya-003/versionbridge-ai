@@ -19,6 +19,7 @@ id versionbridge-web >/dev/null 2>&1 || useradd --system --gid versionbridge --n
 id versionbridge-worker >/dev/null 2>&1 || useradd --system --gid versionbridge --no-create-home --shell /usr/sbin/nologin versionbridge-worker
 usermod -aG docker versionbridge-worker
 install -d -o versionbridge-worker -g versionbridge -m 2770 /var/lib/versionbridge
+install -d -o versionbridge-worker -g versionbridge -m 700 /var/lib/versionbridge/workspaces
 docker build -t versionbridge-sandbox:1 -f Sandbox.Dockerfile .
 if [[ ! -f /etc/versionbridge-web.env ]]; then
     cat > /etc/versionbridge-web.env <<'ENV'
@@ -34,6 +35,7 @@ if [[ ! -f /etc/versionbridge-worker.env ]]; then
     cat > /etc/versionbridge-worker.env <<'ENV'
 VERSIONBRIDGE_DB=/var/lib/versionbridge/runs.sqlite3
 SANDBOX_LOCATION="Vultr Cloud Compute"
+TMPDIR=/var/lib/versionbridge/workspaces
 INFERENCE_BUDGET_USD=5
 INFERENCE_DAILY_REQUESTS=30
 INFERENCE_INPUT_USD_PER_MILLION=3
