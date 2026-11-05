@@ -52,7 +52,9 @@ def sandbox(command, emit, project=None, timeout=35, *, test_report=None, native
         args.extend(["--runtime", runtime])
     if project:
         args.extend(["--mount", f"type=bind,src={project},dst=/project,readonly", "-w", "/project"])
-    emit("sandbox", {"name": name, "status": "Dispatching",
+    image = subprocess.run(["docker", "image", "inspect", "--format", "{{.Id}}", IMAGE],
+                           capture_output=True, text=True, timeout=10, check=True).stdout.strip()
+    emit("sandbox", {"name": name, "status": "Dispatching", "image": image,
                      "runtime": os.environ.get("SANDBOX_RUNTIME", "Docker default"),
                      "location": os.environ.get("SANDBOX_LOCATION", "Local Docker daemon"),
                      "limits": f"1 CPU · 384 MiB · 64 PIDs · {timeout}s"})
@@ -208,6 +210,7 @@ def repair(emit, run_id, repository="", ref="", profile_id="pandas", filename=""
                         "diagnosis": proposal.diagnosis, "inference": proposal.receipt,
                         "before": before, "after": after, "attempt": attempt,
                         "baseline_exit_code": baseline, "verification_exit_code": status,
+                        "controller_revision": os.getenv("VERSIONBRIDGE_REVISION", "working-tree"),
                         "inventory": inventory,
                         "profile": profile_id, "commit": revision, "file": path,
                         "baseline_tests": baseline_tests, "verification_tests": candidate_tests,
