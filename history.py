@@ -12,6 +12,8 @@ DB = Path(os.environ.get("VERSIONBRIDGE_DB", Path(__file__).resolve().parent / "
 def connect():
     DB.parent.mkdir(parents=True, exist_ok=True)
     db = sqlite3.connect(DB)
+    if DB.stat().st_uid == os.geteuid():
+        DB.chmod(0o660)
     db.execute("CREATE TABLE IF NOT EXISTS runs (id TEXT PRIMARY KEY, created TEXT, project TEXT, status TEXT, evidence TEXT)")
     return db
 

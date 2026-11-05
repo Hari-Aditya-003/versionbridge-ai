@@ -71,6 +71,8 @@ def main():
             checks += 1
             print(f"PASS {message}", flush=True)
 
+        check((Path(folder) / "runs.sqlite3").stat().st_mode & 0o060 == 0o060,
+              "database permits the shared service group to read and write")
         check(request("/healthz", authorized=False)[0] == 200, "public health endpoint")
         check(request("/api/v1/history", authorized=False)[0] == 401, "history requires authentication")
         check(request("/api/jobs", {"profile": "billing"}, authorized=False)[0] == 401,
