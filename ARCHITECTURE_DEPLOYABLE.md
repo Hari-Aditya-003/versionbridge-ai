@@ -135,6 +135,20 @@ Do **not** hardcode screenshot SOTA model names as provider-guaranteed. They are
 
 The Linux RTX 5070 Ti 16GB workstation, if used separately, could support a larger **private** model profile after memory/latency testing; it is not the default Dell profile or part of the judged Vultr path.
 
+## Initial category-to-model routing policy (proposed)
+
+These are **starting configurations, not per-category SOTA claims**. The initial Vultr provider pool is based on models recorded in the V1 evidence, and the local choices are constrained by the Dell's GPU memory. The router must replace these defaults with benchmark-backed decisions only after per-category holdout scores exist.
+
+| Failure category | Vultr primary / fallback | Dell Ollama initial roles | Non-LLM authority |
+| --- | --- | --- | --- |
+| API / library migration | GLM 5.3 Flash → DeepSeek V4.1 Flash 1017 | Qwen2.5-Coder 3B; optional DeepSeek-R1 1.5B feedback | Version-pinned docs, import checks, baseline and regression tests |
+| Algorithmic / arithmetic | GLM 5.3 Flash → DeepSeek V4.1 Flash 1017 | DeepSeek-R1 1.5B for concise diagnosis, Qwen2.5-Coder 3B for patch | Property-based invariants and executed tests |
+| Type / compiled build | GLM 5.3 Flash → DeepSeek V4.1 Flash 1017 | Qwen2.5-Coder 3B for proposals | Actual compiler/type checker diagnostics |
+| SQL / schema | GLM 5.3 Flash → DeepSeek V4.1 Flash 1017 | Qwen2.5-Coder 3B with small schema excerpts | Disposable DB query results, constraints, rollback tests |
+| Regression / security | No model can override the deterministic gate; optional advisory review with a different served model | Optional DeepSeek-R1 1.5B advisory | Immutable test set, policy checks, containment probes |
+
+For compiled-language and SQL categories, models create proposals; they never substitute for actual compilation or database execution. If a local model cannot fit or cannot produce a schema-valid proposal, mark the attempt unverified rather than silently falling back to an arbitrary heavyweight model.
+
 ## Implementation modules and responsibility map
 
 ### Reuse existing files (implemented)
