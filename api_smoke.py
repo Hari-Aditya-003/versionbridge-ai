@@ -74,6 +74,12 @@ def main():
         check((Path(folder) / "runs.sqlite3").stat().st_mode & 0o060 == 0o060,
               "database permits the shared service group to read and write")
         check(request("/healthz", authorized=False)[0] == 200, "public health endpoint")
+        check(request("/api/telemetry", authorized=False)[0] == 401, "resource telemetry requires workspace authentication")
+        status, sensors = request("/api/v1/telemetry")
+        check(status == 200 and all(k in sensors for k in ("sampled_at", "host", "gpu", "inference")),
+              "versioned resource telemetry has explicit sensor provenance")
+        check(sensors["inference"]["remote_gpu_metrics_available"] is False,
+              "serverless GPU sensors are never fabricated")
         check(request("/api/v1/history", authorized=False)[0] == 401, "history requires authentication")
         check(request("/api/jobs", {"profile": "billing"}, authorized=False)[0] == 401,
               "job submission requires authentication")
