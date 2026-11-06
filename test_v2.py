@@ -322,6 +322,17 @@ class RegistryTests(unittest.TestCase):
             with self.assertRaises(RuntimeError):
                 model_registry.catalog()
 
+    def test_ollama_registry_requires_an_installed_quantized_manifest(self):
+        import io
+        from unittest.mock import patch
+        from model_registry import validate_available
+        name="qwen2.5-coder:1.5b-instruct-q4_K_M"
+        response={"models":[{"name":name,"digest":"asset-digest","details":{"quantization_level":"Q4_K_M"}}]}
+        with patch("model_registry.urlopen",return_value=io.BytesIO(json.dumps(response).encode())):
+            self.assertEqual(validate_available("ollama",name)["asset_digest"],"asset-digest")
+        with patch("model_registry.urlopen",return_value=io.BytesIO(b'{"models":[]}')):
+            with self.assertRaises(RuntimeError):validate_available("ollama",name)
+
     def test_critic_cannot_override_a_failed_verifier(self):
         from critics import decision
 
@@ -370,6 +381,17 @@ class ContextTests(unittest.TestCase):
         )
         self.assertEqual(result["groups"][0]["false_acceptances"], 1)
         self.assertEqual(result["groups"][0]["verified_repair_rate"], 0)
+
+
+class ReportTests(unittest.TestCase):
+    def test_report_exposes_scope_independent_checks_and_human_review(self):
+        from reports import markdown
+        text=markdown([{"event":"result","id":"v2","verification_scope":"original suite plus independent checks",
+                        "classification":{"categories":["api"]},"independent_checks":{"passed":True,"checks":4},
+                        "human_decision":"pending maintainer review","source_sha":"source"}])
+        self.assertIn("Independent checks",text)
+        self.assertIn("Human decision",text)
+        self.assertIn("Verification scope",text)
 
 
 class TelemetryTests(unittest.TestCase):
