@@ -18,6 +18,7 @@ from uuid import uuid4
 
 import budget
 from inspection import inspect_project
+from model_routing import plan_models
 import history
 import jobs
 import reports
@@ -178,6 +179,7 @@ def repair(emit, run_id, repository="", ref="", profile_id="pandas", filename=""
             raise RuntimeError("The expected baseline failure was not reproduced. Check the execution log.")
         if "failed" not in baseline_tests.values():
             raise RuntimeError("The baseline did not report a completed failing test inventory.")
+        selected_models = plan_models(inference_mode(), attempts, os.getenv("VULTR_MODEL_POOL"))
         previous = None
         for attempt in range(1, attempts + 1):
             emit("stage", {"step": 1, "message": f"Preparing candidate patch · attempt {attempt}"})
@@ -187,7 +189,11 @@ def repair(emit, run_id, repository="", ref="", profile_id="pandas", filename=""
             if inference_mode() == "local-gpu":
                 lines = source.split("\n")
                 context = "\n".join(lines[max(0, line_number - 12):line_number + 4])
-            proposal = propose(profile, before, context, previous)
+            if selected_models:
+                proposal = propose(profile, before, context, previous,
+                                   model_id=selected_models[attempt - 1])
+            else:
+                proposal = propose(profile, before, context, previous)
             replacement = proposal.replacement
             emit("diagnosis", {"attempt": attempt, "text": proposal.diagnosis,
                                "provider": proposal.provider, "receipt": proposal.receipt})
