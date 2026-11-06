@@ -141,18 +141,35 @@ class PatchTests(unittest.TestCase):
             apply_manifest(self.root, m, allowed)
         self.assertEqual((self.root / "app/core.py").read_text(), self.original)
 
-
     def test_unterminated_export_applies_with_git(self):
         import subprocess
         from patch_engine import apply_manifest, snapshot_hash
+
         text = "def f(x):\n    return x + 1"
-        (self.root/"app/core.py").write_text(text)
-        manifest = {"schema_version":1,"source_sha":snapshot_hash(self.root,["app/core.py"]),
-                    "diagnosis":"Correct the sign.","edits":[{"path":"app/core.py","start_line":2,"end_line":2,
-                    "old_sha256":digest("    return x + 1"),"new_text":"    return x - 1","reason":"Boundary repair."}]}
-        applied = apply_manifest(self.root,manifest,["app/core.py"])
-        result = subprocess.run(["git","apply","--check"],input=applied["diff"].encode(),cwd=self.root,capture_output=True)
-        self.assertEqual(result.returncode,0,result.stderr.decode())
+        (self.root / "app/core.py").write_text(text)
+        manifest = {
+            "schema_version": 1,
+            "source_sha": snapshot_hash(self.root, ["app/core.py"]),
+            "diagnosis": "Correct the sign.",
+            "edits": [
+                {
+                    "path": "app/core.py",
+                    "start_line": 2,
+                    "end_line": 2,
+                    "old_sha256": digest("    return x + 1"),
+                    "new_text": "    return x - 1",
+                    "reason": "Boundary repair.",
+                }
+            ],
+        }
+        applied = apply_manifest(self.root, manifest, ["app/core.py"])
+        result = subprocess.run(
+            ["git", "apply", "--check"],
+            input=applied["diff"].encode(),
+            cwd=self.root,
+            capture_output=True,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr.decode())
 
 
 class RegistryTests(unittest.TestCase):

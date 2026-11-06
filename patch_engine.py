@@ -115,17 +115,15 @@ def apply_manifest(root, manifest, allowed):
             raise ValueError("Candidate made no change.")
         checks.append({"path": name, **parse_safe_change(files[name], after)})
         output[name] = after
-        diff = "".join(
-            difflib.unified_diff(
-                physical_lines(files[name]),
-                physical_lines(after),
-                fromfile="a/" + name,
-                tofile="b/" + name,
-            )
+        changes = difflib.unified_diff(
+            physical_lines(files[name]),
+            physical_lines(after),
+            fromfile="a/" + name,
+            tofile="b/" + name,
         )
         diff = "".join(
             line if line.endswith("\n") else line + "\n\\ No newline at end of file\n"
-            for line in physical_lines(diff)
+            for line in changes
         )
         diffs.append(diff)
     diff = "".join(diffs)
