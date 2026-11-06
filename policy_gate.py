@@ -118,10 +118,36 @@ def parse_safe_change(before, after):
         ast.dump(n) for n in ast.walk(candidate) if isinstance(n, ast.Assert)
     ]:
         raise ValueError("Assertions cannot change.")
+    original_top = {ast.dump(n) for n in original.body}
+    for node in candidate.body:
+        if ast.dump(node) in original_top or isinstance(
+            node,
+            (
+                ast.Import,
+                ast.ImportFrom,
+                ast.FunctionDef,
+                ast.AsyncFunctionDef,
+                ast.ClassDef,
+            ),
+        ):
+            continue
+        raise ValueError(
+            "New module-level execution or state is outside the migration policy."
+        )
     original_nodes = {ast.dump(n) for n in ast.walk(original)}
     for node in ast.walk(candidate):
         if ast.dump(node) in original_nodes:
             continue
+        if isinstance(node, (ast.Global, ast.Nonlocal, ast.Lambda, ast.NamedExpr)):
+            raise ValueError("New runtime mutation or dynamic closure is prohibited.")
+        if isinstance(node, (ast.Assign, ast.AnnAssign, ast.AugAssign, ast.Delete)):
+            targets = (
+                node.targets
+                if isinstance(node, (ast.Assign, ast.Delete))
+                else [node.target]
+            )
+            if any(not isinstance(target, ast.Name) for target in targets):
+                raise ValueError("New attribute or subscript mutations are prohibited.")
         if isinstance(node, (ast.Import, ast.ImportFrom)):
             forbidden = {
                 "sys",

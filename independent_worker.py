@@ -10,6 +10,11 @@ if __name__ == "__main__":
     cases = json.loads(sys.stdin.read(65536))
     task = sys.argv[1]
     sys.path.insert(0, "/project")
+    # Capture trusted serializer and helper references before importing candidate.
+    # Candidate module monkeypatches cannot replace the behavior protocol encoder.
+    encode = json.dumps
+    user_dict = UserDict
+    mapping_proxy = MappingProxyType
     results = []
     if task == "v2-settings":
         from app.config import load_config
@@ -32,7 +37,7 @@ if __name__ == "__main__":
             if case.get("classify"):
                 from app.types import is_record
 
-                results.append([is_record(UserDict({"x": 1})), is_record([("x", 1)])])
+                results.append([is_record(user_dict({"x": 1})), is_record([("x", 1)])])
             elif case.get("empty"):
                 results.append(transform([]))
             else:
@@ -40,13 +45,13 @@ if __name__ == "__main__":
                 results.append(
                     transform(
                         [
-                            UserDict(value),
+                            user_dict(value),
                             None,
-                            MappingProxyType(value),
+                            mapping_proxy(value),
                             "text",
                             {},
                             [value],
                         ]
                     )
                 )
-    print(json.dumps(results))
+    print(encode(results))
