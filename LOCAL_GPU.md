@@ -33,3 +33,9 @@ To stop inference, end the Dell service and SSH forwarding sessions. If the Olla
 Run `python3 gpu_monitor.py YOUR_EXISTING_DELL_SSH_TARGET` on the controller host using an existing trusted SSH connection. Set `VERSIONBRIDGE_GPU_STATUS_FILE` to the resulting `data/gpu-status.json` before starting the worker. The local inference client refuses dispatch when telemetry is older than 15 seconds, the temperature is at least 65°C, utilization is at least 30%, or free GPU memory is below 1,536 MiB.
 
 The monitor exits if SSH or telemetry parsing fails. The admission guard then rejects stale data. This mechanism checks conditions before a request. It does not change GPU power limits or interrupt an inference already in progress.
+
+## V2 observed configuration
+
+The November 6 V2 run verified all three controlled no-enum migrations with the existing Qwen2.5-Coder 1.5B Q4_K_M model, 2048 context and `VERSIONBRIDGE_LOCAL_OUTPUT=800`. Ollama reported no resident models after the run. This is a measured alternative output cap; the legacy default is 320. No larger model was promoted. [Final evidence and earlier failures](V2_IMPLEMENTATION.md)
+
+Set `VERSIONBRIDGE_GPU_STATUS_FILE` on the private web process as well as the worker to display the trusted Dell GPU readings in the resource panel. RAM/CPU measurements describe the application host; GPU readings can describe the remote Dell. The HTTP API follows the workspace access token. Never expose the trusted monitor file as a static web asset.

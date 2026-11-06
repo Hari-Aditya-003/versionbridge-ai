@@ -26,3 +26,9 @@ Keep model calls for the judged application on Vultr Serverless Inference. The p
 ## Observed release selection
 
 The November 5 comparison selected `glm-5.3-flash` after all 13 fixture outcomes matched expectations. `deepseek-v4.1-flash-1017` achieved 12 of 13. The requests used structured JSON, minimal reasoning effort, bounded output, and up to two proposals per case. Larger reasoning budgets should be evaluated separately before changing the deployed request policy. [Recorded comparison](EVALUATION.md)
+
+## V2 live cascade and Dell tuning
+
+[Final V2 evidence and scope](V2_IMPLEMENTATION.md) records three verified cloud migrations and three verified Dell migrations. The cloud settings task used DeepSeek after a GLM policy rejection. The two-model cascade is sequential and stops after success. Current cloud IDs are checked against the live Vultr catalog; local V2 IDs must match installed Q4_K_M manifests.
+
+The Dell V2 run used the existing 1.5B model at 2048 context with an evaluated 800-output-token setting. Earlier failures remain published. Default legacy output remains 320. No 3B or larger model was downloaded or promoted. Registered experimental candidates require explicit private opt-in and further license/resource/quality evaluation.

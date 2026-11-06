@@ -15,3 +15,9 @@ The installer runs the HTTP API as `versionbridge-web` and the worker as `versio
 The optional private access token gates API data and execution requests. Public mode disables repository imports and permits only the curated workloads. A persistent daily submission quota and separate paid-inference allowance limit repeated execution. The application is a single-workspace release and does not claim tenant isolation.
 
 Compiler workloads need bounded executable scratch space. The native profiles use an additional tmpfs for their compiled program. The normal scratch mount remains non-executable. PostgreSQL uses a local Unix socket inside its container and disposable fixture data.
+
+## V2 edit and independent-check boundary
+
+The model cannot provide trusted source hashes, alter the original test files, or decide eligibility. The worker binds span hashes and preserves single-line indentation before AST policy and real execution. New module mutations, sensitive aliases, introspection, changed signatures/assertions and protected paths are rejected. The independent supervisor never imports application source; a child returns behavior data for comparison. Candidate-printed verdicts and protocol tampering have regression coverage.
+
+This remains a conservative reviewed-project workflow. General untrusted repository execution, organization tenancy and private GitHub App access remain outside the supported public boundary. See [the implementation map](V2_IMPLEMENTATION.md) for the exact limitations.

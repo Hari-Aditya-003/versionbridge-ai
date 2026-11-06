@@ -72,3 +72,11 @@ The live public browser session verified the pinned GitHub pandas repair, reject
 [Browser run records](evidence/vultr-browser-demo-2026-11-06.json) · [Watch the recording](https://hari-aditya-003.github.io/versionbridge-ai/demo.html)
 
 The recording shortens static pauses between captured frames. It preserves the actual execution results.
+
+## V2 technical report implementation
+
+The release adds 28 V2 unit and real-Docker methods to the retained 23 V1 acceptance methods. The separate-worker HTTP suite now has 24 checks. New cases include five-track routing, provider catalogs/assets, stale/unsafe manifests, independent semantic regressions, runner/protocol protections and live telemetry authorization.
+
+Both live backends verified the three new no-enum migration tasks. The cloud cascade used DeepSeek after a GLM rejection for settings; the Dell 1.5B model passed all three final cases on its first attempt. Earlier rejected trials are retained. See [V2 implementation and live evidence](V2_IMPLEMENTATION.md) for task scope and remaining evaluation gaps.
+
+Measured statement coverage of the listed V2/shared core modules was 85.7% (582 of 679 statements); this is not whole-repository coverage. [Reproducible release-check receipt](evidence/v2-release-checks-2026-11-06.json).

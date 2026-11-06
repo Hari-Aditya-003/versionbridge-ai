@@ -192,6 +192,7 @@ function showResult(event) {
     const skipped = outcomes.length - passed;
     statusLine.textContent += ` · ${passed} passed${skipped ? `, ${skipped} skipped` : ""}`;
   }
+  if (event.independent_checks?.passed) statusLine.textContent += ` · ${event.independent_checks.checks} independent checks`;
   patchPanel.querySelector("summary").textContent = "View verified patch";
   document.querySelector("#patch").textContent = event.diff;
   patchPanel.hidden = download.hidden = patchDownload.hidden = false;

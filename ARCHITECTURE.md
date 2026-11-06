@@ -18,6 +18,12 @@ flowchart LR
     Verify --> DB
 ```
 
+## V2 shared pipeline
+
+The [V2 implementation map](V2_IMPLEMENTATION.md) records the full scope. `v2_pipeline.py` performs immutable intake, baseline/localization, deterministic category routing, sequential synthesis, static policy validation, fresh original/independent execution, and evidence publication. Vultr and Ollama share provider contracts, policy, verifier and reports. Trusted code binds model-proposed spans to checksums; source and models never decide eligibility.
+
+`patch_engine.py` supports bounded Python multi-location and multi-file edits from the pristine original. `independent_tests.py` owns the behavior verdict while `independent_worker.py` imports application code only in a child. The source graph labels exact import syntax and heuristic calls. `history.py` records candidate attempts atomically. Existing V1 profiles and endpoints remain available.
+
 ## Processes and permissions
 
 The production web user belongs to the shared state group and has no Docker access. Its environment has no inference key. The execution worker belongs to the Docker group and receives its own root-owned environment file. Systemd applies memory limits and restarts a failed process. Caddy proxies public HTTPS to the loopback web service.
@@ -62,6 +68,7 @@ Existing `/api/` routes also accept the `/api/v1/` prefix.
 | `POST /api/jobs/ID` | Request cancellation |
 | `GET /api/history` | Recent completed evidence |
 | `GET /api/stats` | Retained outcome counts |
+| `GET /api/telemetry` | Cached live host and accessible GPU readings with provenance |
 | `GET /api/budget` | Application inference reservations |
 | `GET /api/runs/ID/report.json` | Download recorded events |
 | `GET /api/runs/ID/report.md` | Download a Markdown report |

@@ -1,0 +1,1694 @@
+{
+  "origin": "https://versionbridge.64.177.53.254.sslip.io",
+  "started_at": 1793981464.645706,
+  "before_budget": {
+    "limit_usd": 4.0,
+    "reserved_usd": 0.445725,
+    "remaining_usd": 3.554275,
+    "requests_today": 3,
+    "daily_request_limit": 30,
+    "scope": "Application inference reservations. VM, bandwidth, and other account charges are separate."
+  },
+  "runs": [
+    {
+      "task": "v2-settings",
+      "id": "7eed7cf01e9249328abef8044cd0986d",
+      "state": "verified",
+      "cursor": 16,
+      "events": [
+        {
+          "event": "project",
+          "recorded_at": 1793981467.1681454,
+          "profile": "v2-settings",
+          "title": "V2 \u00b7 open-ended Pydantic settings migration"
+        },
+        {
+          "event": "stage",
+          "recorded_at": 1793981467.2394886,
+          "step": 0,
+          "message": "V2 \u00b7 reproducing the pinned migration failure\u2026"
+        },
+        {
+          "event": "sandbox",
+          "recorded_at": 1793981467.243863,
+          "name": "versionbridge-397752d42c9e4b83a9a9f992a3618600",
+          "status": "Dispatching",
+          "image": "sha256:fbbefae16ff6881f8a442ce1f8d87c4a03c9edc919c3a48f0a12119df8b51c98",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s"
+        },
+        {
+          "event": "sandbox",
+          "recorded_at": 1793981467.9306476,
+          "name": "versionbridge-397752d42c9e4b83a9a9f992a3618600",
+          "status": "Removed",
+          "exit_code": 1,
+          "timed_out": false
+        },
+        {
+          "event": "log",
+          "recorded_at": 1793981467.93252,
+          "label": "V2 baseline",
+          "text": "F                                                                        [100%]\n=================================== FAILURES ===================================\n______________________________ test_service_name _______________________________\ntest_config.py:3: in test_service_name\n    assert load_config()['service_name'] == 'bridge'\napp/config.py:2: in load_config\n    from pydantic import BaseSettings\n/usr/local/lib/python3.12/site-packages/pydantic/__init__.py:426: in __getattr__\n    return _getattr_migration(attr_name)\n/usr/local/lib/python3.12/site-packages/pydantic/_migration.py:296: in wrapper\n    raise PydanticImportError(\nE   pydantic.errors.PydanticImportError: `BaseSettings` has been moved to the `pydantic-settings` package. See https://docs.pydantic.dev/2.11/migration/#basesettings-has-moved-to-pydantic-settings for more details.\nE   \nE   For further information visit https://errors.pydantic.dev/2.11/u/import-error\n=========================== short test summary info ============================\nFAILED test_config.py::test_service_name - pydantic.errors.PydanticImportErro...\n1 failed in 0.06s\n"
+        },
+        {
+          "event": "analysis",
+          "recorded_at": 1793981467.9363196,
+          "classification": {
+            "categories": [
+              "api",
+              "algorithm"
+            ],
+            "matches": [
+              {
+                "category": "api",
+                "evidence": "PydanticImportError",
+                "path": "app/config.py",
+                "basis": "deterministic_signature"
+              },
+              {
+                "category": "algorithm",
+                "evidence": "assert load_config()['service_name'] ==",
+                "path": "app/config.py",
+                "basis": "deterministic_signature"
+              }
+            ],
+            "confidence_source": "matched signatures",
+            "universal_guards": [
+              "patch_policy",
+              "original_test_inventory",
+              "independent_checks_when_available",
+              "sandbox_cleanup"
+            ],
+            "narrow_scope": false
+          },
+          "context": {
+            "symbols": [
+              {
+                "name": "load_config",
+                "path": "app/config.py",
+                "line": 1,
+                "end_line": 10,
+                "kind": "FunctionDef"
+              },
+              {
+                "name": "Settings",
+                "path": "app/config.py",
+                "line": 4,
+                "end_line": 7,
+                "kind": "ClassDef"
+              }
+            ],
+            "edges": [
+              {
+                "from": "app/config.py",
+                "to": "pydantic",
+                "path": "app/config.py",
+                "line": 2,
+                "kind": "import",
+                "confidence": "exact_syntax"
+              },
+              {
+                "from": "app/config.py",
+                "to": "Settings",
+                "path": "app/config.py",
+                "line": 9,
+                "kind": "call",
+                "confidence": "heuristic_unresolved_receiver"
+              }
+            ],
+            "diagnostic_excerpt": "F                                                                        [100%]\n=================================== FAILURES ===================================\n______________________________ test_service_name _______________________________\ntest_config.py:3: in test_service_name\n    assert load_config()['service_name'] == 'bridge'\napp/config.py:2: in load_config\n    from pydantic import BaseSettings\n/usr/local/lib/python3.12/site-packages/pydantic/__init__.py:426: in __getattr__\n    return _getattr_migration(attr_name)\n/usr/local/lib/python3.12/site-packages/pydantic/_migration.py:296: in wrapper\n    raise PydanticImportError(\nE   pydantic.errors.PydanticImportError: `BaseSettings` has been moved to the `pydantic-settings` package. See https://docs.pydantic.dev/2.11/migration/#basesettings-has-moved-to-pydantic-settings for more details.\nE   \nE   For further information visit https://errors.pydantic.dev/2.11/u/import-error\n=========================== short test summary info ============================\nFAILED test_config.py::test_service_name - pydantic.errors.PydanticImportErro...\n1 failed in 0.06s\n",
+            "localization_basis": "Allowed application files plus parsed source locations; no learned precision claim."
+          },
+          "impact_graph": {
+            "nodes": [
+              {
+                "id": "app/config.py",
+                "kind": "file",
+                "sha256": "acf7e9aef58ff9c6ef82ecbfb5696d3e13ae740cb456fc7de1f00eec558be38f"
+              }
+            ],
+            "symbols": [
+              {
+                "name": "load_config",
+                "path": "app/config.py",
+                "line": 1,
+                "end_line": 10,
+                "kind": "FunctionDef"
+              },
+              {
+                "name": "Settings",
+                "path": "app/config.py",
+                "line": 4,
+                "end_line": 7,
+                "kind": "ClassDef"
+              }
+            ],
+            "edges": [
+              {
+                "from": "app/config.py",
+                "to": "pydantic",
+                "path": "app/config.py",
+                "line": 2,
+                "kind": "import",
+                "confidence": "exact_syntax"
+              },
+              {
+                "from": "app/config.py",
+                "to": "Settings",
+                "path": "app/config.py",
+                "line": 9,
+                "kind": "call",
+                "confidence": "heuristic_unresolved_receiver"
+              }
+            ],
+            "limitations": "Import syntax is exact; calls are heuristic, not a whole-program dependency graph."
+          },
+          "knowledge": [
+            {
+              "id": "pydantic-settings-v2",
+              "package": "pydantic",
+              "version_prefix": "2.",
+              "text": "Pydantic V2 moved BaseSettings to the separately installed pydantic-settings package. Preserve environment override behavior and field validation.",
+              "source_url": "https://docs.pydantic.dev/2.11/migration/",
+              "reviewed": "2026-11-06",
+              "scope": "Pydantic 2.11",
+              "retrieval_score": 8.1669,
+              "retrieval": "bounded BM25-style lexical ranking"
+            },
+            {
+              "id": "collections-abc-py310",
+              "package": "python",
+              "version_prefix": "3.",
+              "text": "Python 3.10 removed deprecated collections aliases for collections.abc abstract base classes, including Mapping. Check import consumers and preserve mapping behavior.",
+              "source_url": "https://docs.python.org/3.12/whatsnew/3.10.html",
+              "reviewed": "2026-11-06",
+              "scope": "Python 3.10-3.12",
+              "retrieval_score": 3.1011,
+              "retrieval": "bounded BM25-style lexical ranking"
+            }
+          ],
+          "allowed_paths": [
+            "app/config.py"
+          ],
+          "source_sha": "313a038748dab9208efb58db7e1d02edca7ead4b2cce900afd94949a6c9b6cbb",
+          "versions": {
+            "pydantic": "2.11.10",
+            "python": "3.12.0"
+          },
+          "adapter": {
+            "language": "Python",
+            "command": [
+              "python",
+              "-I",
+              "/opt/versionbridge/pytest_runner.py"
+            ],
+            "native_build_space": false,
+            "deadline_seconds": 35,
+            "scope": "Python application edits with existing pytest and independent checks"
+          }
+        },
+        {
+          "event": "routing",
+          "recorded_at": 1793981467.937572,
+          "model": "glm-5.3-flash",
+          "provider": "vultr",
+          "categories": [
+            "api",
+            "algorithm"
+          ],
+          "reason": "Evidence-backed baseline; no category holdout promotion yet.",
+          "attempt": 1
+        },
+        {
+          "event": "stage",
+          "recorded_at": 1793981467.938576,
+          "step": 1,
+          "message": "V2 \u00b7 authoring manifest \u00b7 attempt 1 \u00b7 glm-5.3-flash"
+        },
+        {
+          "event": "diagnosis",
+          "recorded_at": 1793981471.437236,
+          "attempt": 1,
+          "text": "Pydantic 2.x moved BaseSettings to the pydantic-settings package; importing it from pydantic raises PydanticImportError at load_config line 2.",
+          "provider": "Vultr Serverless Inference",
+          "receipt": {
+            "requested_model": "glm-5.3-flash",
+            "served_model": "glm-5.3-flash",
+            "model_substitution": false,
+            "identity_verified": true,
+            "provider": "Vultr Serverless Inference",
+            "completion_id": "chatcmpl-85a725cc-1fb8-4825-8312-496efaad95a0",
+            "tokens": {
+              "prompt_tokens": 1654,
+              "completion_tokens": 272,
+              "total_tokens": 1926
+            },
+            "latency_ms": 3419.72,
+            "budget": {
+              "reservation_id": 19,
+              "reserved_usd": 0.036939
+            }
+          }
+        },
+        {
+          "event": "stage",
+          "recorded_at": 1793981471.4435284,
+          "step": 2,
+          "message": "V2 \u00b7 original suite and independent checks in fresh containers\u2026"
+        },
+        {
+          "event": "sandbox",
+          "recorded_at": 1793981471.4455776,
+          "name": "versionbridge-a81c19ec844a4c729be3c05a2f04c137",
+          "status": "Dispatching",
+          "image": "sha256:fbbefae16ff6881f8a442ce1f8d87c4a03c9edc919c3a48f0a12119df8b51c98",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s"
+        },
+        {
+          "event": "sandbox",
+          "recorded_at": 1793981472.2867734,
+          "name": "versionbridge-a81c19ec844a4c729be3c05a2f04c137",
+          "status": "Removed",
+          "exit_code": 0,
+          "timed_out": false
+        },
+        {
+          "event": "sandbox",
+          "recorded_at": 1793981472.2892845,
+          "name": "versionbridge-dee1ffa588f340c5b3c3f615df563458",
+          "status": "Dispatching",
+          "image": "sha256:fbbefae16ff6881f8a442ce1f8d87c4a03c9edc919c3a48f0a12119df8b51c98",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s"
+        },
+        {
+          "event": "sandbox",
+          "recorded_at": 1793981473.0296805,
+          "name": "versionbridge-dee1ffa588f340c5b3c3f615df563458",
+          "status": "Removed",
+          "exit_code": 0,
+          "timed_out": false
+        },
+        {
+          "event": "log",
+          "recorded_at": 1793981473.036677,
+          "label": "V2 verification 1",
+          "text": ".                                                                        [100%]\n1 passed in 0.23s\n"
+        },
+        {
+          "event": "result",
+          "recorded_at": 1793981473.0453224,
+          "id": "7eed7cf01e9249328abef8044cd0986d",
+          "profile": "v2-settings",
+          "provider": "Vultr Serverless Inference",
+          "diagnosis": "Pydantic 2.x moved BaseSettings to the pydantic-settings package; importing it from pydantic raises PydanticImportError at load_config line 2.",
+          "attempt": 1,
+          "inference": {
+            "requested_model": "glm-5.3-flash",
+            "served_model": "glm-5.3-flash",
+            "model_substitution": false,
+            "identity_verified": true,
+            "provider": "Vultr Serverless Inference",
+            "completion_id": "chatcmpl-85a725cc-1fb8-4825-8312-496efaad95a0",
+            "tokens": {
+              "prompt_tokens": 1654,
+              "completion_tokens": 272,
+              "total_tokens": 1926
+            },
+            "latency_ms": 3419.72,
+            "budget": {
+              "reservation_id": 19,
+              "reserved_usd": 0.036939
+            }
+          },
+          "selection": {
+            "model": "glm-5.3-flash",
+            "provider": "vultr",
+            "categories": [
+              "api",
+              "algorithm"
+            ],
+            "reason": "Evidence-backed baseline; no category holdout promotion yet.",
+            "attempt": 1
+          },
+          "classification": {
+            "categories": [
+              "api",
+              "algorithm"
+            ],
+            "matches": [
+              {
+                "category": "api",
+                "evidence": "PydanticImportError",
+                "path": "app/config.py",
+                "basis": "deterministic_signature"
+              },
+              {
+                "category": "algorithm",
+                "evidence": "assert load_config()['service_name'] ==",
+                "path": "app/config.py",
+                "basis": "deterministic_signature"
+              }
+            ],
+            "confidence_source": "matched signatures",
+            "universal_guards": [
+              "patch_policy",
+              "original_test_inventory",
+              "independent_checks_when_available",
+              "sandbox_cleanup"
+            ],
+            "narrow_scope": false
+          },
+          "source_sha": "313a038748dab9208efb58db7e1d02edca7ead4b2cce900afd94949a6c9b6cbb",
+          "image_digest": "sha256:fbbefae16ff6881f8a442ce1f8d87c4a03c9edc919c3a48f0a12119df8b51c98",
+          "snapshot_sha256": "23e4d660b6aee64e2d0d3cce2000354c69a6a04aa758f89cb18fb3ff9f70055f",
+          "execution_command": [
+            "python",
+            "-I",
+            "/opt/versionbridge/pytest_runner.py"
+          ],
+          "cleanup_verified": true,
+          "tests_sha256": "2f3fe10a27ba8e7b930f9d9bfa81d6071657192905787ce212ee864446ae9015",
+          "commit": null,
+          "changed_paths": [
+            "app/config.py"
+          ],
+          "diff": "--- a/app/config.py\n+++ b/app/config.py\n@@ -1,6 +1,5 @@\n def load_config():\n-    from pydantic import BaseSettings\n-\n+    from pydantic_settings import BaseSettings\n     class Settings(BaseSettings):\n         service_name: str = 'bridge'\n         port: int = 8080\n",
+          "patch_sha256": "42463fba33f2644a13a564b23ba31ad606a5962cd79c7e4adeeeefa0f508a3f5",
+          "candidate_sha": "46d050621704ff2b4c98b58bd3ff89f6810eaa4cc1474ddaf57001c836610b4b",
+          "static_checks": [
+            {
+              "path": "app/config.py",
+              "check": "python_ast_policy",
+              "passed": true,
+              "scope": "conservative syntax and structural checks; not proof of safety"
+            }
+          ],
+          "baseline_exit_code": 1,
+          "verification_exit_code": 0,
+          "baseline_tests": {
+            "test_config.py::test_service_name": "failed"
+          },
+          "verification_tests": {
+            "test_config.py::test_service_name": "passed"
+          },
+          "independent_checks": {
+            "passed": true,
+            "checks": 4,
+            "seed": 7319,
+            "suite": "v2-settings",
+            "protocol": "behavior-supervisor-v2",
+            "provenance": "read-only supervisor; source executed only in isolated child",
+            "suite_sha256": "7bf050dfe94b8329017a1a4d59dab1021da7925994522df67fa991646092ce63"
+          },
+          "before": "F                                                                        [100%]\n=================================== FAILURES ===================================\n______________________________ test_service_name _______________________________\ntest_config.py:3: in test_service_name\n    assert load_config()['service_name'] == 'bridge'\napp/config.py:2: in load_config\n    from pydantic import BaseSettings\n/usr/local/lib/python3.12/site-packages/pydantic/__init__.py:426: in __getattr__\n    return _getattr_migration(attr_name)\n/usr/local/lib/python3.12/site-packages/pydantic/_migration.py:296: in wrapper\n    raise PydanticImportError(\nE   pydantic.errors.PydanticImportError: `BaseSettings` has been moved to the `pydantic-settings` package. See https://docs.pydantic.dev/2.11/migration/#basesettings-has-moved-to-pydantic-settings for more details.\nE   \nE   For further information visit https://errors.pydantic.dev/2.11/u/import-error\n=========================== short test summary info ============================\nFAILED test_config.py::test_service_name - pydantic.errors.PydanticImportErro...\n1 failed in 0.06s\n",
+          "after": ".                                                                        [100%]\n1 passed in 0.23s\n",
+          "verification_scope": "original suite plus independent checks",
+          "rejection_reason": null,
+          "eligibility": "verified_by_checks",
+          "human_decision": "pending maintainer review",
+          "elapsed_ms": 5870,
+          "controller_revision": "d19731ed94dab24fed0df57434b67ba9452d3ec3"
+        }
+      ]
+    },
+    {
+      "task": "v2-collections",
+      "id": "45cbd6970acc4d3586a8687cc5e8d9a5",
+      "state": "rejected",
+      "cursor": 15,
+      "events": [
+        {
+          "event": "project",
+          "recorded_at": 1793981476.0547087,
+          "profile": "v2-collections",
+          "title": "V2 \u00b7 open-ended collections migration"
+        },
+        {
+          "event": "stage",
+          "recorded_at": 1793981476.0934117,
+          "step": 0,
+          "message": "V2 \u00b7 reproducing the pinned migration failure\u2026"
+        },
+        {
+          "event": "sandbox",
+          "recorded_at": 1793981476.0951,
+          "name": "versionbridge-72d0867d24cd4a378a1256aa0ac46987",
+          "status": "Dispatching",
+          "image": "sha256:fbbefae16ff6881f8a442ce1f8d87c4a03c9edc919c3a48f0a12119df8b51c98",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s"
+        },
+        {
+          "event": "sandbox",
+          "recorded_at": 1793981476.6842167,
+          "name": "versionbridge-72d0867d24cd4a378a1256aa0ac46987",
+          "status": "Removed",
+          "exit_code": 1,
+          "timed_out": false
+        },
+        {
+          "event": "log",
+          "recorded_at": 1793981476.6860385,
+          "label": "V2 baseline",
+          "text": "F                                                                        [100%]\n=================================== FAILURES ===================================\n________________________________ test_mappings _________________________________\ntest_records.py:3: in test_mappings\n    assert only_mappings([{'id': 1}, 'ignore']) == [{'id': 1}]\napp/records.py:2: in only_mappings\n    from collections import Mapping\nE   ImportError: cannot import name 'Mapping' from 'collections' (/usr/local/lib/python3.12/collections/__init__.py)\n=========================== short test summary info ============================\nFAILED test_records.py::test_mappings - ImportError: cannot import name 'Mapp...\n1 failed in 0.02s\n"
+        },
+        {
+          "event": "analysis",
+          "recorded_at": 1793981476.688107,
+          "classification": {
+            "categories": [
+              "api",
+              "algorithm"
+            ],
+            "matches": [
+              {
+                "category": "api",
+                "evidence": "ImportError",
+                "path": "app/records.py",
+                "basis": "deterministic_signature"
+              },
+              {
+                "category": "algorithm",
+                "evidence": "assert only_mappings([{'id': 1}, 'ignore']) ==",
+                "path": "app/records.py",
+                "basis": "deterministic_signature"
+              }
+            ],
+            "confidence_source": "matched signatures",
+            "universal_guards": [
+              "patch_policy",
+              "original_test_inventory",
+              "independent_checks_when_available",
+              "sandbox_cleanup"
+            ],
+            "narrow_scope": false
+          },
+          "context": {
+            "symbols": [
+              {
+                "name": "only_mappings",
+                "path": "app/records.py",
+                "line": 1,
+                "end_line": 3,
+                "kind": "FunctionDef"
+              }
+            ],
+            "edges": [
+              {
+                "from": "app/records.py",
+                "to": "collections",
+                "path": "app/records.py",
+                "line": 2,
+                "kind": "import",
+                "confidence": "exact_syntax"
+              },
+              {
+                "from": "app/records.py",
+                "to": "dict",
+                "path": "app/records.py",
+                "line": 3,
+                "kind": "call",
+                "confidence": "heuristic_unresolved_receiver"
+              },
+              {
+                "from": "app/records.py",
+                "to": "isinstance",
+                "path": "app/records.py",
+                "line": 3,
+                "kind": "call",
+                "confidence": "heuristic_unresolved_receiver"
+              }
+            ],
+            "diagnostic_excerpt": "F                                                                        [100%]\n=================================== FAILURES ===================================\n________________________________ test_mappings _________________________________\ntest_records.py:3: in test_mappings\n    assert only_mappings([{'id': 1}, 'ignore']) == [{'id': 1}]\napp/records.py:2: in only_mappings\n    from collections import Mapping\nE   ImportError: cannot import name 'Mapping' from 'collections' (/usr/local/lib/python3.12/collections/__init__.py)\n=========================== short test summary info ============================\nFAILED test_records.py::test_mappings - ImportError: cannot import name 'Mapp...\n1 failed in 0.02s\n",
+            "localization_basis": "Allowed application files plus parsed source locations; no learned precision claim."
+          },
+          "impact_graph": {
+            "nodes": [
+              {
+                "id": "app/records.py",
+                "kind": "file",
+                "sha256": "7cf7cedbb4ee3694090cabffe8838d2c2f85f5458ff479710dc7403d1b44c441"
+              }
+            ],
+            "symbols": [
+              {
+                "name": "only_mappings",
+                "path": "app/records.py",
+                "line": 1,
+                "end_line": 3,
+                "kind": "FunctionDef"
+              }
+            ],
+            "edges": [
+              {
+                "from": "app/records.py",
+                "to": "collections",
+                "path": "app/records.py",
+                "line": 2,
+                "kind": "import",
+                "confidence": "exact_syntax"
+              },
+              {
+                "from": "app/records.py",
+                "to": "dict",
+                "path": "app/records.py",
+                "line": 3,
+                "kind": "call",
+                "confidence": "heuristic_unresolved_receiver"
+              },
+              {
+                "from": "app/records.py",
+                "to": "isinstance",
+                "path": "app/records.py",
+                "line": 3,
+                "kind": "call",
+                "confidence": "heuristic_unresolved_receiver"
+              }
+            ],
+            "limitations": "Import syntax is exact; calls are heuristic, not a whole-program dependency graph."
+          },
+          "knowledge": [
+            {
+              "id": "collections-abc-py310",
+              "package": "python",
+              "version_prefix": "3.",
+              "text": "Python 3.10 removed deprecated collections aliases for collections.abc abstract base classes, including Mapping. Check import consumers and preserve mapping behavior.",
+              "source_url": "https://docs.python.org/3.12/whatsnew/3.10.html",
+              "reviewed": "2026-11-06",
+              "scope": "Python 3.10-3.12",
+              "retrieval_score": 4.3141,
+              "retrieval": "bounded BM25-style lexical ranking"
+            }
+          ],
+          "allowed_paths": [
+            "app/records.py"
+          ],
+          "source_sha": "81ca807db254d21f3447f123e053ca7417cdcad4d4b973234c71b4b8651e5136",
+          "versions": {
+            "python": "3.12.0"
+          },
+          "adapter": {
+            "language": "Python",
+            "command": [
+              "python",
+              "-I",
+              "/opt/versionbridge/pytest_runner.py"
+            ],
+            "native_build_space": false,
+            "deadline_seconds": 35,
+            "scope": "Python application edits with existing pytest and independent checks"
+          }
+        },
+        {
+          "event": "routing",
+          "recorded_at": 1793981476.6894948,
+          "model": "glm-5.3-flash",
+          "provider": "vultr",
+          "categories": [
+            "api",
+            "algorithm"
+          ],
+          "reason": "Evidence-backed baseline; no category holdout promotion yet.",
+          "attempt": 1
+        },
+        {
+          "event": "stage",
+          "recorded_at": 1793981476.6905618,
+          "step": 1,
+          "message": "V2 \u00b7 authoring manifest \u00b7 attempt 1 \u00b7 glm-5.3-flash"
+        },
+        {
+          "event": "diagnosis",
+          "recorded_at": 1793981478.102547,
+          "attempt": 1,
+          "text": "Python 3.10+ removed collections.Mapping; import must come from collections.abc.",
+          "provider": "Vultr Serverless Inference",
+          "receipt": {
+            "requested_model": "glm-5.3-flash",
+            "served_model": "glm-5.3-flash",
+            "model_substitution": false,
+            "identity_verified": true,
+            "provider": "Vultr Serverless Inference",
+            "completion_id": "chatcmpl-c13763d9-bf94-4280-beea-91dcf21a3921",
+            "tokens": {
+              "prompt_tokens": 986,
+              "completion_tokens": 210,
+              "total_tokens": 1196
+            },
+            "latency_ms": 1409.76,
+            "budget": {
+              "reservation_id": 20,
+              "reserved_usd": 0.031752
+            }
+          }
+        },
+        {
+          "event": "rejected",
+          "recorded_at": 1793981478.1050937,
+          "id": "45cbd6970acc4d3586a8687cc5e8d9a5",
+          "attempt": 1,
+          "provider": "vultr",
+          "inference": {
+            "requested_model": "glm-5.3-flash",
+            "served_model": "glm-5.3-flash",
+            "model_substitution": false,
+            "identity_verified": true,
+            "provider": "Vultr Serverless Inference",
+            "completion_id": "chatcmpl-c13763d9-bf94-4280-beea-91dcf21a3921",
+            "tokens": {
+              "prompt_tokens": 986,
+              "completion_tokens": 210,
+              "total_tokens": 1196
+            },
+            "latency_ms": 1409.76,
+            "budget": {
+              "reservation_id": 20,
+              "reserved_usd": 0.031752
+            }
+          },
+          "source_sha": "81ca807db254d21f3447f123e053ca7417cdcad4d4b973234c71b4b8651e5136",
+          "rejection_reason": "Python syntax check failed.",
+          "diff": "",
+          "baseline_tests": {
+            "test_records.py::test_mappings": "failed"
+          },
+          "verification_tests": {},
+          "eligibility": "rejected",
+          "selection": {
+            "model": "glm-5.3-flash",
+            "provider": "vultr",
+            "categories": [
+              "api",
+              "algorithm"
+            ],
+            "reason": "Evidence-backed baseline; no category holdout promotion yet.",
+            "attempt": 1
+          }
+        },
+        {
+          "event": "routing",
+          "recorded_at": 1793981478.1073778,
+          "model": "deepseek-v4.1-flash-1017",
+          "provider": "vultr",
+          "categories": [
+            "api",
+            "algorithm"
+          ],
+          "reason": "Bounded retry only after policy or execution failure; previous feedback supplied.",
+          "attempt": 2
+        },
+        {
+          "event": "stage",
+          "recorded_at": 1793981478.1086605,
+          "step": 1,
+          "message": "V2 \u00b7 authoring manifest \u00b7 attempt 2 \u00b7 deepseek-v4.1-flash-1017"
+        },
+        {
+          "event": "diagnosis",
+          "recorded_at": 1793981482.2044873,
+          "attempt": 2,
+          "text": "`collections.Mapping` was removed in Python 3.10; import `Mapping` from `collections.abc` instead.",
+          "provider": "Vultr Serverless Inference",
+          "receipt": {
+            "requested_model": "deepseek-v4.1-flash-1017",
+            "served_model": "deepseek-v4.1-flash-1017",
+            "model_substitution": false,
+            "identity_verified": true,
+            "provider": "Vultr Serverless Inference",
+            "completion_id": "chatcmpl-8b8d0beb-3b14-49ba-8a4c-58c5a2b5a1c8",
+            "tokens": {
+              "prompt_tokens": 1024,
+              "completion_tokens": 1045,
+              "total_tokens": 2069
+            },
+            "latency_ms": 4093.63,
+            "budget": {
+              "reservation_id": 21,
+              "reserved_usd": 0.031908
+            }
+          }
+        },
+        {
+          "event": "rejected",
+          "recorded_at": 1793981482.207936,
+          "id": "45cbd6970acc4d3586a8687cc5e8d9a5",
+          "attempt": 2,
+          "provider": "vultr",
+          "inference": {
+            "requested_model": "deepseek-v4.1-flash-1017",
+            "served_model": "deepseek-v4.1-flash-1017",
+            "model_substitution": false,
+            "identity_verified": true,
+            "provider": "Vultr Serverless Inference",
+            "completion_id": "chatcmpl-8b8d0beb-3b14-49ba-8a4c-58c5a2b5a1c8",
+            "tokens": {
+              "prompt_tokens": 1024,
+              "completion_tokens": 1045,
+              "total_tokens": 2069
+            },
+            "latency_ms": 4093.63,
+            "budget": {
+              "reservation_id": 21,
+              "reserved_usd": 0.031908
+            }
+          },
+          "source_sha": "81ca807db254d21f3447f123e053ca7417cdcad4d4b973234c71b4b8651e5136",
+          "rejection_reason": "Python syntax check failed.",
+          "diff": "",
+          "baseline_tests": {
+            "test_records.py::test_mappings": "failed"
+          },
+          "verification_tests": {},
+          "eligibility": "rejected",
+          "selection": {
+            "model": "deepseek-v4.1-flash-1017",
+            "provider": "vultr",
+            "categories": [
+              "api",
+              "algorithm"
+            ],
+            "reason": "Bounded retry only after policy or execution failure; previous feedback supplied.",
+            "attempt": 2
+          }
+        },
+        {
+          "event": "error",
+          "message": "No V2 candidate completed all required checks. No verified patch was exported.",
+          "outcome": "rejected"
+        }
+      ]
+    },
+    {
+      "task": "v2-multifile",
+      "id": "c55c3aecf1324f928efe4be51f8f7031",
+      "state": "rejected",
+      "cursor": 15,
+      "events": [
+        {
+          "event": "project",
+          "recorded_at": 1793981484.7206905,
+          "profile": "v2-multifile",
+          "title": "V2 \u00b7 two-file import migration"
+        },
+        {
+          "event": "stage",
+          "recorded_at": 1793981484.7585263,
+          "step": 0,
+          "message": "V2 \u00b7 reproducing the pinned migration failure\u2026"
+        },
+        {
+          "event": "sandbox",
+          "recorded_at": 1793981484.76034,
+          "name": "versionbridge-f2b24a21f24e44b3a89258b687afc127",
+          "status": "Dispatching",
+          "image": "sha256:fbbefae16ff6881f8a442ce1f8d87c4a03c9edc919c3a48f0a12119df8b51c98",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s"
+        },
+        {
+          "event": "sandbox",
+          "recorded_at": 1793981485.3988109,
+          "name": "versionbridge-f2b24a21f24e44b3a89258b687afc127",
+          "status": "Removed",
+          "exit_code": 1,
+          "timed_out": false
+        },
+        {
+          "event": "log",
+          "recorded_at": 1793981485.4007032,
+          "label": "V2 baseline",
+          "text": "F                                                                        [100%]\n=================================== FAILURES ===================================\n________________________________ test_normalize ________________________________\ntest_service.py:3: in test_normalize\n    assert normalize([{'id': 2}, None]) == [{'id': 2}]\napp/service.py:2: in normalize\n    from collections import Mapping\nE   ImportError: cannot import name 'Mapping' from 'collections' (/usr/local/lib/python3.12/collections/__init__.py)\n=========================== short test summary info ============================\nFAILED test_service.py::test_normalize - ImportError: cannot import name 'Map...\n1 failed in 0.02s\n"
+        },
+        {
+          "event": "analysis",
+          "recorded_at": 1793981485.4031513,
+          "classification": {
+            "categories": [
+              "api",
+              "algorithm"
+            ],
+            "matches": [
+              {
+                "category": "api",
+                "evidence": "ImportError",
+                "path": "app/types.py",
+                "basis": "deterministic_signature"
+              },
+              {
+                "category": "algorithm",
+                "evidence": "assert normalize([{'id': 2}, None]) ==",
+                "path": "app/types.py",
+                "basis": "deterministic_signature"
+              }
+            ],
+            "confidence_source": "matched signatures",
+            "universal_guards": [
+              "patch_policy",
+              "original_test_inventory",
+              "independent_checks_when_available",
+              "sandbox_cleanup"
+            ],
+            "narrow_scope": false
+          },
+          "context": {
+            "symbols": [
+              {
+                "name": "normalize",
+                "path": "app/service.py",
+                "line": 1,
+                "end_line": 4,
+                "kind": "FunctionDef"
+              },
+              {
+                "name": "is_record",
+                "path": "app/types.py",
+                "line": 1,
+                "end_line": 3,
+                "kind": "FunctionDef"
+              }
+            ],
+            "edges": [
+              {
+                "from": "app/service.py",
+                "to": "collections",
+                "path": "app/service.py",
+                "line": 2,
+                "kind": "import",
+                "confidence": "exact_syntax"
+              },
+              {
+                "from": "app/service.py",
+                "to": "app.types",
+                "path": "app/service.py",
+                "line": 3,
+                "kind": "import",
+                "confidence": "exact_syntax"
+              },
+              {
+                "from": "app/service.py",
+                "to": "dict",
+                "path": "app/service.py",
+                "line": 4,
+                "kind": "call",
+                "confidence": "heuristic_unresolved_receiver"
+              },
+              {
+                "from": "app/service.py",
+                "to": "isinstance",
+                "path": "app/service.py",
+                "line": 4,
+                "kind": "call",
+                "confidence": "heuristic_unresolved_receiver"
+              },
+              {
+                "from": "app/service.py",
+                "to": "is_record",
+                "path": "app/service.py",
+                "line": 4,
+                "kind": "call",
+                "confidence": "heuristic_unresolved_receiver"
+              },
+              {
+                "from": "app/types.py",
+                "to": "collections",
+                "path": "app/types.py",
+                "line": 2,
+                "kind": "import",
+                "confidence": "exact_syntax"
+              },
+              {
+                "from": "app/types.py",
+                "to": "isinstance",
+                "path": "app/types.py",
+                "line": 3,
+                "kind": "call",
+                "confidence": "heuristic_unresolved_receiver"
+              }
+            ],
+            "diagnostic_excerpt": "F                                                                        [100%]\n=================================== FAILURES ===================================\n________________________________ test_normalize ________________________________\ntest_service.py:3: in test_normalize\n    assert normalize([{'id': 2}, None]) == [{'id': 2}]\napp/service.py:2: in normalize\n    from collections import Mapping\nE   ImportError: cannot import name 'Mapping' from 'collections' (/usr/local/lib/python3.12/collections/__init__.py)\n=========================== short test summary info ============================\nFAILED test_service.py::test_normalize - ImportError: cannot import name 'Map...\n1 failed in 0.02s\n",
+            "localization_basis": "Allowed application files plus parsed source locations; no learned precision claim."
+          },
+          "impact_graph": {
+            "nodes": [
+              {
+                "id": "app/service.py",
+                "kind": "file",
+                "sha256": "207fc1251b614fccbe74afbf719c6b1a5794d998e55a1ab5f5630de6a1c37185"
+              },
+              {
+                "id": "app/types.py",
+                "kind": "file",
+                "sha256": "b187fc06698af4493e5d83579e4ce44981c30e37f9d4cb7d54529578aff4e984"
+              }
+            ],
+            "symbols": [
+              {
+                "name": "normalize",
+                "path": "app/service.py",
+                "line": 1,
+                "end_line": 4,
+                "kind": "FunctionDef"
+              },
+              {
+                "name": "is_record",
+                "path": "app/types.py",
+                "line": 1,
+                "end_line": 3,
+                "kind": "FunctionDef"
+              }
+            ],
+            "edges": [
+              {
+                "from": "app/service.py",
+                "to": "collections",
+                "path": "app/service.py",
+                "line": 2,
+                "kind": "import",
+                "confidence": "exact_syntax"
+              },
+              {
+                "from": "app/service.py",
+                "to": "app.types",
+                "path": "app/service.py",
+                "line": 3,
+                "kind": "import",
+                "confidence": "exact_syntax"
+              },
+              {
+                "from": "app/service.py",
+                "to": "dict",
+                "path": "app/service.py",
+                "line": 4,
+                "kind": "call",
+                "confidence": "heuristic_unresolved_receiver"
+              },
+              {
+                "from": "app/service.py",
+                "to": "isinstance",
+                "path": "app/service.py",
+                "line": 4,
+                "kind": "call",
+                "confidence": "heuristic_unresolved_receiver"
+              },
+              {
+                "from": "app/service.py",
+                "to": "is_record",
+                "path": "app/service.py",
+                "line": 4,
+                "kind": "call",
+                "confidence": "heuristic_unresolved_receiver"
+              },
+              {
+                "from": "app/types.py",
+                "to": "collections",
+                "path": "app/types.py",
+                "line": 2,
+                "kind": "import",
+                "confidence": "exact_syntax"
+              },
+              {
+                "from": "app/types.py",
+                "to": "isinstance",
+                "path": "app/types.py",
+                "line": 3,
+                "kind": "call",
+                "confidence": "heuristic_unresolved_receiver"
+              }
+            ],
+            "limitations": "Import syntax is exact; calls are heuristic, not a whole-program dependency graph."
+          },
+          "knowledge": [
+            {
+              "id": "collections-abc-py310",
+              "package": "python",
+              "version_prefix": "3.",
+              "text": "Python 3.10 removed deprecated collections aliases for collections.abc abstract base classes, including Mapping. Check import consumers and preserve mapping behavior.",
+              "source_url": "https://docs.python.org/3.12/whatsnew/3.10.html",
+              "reviewed": "2026-11-06",
+              "scope": "Python 3.10-3.12",
+              "retrieval_score": 4.3141,
+              "retrieval": "bounded BM25-style lexical ranking"
+            }
+          ],
+          "allowed_paths": [
+            "app/types.py",
+            "app/service.py"
+          ],
+          "source_sha": "975f54654f1ac84e337f84bee39557802ff78a499e0c7d0aaf438ade85d07f40",
+          "versions": {
+            "python": "3.12.0"
+          },
+          "adapter": {
+            "language": "Python",
+            "command": [
+              "python",
+              "-I",
+              "/opt/versionbridge/pytest_runner.py"
+            ],
+            "native_build_space": false,
+            "deadline_seconds": 35,
+            "scope": "Python application edits with existing pytest and independent checks"
+          }
+        },
+        {
+          "event": "routing",
+          "recorded_at": 1793981485.4044652,
+          "model": "glm-5.3-flash",
+          "provider": "vultr",
+          "categories": [
+            "api",
+            "algorithm"
+          ],
+          "reason": "Evidence-backed baseline; no category holdout promotion yet.",
+          "attempt": 1
+        },
+        {
+          "event": "stage",
+          "recorded_at": 1793981485.405528,
+          "step": 1,
+          "message": "V2 \u00b7 authoring manifest \u00b7 attempt 1 \u00b7 glm-5.3-flash"
+        },
+        {
+          "event": "diagnosis",
+          "recorded_at": 1793981488.0933044,
+          "attempt": 1,
+          "text": "Python 3.10+ removed the deprecated Mapping alias from collections; both modules import Mapping from collections and fail with ImportError on Python 3.12. The correct source is collections.abc, which preserves mapping normalization and classification behavior.",
+          "provider": "Vultr Serverless Inference",
+          "receipt": {
+            "requested_model": "glm-5.3-flash",
+            "served_model": "glm-5.3-flash",
+            "model_substitution": false,
+            "identity_verified": true,
+            "provider": "Vultr Serverless Inference",
+            "completion_id": "chatcmpl-c0f108cd-9cc6-46cd-af71-1536ee62b6eb",
+            "tokens": {
+              "prompt_tokens": 1520,
+              "completion_tokens": 365,
+              "total_tokens": 1885
+            },
+            "latency_ms": 2685.16,
+            "budget": {
+              "reservation_id": 22,
+              "reserved_usd": 0.036324
+            }
+          }
+        },
+        {
+          "event": "rejected",
+          "recorded_at": 1793981488.0961196,
+          "id": "c55c3aecf1324f928efe4be51f8f7031",
+          "attempt": 1,
+          "provider": "vultr",
+          "inference": {
+            "requested_model": "glm-5.3-flash",
+            "served_model": "glm-5.3-flash",
+            "model_substitution": false,
+            "identity_verified": true,
+            "provider": "Vultr Serverless Inference",
+            "completion_id": "chatcmpl-c0f108cd-9cc6-46cd-af71-1536ee62b6eb",
+            "tokens": {
+              "prompt_tokens": 1520,
+              "completion_tokens": 365,
+              "total_tokens": 1885
+            },
+            "latency_ms": 2685.16,
+            "budget": {
+              "reservation_id": 22,
+              "reserved_usd": 0.036324
+            }
+          },
+          "source_sha": "975f54654f1ac84e337f84bee39557802ff78a499e0c7d0aaf438ade85d07f40",
+          "rejection_reason": "Python syntax check failed.",
+          "diff": "",
+          "baseline_tests": {
+            "test_service.py::test_normalize": "failed"
+          },
+          "verification_tests": {},
+          "eligibility": "rejected",
+          "selection": {
+            "model": "glm-5.3-flash",
+            "provider": "vultr",
+            "categories": [
+              "api",
+              "algorithm"
+            ],
+            "reason": "Evidence-backed baseline; no category holdout promotion yet.",
+            "attempt": 1
+          }
+        },
+        {
+          "event": "routing",
+          "recorded_at": 1793981488.098927,
+          "model": "deepseek-v4.1-flash-1017",
+          "provider": "vultr",
+          "categories": [
+            "api",
+            "algorithm"
+          ],
+          "reason": "Bounded retry only after policy or execution failure; previous feedback supplied.",
+          "attempt": 2
+        },
+        {
+          "event": "stage",
+          "recorded_at": 1793981488.1004248,
+          "step": 1,
+          "message": "V2 \u00b7 authoring manifest \u00b7 attempt 2 \u00b7 deepseek-v4.1-flash-1017"
+        },
+        {
+          "event": "diagnosis",
+          "recorded_at": 1793981490.1612592,
+          "attempt": 2,
+          "text": "Python 3.10+ removed the collections.Mapping alias; both modules must import Mapping from collections.abc while preserving normalization and classification behavior.",
+          "provider": "Vultr Serverless Inference",
+          "receipt": {
+            "requested_model": "deepseek-v4.1-flash-1017",
+            "served_model": "deepseek-v4.1-flash-1017",
+            "model_substitution": false,
+            "identity_verified": true,
+            "provider": "Vultr Serverless Inference",
+            "completion_id": "chatcmpl-bc970b42-7ec8-465b-8100-103862f3aa32",
+            "tokens": {
+              "prompt_tokens": 1547,
+              "completion_tokens": 515,
+              "total_tokens": 2062
+            },
+            "latency_ms": 2058.24,
+            "budget": {
+              "reservation_id": 23,
+              "reserved_usd": 0.03648
+            }
+          }
+        },
+        {
+          "event": "rejected",
+          "recorded_at": 1793981490.164175,
+          "id": "c55c3aecf1324f928efe4be51f8f7031",
+          "attempt": 2,
+          "provider": "vultr",
+          "inference": {
+            "requested_model": "deepseek-v4.1-flash-1017",
+            "served_model": "deepseek-v4.1-flash-1017",
+            "model_substitution": false,
+            "identity_verified": true,
+            "provider": "Vultr Serverless Inference",
+            "completion_id": "chatcmpl-bc970b42-7ec8-465b-8100-103862f3aa32",
+            "tokens": {
+              "prompt_tokens": 1547,
+              "completion_tokens": 515,
+              "total_tokens": 2062
+            },
+            "latency_ms": 2058.24,
+            "budget": {
+              "reservation_id": 23,
+              "reserved_usd": 0.03648
+            }
+          },
+          "source_sha": "975f54654f1ac84e337f84bee39557802ff78a499e0c7d0aaf438ade85d07f40",
+          "rejection_reason": "Python syntax check failed.",
+          "diff": "",
+          "baseline_tests": {
+            "test_service.py::test_normalize": "failed"
+          },
+          "verification_tests": {},
+          "eligibility": "rejected",
+          "selection": {
+            "model": "deepseek-v4.1-flash-1017",
+            "provider": "vultr",
+            "categories": [
+              "api",
+              "algorithm"
+            ],
+            "reason": "Bounded retry only after policy or execution failure; previous feedback supplied.",
+            "attempt": 2
+          }
+        },
+        {
+          "event": "error",
+          "message": "No V2 candidate completed all required checks. No verified patch was exported.",
+          "outcome": "rejected"
+        }
+      ]
+    },
+    {
+      "task": "regression",
+      "id": "1b78cf3dfc704daab9f4a8fd8fb56a34",
+      "state": "unverified",
+      "cursor": 24,
+      "events": [
+        {
+          "event": "project",
+          "profile": "regression",
+          "title": "pandas 2 \u00b7 regression guard"
+        },
+        {
+          "event": "inventory",
+          "file_count": 2,
+          "languages": [
+            "Python"
+          ],
+          "manifests": [],
+          "dependencies": [],
+          "note": "Static inventory. Compatibility is established by the recorded execution tests."
+        },
+        {
+          "event": "stage",
+          "step": 0,
+          "message": "Reproducing the failure in a fresh container\u2026"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-48c6006ef38544ad898e5fcf38681d66",
+          "status": "Dispatching",
+          "image": "sha256:fbbefae16ff6881f8a442ce1f8d87c4a03c9edc919c3a48f0a12119df8b51c98",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-48c6006ef38544ad898e5fcf38681d66",
+          "status": "Removed",
+          "exit_code": 1,
+          "timed_out": false
+        },
+        {
+          "event": "log",
+          "label": "Baseline",
+          "text": "F.                                                                       [100%]\n=================================== FAILURES ===================================\n________________________ test_standard_frame_migration _________________________\ntest_regression_pipeline.py:16: in test_standard_frame_migration\n    assert append_event(events, {\"event\": \"closed\"})[\"event\"].tolist() == [\"opened\", \"closed\"]\nregression_pipeline.py:5: in append_event\n    return events.append(event, ignore_index=True)\n/usr/local/lib/python3.12/site-packages/pandas/core/generic.py:6299: in __getattr__\n    return object.__getattribute__(self, name)\nE   AttributeError: 'DataFrame' object has no attribute 'append'. Did you mean: '_append'?\n=========================== short test summary info ============================\nFAILED test_regression_pipeline.py::test_standard_frame_migration - Attribute...\n1 failed, 1 passed in 0.58s\n"
+        },
+        {
+          "event": "analysis",
+          "classification": {
+            "categories": [
+              "api",
+              "algorithm"
+            ],
+            "matches": [
+              {
+                "category": "api",
+                "evidence": "AttributeError",
+                "path": "regression_pipeline.py",
+                "basis": "deterministic_signature"
+              },
+              {
+                "category": "algorithm",
+                "evidence": "assert append_event(events, {\"event\": \"closed\"})[\"event\"].tolist() ==",
+                "path": "regression_pipeline.py",
+                "basis": "deterministic_signature"
+              }
+            ],
+            "confidence_source": "matched signatures",
+            "universal_guards": [
+              "patch_policy",
+              "original_test_inventory",
+              "independent_checks_when_available",
+              "sandbox_cleanup"
+            ],
+            "narrow_scope": false
+          },
+          "source_sha": "e17d1c01a4ce5051b7ea568271540f1e9b0063b3523160b5814e5a6593888950",
+          "verification_scope": "controlled V1 profile; original test suite"
+        },
+        {
+          "event": "stage",
+          "step": 1,
+          "message": "Preparing candidate patch \u00b7 attempt 1"
+        },
+        {
+          "event": "routing",
+          "model": "glm-5.3-flash",
+          "provider": "vultr",
+          "categories": [
+            "api",
+            "algorithm"
+          ],
+          "reason": "Evidence-backed baseline; no category holdout promotion yet.",
+          "attempt": 1
+        },
+        {
+          "event": "diagnosis",
+          "attempt": 1,
+          "text": "DataFrame.append was removed in pandas 2.0; the test fails with AttributeError. Replace the append call with pd.concat, appending the event as a one-row DataFrame and reindexing, which preserves the original ignore_index semantics.",
+          "provider": "Vultr Serverless Inference \u00b7 glm-5.3-flash",
+          "receipt": {
+            "requested_model": "glm-5.3-flash",
+            "served_model": "glm-5.3-flash",
+            "model_substitution": false,
+            "identity_verified": true,
+            "provider": "Vultr Serverless Inference",
+            "completion_id": "chatcmpl-9934503e-02f7-46ed-bd4d-8b6bb850690f",
+            "tokens": {
+              "prompt_tokens": 369,
+              "completion_tokens": 74,
+              "total_tokens": 443
+            },
+            "latency_ms": 761.74,
+            "budget": {
+              "reservation_id": 24,
+              "reserved_usd": 0.023001
+            }
+          }
+        },
+        {
+          "event": "stage",
+          "step": 2,
+          "message": "Running the unchanged tests in a fresh container\u2026"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-e884378f25b049afb95fba9d1e3f1cd3",
+          "status": "Dispatching",
+          "image": "sha256:fbbefae16ff6881f8a442ce1f8d87c4a03c9edc919c3a48f0a12119df8b51c98",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-e884378f25b049afb95fba9d1e3f1cd3",
+          "status": "Removed",
+          "exit_code": 1,
+          "timed_out": false
+        },
+        {
+          "event": "log",
+          "label": "Verification 1",
+          "text": ".F                                                                       [100%]\n=================================== FAILURES ===================================\n_____________________ test_preserve_adapter_audit_metadata _____________________\ntest_regression_pipeline.py:23: in test_preserve_adapter_audit_metadata\n    assert result.attrs.get(\"audit_stream\") == \"billing\"\nE   AssertionError: assert None == 'billing'\nE    +  where None = <built-in method get of dict object at 0x77c125e30c40>('audit_stream')\nE    +    where <built-in method get of dict object at 0x77c125e30c40> = {}.get\nE    +      where {} =     event\\n0  opened\\n1  closed.attrs\n=========================== short test summary info ============================\nFAILED test_regression_pipeline.py::test_preserve_adapter_audit_metadata - As...\n1 failed, 1 passed in 0.47s\n"
+        },
+        {
+          "event": "rejected",
+          "id": "1b78cf3dfc704daab9f4a8fd8fb56a34",
+          "provider": "Vultr Serverless Inference \u00b7 glm-5.3-flash",
+          "diff": "--- a/regression_pipeline.py\n+++ b/regression_pipeline.py\n@@ -2,4 +2,4 @@\n \n \n def append_event(events, event):\n-    return events.append(event, ignore_index=True)\n+    return pd.concat([events, pd.DataFrame([event])], ignore_index=True)\n",
+          "diagnosis": "DataFrame.append was removed in pandas 2.0; the test fails with AttributeError. Replace the append call with pd.concat, appending the event as a one-row DataFrame and reindexing, which preserves the original ignore_index semantics.",
+          "inference": {
+            "requested_model": "glm-5.3-flash",
+            "served_model": "glm-5.3-flash",
+            "model_substitution": false,
+            "identity_verified": true,
+            "provider": "Vultr Serverless Inference",
+            "completion_id": "chatcmpl-9934503e-02f7-46ed-bd4d-8b6bb850690f",
+            "tokens": {
+              "prompt_tokens": 369,
+              "completion_tokens": 74,
+              "total_tokens": 443
+            },
+            "latency_ms": 761.74,
+            "budget": {
+              "reservation_id": 24,
+              "reserved_usd": 0.023001
+            }
+          },
+          "before": "F.                                                                       [100%]\n=================================== FAILURES ===================================\n________________________ test_standard_frame_migration _________________________\ntest_regression_pipeline.py:16: in test_standard_frame_migration\n    assert append_event(events, {\"event\": \"closed\"})[\"event\"].tolist() == [\"opened\", \"closed\"]\nregression_pipeline.py:5: in append_event\n    return events.append(event, ignore_index=True)\n/usr/local/lib/python3.12/site-packages/pandas/core/generic.py:6299: in __getattr__\n    return object.__getattribute__(self, name)\nE   AttributeError: 'DataFrame' object has no attribute 'append'. Did you mean: '_append'?\n=========================== short test summary info ============================\nFAILED test_regression_pipeline.py::test_standard_frame_migration - Attribute...\n1 failed, 1 passed in 0.58s\n",
+          "after": ".F                                                                       [100%]\n=================================== FAILURES ===================================\n_____________________ test_preserve_adapter_audit_metadata _____________________\ntest_regression_pipeline.py:23: in test_preserve_adapter_audit_metadata\n    assert result.attrs.get(\"audit_stream\") == \"billing\"\nE   AssertionError: assert None == 'billing'\nE    +  where None = <built-in method get of dict object at 0x77c125e30c40>('audit_stream')\nE    +    where <built-in method get of dict object at 0x77c125e30c40> = {}.get\nE    +      where {} =     event\\n0  opened\\n1  closed.attrs\n=========================== short test summary info ============================\nFAILED test_regression_pipeline.py::test_preserve_adapter_audit_metadata - As...\n1 failed, 1 passed in 0.47s\n",
+          "attempt": 1,
+          "baseline_exit_code": 1,
+          "verification_exit_code": 1,
+          "controller_revision": "d19731ed94dab24fed0df57434b67ba9452d3ec3",
+          "inventory": {
+            "file_count": 2,
+            "languages": [
+              "Python"
+            ],
+            "manifests": [],
+            "dependencies": [],
+            "note": "Static inventory. Compatibility is established by the recorded execution tests."
+          },
+          "profile": "regression",
+          "commit": null,
+          "file": "regression_pipeline.py",
+          "baseline_tests": {
+            "test_regression_pipeline.py::test_standard_frame_migration": "failed",
+            "test_regression_pipeline.py::test_preserve_adapter_audit_metadata": "passed"
+          },
+          "verification_tests": {
+            "test_regression_pipeline.py::test_standard_frame_migration": "passed",
+            "test_regression_pipeline.py::test_preserve_adapter_audit_metadata": "failed"
+          },
+          "rejection_reason": "The verification suite did not pass.",
+          "tests_sha256": "a6be0f1eee127757d9f1281a2b4226277525f7688ea64c5e0d260500ab94fc47",
+          "patch_sha256": "1083078cc6cf39d7126ec230c5dcfd0a5c5c6845406be45869d58d6acebefbab"
+        },
+        {
+          "event": "stage",
+          "step": 1,
+          "message": "Preparing candidate patch \u00b7 attempt 2"
+        },
+        {
+          "event": "routing",
+          "model": "deepseek-v4.1-flash-1017",
+          "provider": "vultr",
+          "categories": [
+            "api",
+            "algorithm"
+          ],
+          "reason": "Bounded retry only after policy or execution failure; previous feedback supplied.",
+          "attempt": 2
+        },
+        {
+          "event": "diagnosis",
+          "attempt": 2,
+          "text": "pandas 2 removed DataFrame.append, causing AttributeError. The prior pd.DataFrame([event]) concat repair dropped DataFrame.attrs (audit metadata). Use the permitted Series.to_frame().T concat line to migrate append while preserving expected behavior/metadata.",
+          "provider": "Vultr Serverless Inference \u00b7 deepseek-v4.1-flash-1017",
+          "receipt": {
+            "requested_model": "deepseek-v4.1-flash-1017",
+            "served_model": "deepseek-v4.1-flash-1017",
+            "model_substitution": false,
+            "identity_verified": true,
+            "provider": "Vultr Serverless Inference",
+            "completion_id": "chatcmpl-ac818e59-fe0d-4838-a2bb-48b814e792c6",
+            "tokens": {
+              "prompt_tokens": 665,
+              "completion_tokens": 1185,
+              "total_tokens": 1850
+            },
+            "latency_ms": 4267.86,
+            "budget": {
+              "reservation_id": 25,
+              "reserved_usd": 0.025989
+            }
+          }
+        },
+        {
+          "event": "stage",
+          "step": 2,
+          "message": "Running the unchanged tests in a fresh container\u2026"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-386ff0cb21bd4f889a92f107984f053f",
+          "status": "Dispatching",
+          "image": "sha256:fbbefae16ff6881f8a442ce1f8d87c4a03c9edc919c3a48f0a12119df8b51c98",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-386ff0cb21bd4f889a92f107984f053f",
+          "status": "Removed",
+          "exit_code": 1,
+          "timed_out": false
+        },
+        {
+          "event": "log",
+          "label": "Verification 2",
+          "text": ".F                                                                       [100%]\n=================================== FAILURES ===================================\n_____________________ test_preserve_adapter_audit_metadata _____________________\ntest_regression_pipeline.py:23: in test_preserve_adapter_audit_metadata\n    assert result.attrs.get(\"audit_stream\") == \"billing\"\nE   AssertionError: assert None == 'billing'\nE    +  where None = <built-in method get of dict object at 0x75cbe17549c0>('audit_stream')\nE    +    where <built-in method get of dict object at 0x75cbe17549c0> = {}.get\nE    +      where {} =     event\\n0  opened\\n1  closed.attrs\n=========================== short test summary info ============================\nFAILED test_regression_pipeline.py::test_preserve_adapter_audit_metadata - As...\n1 failed, 1 passed in 0.50s\n"
+        },
+        {
+          "event": "rejected",
+          "id": "1b78cf3dfc704daab9f4a8fd8fb56a34",
+          "provider": "Vultr Serverless Inference \u00b7 deepseek-v4.1-flash-1017",
+          "diff": "--- a/regression_pipeline.py\n+++ b/regression_pipeline.py\n@@ -2,4 +2,4 @@\n \n \n def append_event(events, event):\n-    return events.append(event, ignore_index=True)\n+    return pd.concat([events, pd.Series(event).to_frame().T], ignore_index=True)\n",
+          "diagnosis": "pandas 2 removed DataFrame.append, causing AttributeError. The prior pd.DataFrame([event]) concat repair dropped DataFrame.attrs (audit metadata). Use the permitted Series.to_frame().T concat line to migrate append while preserving expected behavior/metadata.",
+          "inference": {
+            "requested_model": "deepseek-v4.1-flash-1017",
+            "served_model": "deepseek-v4.1-flash-1017",
+            "model_substitution": false,
+            "identity_verified": true,
+            "provider": "Vultr Serverless Inference",
+            "completion_id": "chatcmpl-ac818e59-fe0d-4838-a2bb-48b814e792c6",
+            "tokens": {
+              "prompt_tokens": 665,
+              "completion_tokens": 1185,
+              "total_tokens": 1850
+            },
+            "latency_ms": 4267.86,
+            "budget": {
+              "reservation_id": 25,
+              "reserved_usd": 0.025989
+            }
+          },
+          "before": "F.                                                                       [100%]\n=================================== FAILURES ===================================\n________________________ test_standard_frame_migration _________________________\ntest_regression_pipeline.py:16: in test_standard_frame_migration\n    assert append_event(events, {\"event\": \"closed\"})[\"event\"].tolist() == [\"opened\", \"closed\"]\nregression_pipeline.py:5: in append_event\n    return events.append(event, ignore_index=True)\n/usr/local/lib/python3.12/site-packages/pandas/core/generic.py:6299: in __getattr__\n    return object.__getattribute__(self, name)\nE   AttributeError: 'DataFrame' object has no attribute 'append'. Did you mean: '_append'?\n=========================== short test summary info ============================\nFAILED test_regression_pipeline.py::test_standard_frame_migration - Attribute...\n1 failed, 1 passed in 0.58s\n",
+          "after": ".F                                                                       [100%]\n=================================== FAILURES ===================================\n_____________________ test_preserve_adapter_audit_metadata _____________________\ntest_regression_pipeline.py:23: in test_preserve_adapter_audit_metadata\n    assert result.attrs.get(\"audit_stream\") == \"billing\"\nE   AssertionError: assert None == 'billing'\nE    +  where None = <built-in method get of dict object at 0x75cbe17549c0>('audit_stream')\nE    +    where <built-in method get of dict object at 0x75cbe17549c0> = {}.get\nE    +      where {} =     event\\n0  opened\\n1  closed.attrs\n=========================== short test summary info ============================\nFAILED test_regression_pipeline.py::test_preserve_adapter_audit_metadata - As...\n1 failed, 1 passed in 0.50s\n",
+          "attempt": 2,
+          "baseline_exit_code": 1,
+          "verification_exit_code": 1,
+          "controller_revision": "d19731ed94dab24fed0df57434b67ba9452d3ec3",
+          "inventory": {
+            "file_count": 2,
+            "languages": [
+              "Python"
+            ],
+            "manifests": [],
+            "dependencies": [],
+            "note": "Static inventory. Compatibility is established by the recorded execution tests."
+          },
+          "profile": "regression",
+          "commit": null,
+          "file": "regression_pipeline.py",
+          "baseline_tests": {
+            "test_regression_pipeline.py::test_standard_frame_migration": "failed",
+            "test_regression_pipeline.py::test_preserve_adapter_audit_metadata": "passed"
+          },
+          "verification_tests": {
+            "test_regression_pipeline.py::test_standard_frame_migration": "passed",
+            "test_regression_pipeline.py::test_preserve_adapter_audit_metadata": "failed"
+          },
+          "rejection_reason": "The verification suite did not pass.",
+          "tests_sha256": "a6be0f1eee127757d9f1281a2b4226277525f7688ea64c5e0d260500ab94fc47",
+          "patch_sha256": "931eb8c8d51f28f4aa7b79f4da9c3f10523cb0f36aee48c2b2d5b5d58ed7dfe1"
+        },
+        {
+          "event": "error",
+          "message": "Candidate rejected. The verification gate did not pass.",
+          "outcome": "unverified"
+        }
+      ]
+    },
+    {
+      "task": "containment",
+      "id": "2f2793333b5c44ad8f9979e3ea83e11c",
+      "state": "contained",
+      "cursor": 12,
+      "events": [
+        {
+          "event": "stage",
+          "step": 0,
+          "message": "Probing the container\u2019s network and filesystem\u2026"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-7e88aafffab7409c9b46fd2c571b4d7e",
+          "status": "Dispatching",
+          "image": "sha256:fbbefae16ff6881f8a442ce1f8d87c4a03c9edc919c3a48f0a12119df8b51c98",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-7e88aafffab7409c9b46fd2c571b4d7e",
+          "status": "Removed",
+          "exit_code": 0,
+          "timed_out": false
+        },
+        {
+          "event": "log",
+          "label": "Containment probe",
+          "text": "Outbound connection to 192.0.2.1 blocked: [Errno 101] Network is unreachable\nOutbound connection to 2001:db8::1 blocked: [Errno 101] Network is unreachable\nRoot filesystem write blocked: [Errno 30] Read-only file system: '/probe'\nNon-root user confirmed. Inference key absent.\n"
+        },
+        {
+          "event": "stage",
+          "step": 1,
+          "message": "Running an infinite loop against a 3-second deadline\u2026"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-54fbeae65987410b816386f10fb9e110",
+          "status": "Dispatching",
+          "image": "sha256:fbbefae16ff6881f8a442ce1f8d87c4a03c9edc919c3a48f0a12119df8b51c98",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 3s"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-54fbeae65987410b816386f10fb9e110",
+          "status": "Removed",
+          "exit_code": 124,
+          "timed_out": true
+        },
+        {
+          "event": "log",
+          "label": "Timeout probe",
+          "text": "The infinite loop hit its deadline. Docker confirms the container is gone."
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-c2a1bc7a9c9748ddb5ca25e1b72c1009",
+          "status": "Dispatching",
+          "image": "sha256:fbbefae16ff6881f8a442ce1f8d87c4a03c9edc919c3a48f0a12119df8b51c98",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s"
+        },
+        {
+          "event": "sandbox",
+          "name": "versionbridge-c2a1bc7a9c9748ddb5ca25e1b72c1009",
+          "status": "Removed",
+          "exit_code": 0,
+          "timed_out": false
+        },
+        {
+          "event": "log",
+          "label": "Memory policy",
+          "text": "Kernel cgroup memory cap: 402653184 bytes (384 MiB).\n"
+        },
+        {
+          "event": "contained",
+          "message": "Containment checks passed"
+        }
+      ]
+    }
+  ],
+  "after_budget": {
+    "limit_usd": 4.0,
+    "reserved_usd": 0.668118,
+    "remaining_usd": 3.331882,
+    "requests_today": 10,
+    "daily_request_limit": 30,
+    "scope": "Application inference reservations. VM, bandwidth, and other account charges are separate."
+  },
+  "ready": {
+    "status": "ok",
+    "version": "0.2.0"
+  },
+  "telemetry": {
+    "sampled_at": 1793981520.8501585,
+    "interval_seconds": 3,
+    "host": {
+      "cpu": {
+        "percent": 18.8,
+        "speed_mhz": 2993,
+        "temperature_c": null
+      },
+      "memory": {
+        "total_bytes": 2057510912,
+        "used_bytes": 459628544,
+        "percent": 22.3
+      },
+      "available": true,
+      "label": "Vultr application VM"
+    },
+    "gpu": {
+      "available": false,
+      "reason": "No accessible NVIDIA sensor."
+    },
+    "inference": {
+      "mode": "vultr",
+      "label": "Vultr Serverless Inference",
+      "remote_gpu_metrics_available": false,
+      "note": "Serverless inference GPU sensors are not exposed to this application."
+    },
+    "scope": "Whole application host, not browser/device or per-job attribution. Cloud inference runs separately."
+  }
+}

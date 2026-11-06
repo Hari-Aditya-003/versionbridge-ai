@@ -1,0 +1,1331 @@
+{
+  "origin": "https://versionbridge.64.177.53.254.sslip.io",
+  "started_at": 1793981671.556229,
+  "before_budget": {
+    "limit_usd": 4.0,
+    "reserved_usd": 0.668118,
+    "remaining_usd": 3.331882,
+    "requests_today": 10,
+    "daily_request_limit": 30,
+    "scope": "Application inference reservations. VM, bandwidth, and other account charges are separate."
+  },
+  "runs": [
+    {
+      "task": "v2-settings",
+      "id": "9d8bdb30ed5b46b582fddcae04b52017",
+      "state": "verified",
+      "cursor": 16,
+      "events": [
+        {
+          "event": "project",
+          "recorded_at": 1793981674.4640548,
+          "profile": "v2-settings",
+          "title": "V2 \u00b7 open-ended Pydantic settings migration"
+        },
+        {
+          "event": "stage",
+          "recorded_at": 1793981674.511339,
+          "step": 0,
+          "message": "V2 \u00b7 reproducing the pinned migration failure\u2026"
+        },
+        {
+          "event": "sandbox",
+          "recorded_at": 1793981674.5191875,
+          "name": "versionbridge-bfc27d68e3bf474685c32484bee170bf",
+          "status": "Dispatching",
+          "image": "sha256:fbbefae16ff6881f8a442ce1f8d87c4a03c9edc919c3a48f0a12119df8b51c98",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s"
+        },
+        {
+          "event": "sandbox",
+          "recorded_at": 1793981675.1604593,
+          "name": "versionbridge-bfc27d68e3bf474685c32484bee170bf",
+          "status": "Removed",
+          "exit_code": 1,
+          "timed_out": false
+        },
+        {
+          "event": "log",
+          "recorded_at": 1793981675.1623988,
+          "label": "V2 baseline",
+          "text": "F                                                                        [100%]\n=================================== FAILURES ===================================\n______________________________ test_service_name _______________________________\ntest_config.py:3: in test_service_name\n    assert load_config()['service_name'] == 'bridge'\napp/config.py:2: in load_config\n    from pydantic import BaseSettings\n/usr/local/lib/python3.12/site-packages/pydantic/__init__.py:426: in __getattr__\n    return _getattr_migration(attr_name)\n/usr/local/lib/python3.12/site-packages/pydantic/_migration.py:296: in wrapper\n    raise PydanticImportError(\nE   pydantic.errors.PydanticImportError: `BaseSettings` has been moved to the `pydantic-settings` package. See https://docs.pydantic.dev/2.11/migration/#basesettings-has-moved-to-pydantic-settings for more details.\nE   \nE   For further information visit https://errors.pydantic.dev/2.11/u/import-error\n=========================== short test summary info ============================\nFAILED test_config.py::test_service_name - pydantic.errors.PydanticImportErro...\n1 failed in 0.06s\n"
+        },
+        {
+          "event": "analysis",
+          "recorded_at": 1793981675.1663475,
+          "classification": {
+            "categories": [
+              "api",
+              "algorithm"
+            ],
+            "matches": [
+              {
+                "category": "api",
+                "evidence": "PydanticImportError",
+                "path": "app/config.py",
+                "basis": "deterministic_signature"
+              },
+              {
+                "category": "algorithm",
+                "evidence": "assert load_config()['service_name'] ==",
+                "path": "app/config.py",
+                "basis": "deterministic_signature"
+              }
+            ],
+            "confidence_source": "matched signatures",
+            "universal_guards": [
+              "patch_policy",
+              "original_test_inventory",
+              "independent_checks_when_available",
+              "sandbox_cleanup"
+            ],
+            "narrow_scope": false
+          },
+          "context": {
+            "symbols": [
+              {
+                "name": "load_config",
+                "path": "app/config.py",
+                "line": 1,
+                "end_line": 10,
+                "kind": "FunctionDef"
+              },
+              {
+                "name": "Settings",
+                "path": "app/config.py",
+                "line": 4,
+                "end_line": 7,
+                "kind": "ClassDef"
+              }
+            ],
+            "edges": [
+              {
+                "from": "app/config.py",
+                "to": "pydantic",
+                "path": "app/config.py",
+                "line": 2,
+                "kind": "import",
+                "confidence": "exact_syntax"
+              },
+              {
+                "from": "app/config.py",
+                "to": "Settings",
+                "path": "app/config.py",
+                "line": 9,
+                "kind": "call",
+                "confidence": "heuristic_unresolved_receiver"
+              }
+            ],
+            "diagnostic_excerpt": "F                                                                        [100%]\n=================================== FAILURES ===================================\n______________________________ test_service_name _______________________________\ntest_config.py:3: in test_service_name\n    assert load_config()['service_name'] == 'bridge'\napp/config.py:2: in load_config\n    from pydantic import BaseSettings\n/usr/local/lib/python3.12/site-packages/pydantic/__init__.py:426: in __getattr__\n    return _getattr_migration(attr_name)\n/usr/local/lib/python3.12/site-packages/pydantic/_migration.py:296: in wrapper\n    raise PydanticImportError(\nE   pydantic.errors.PydanticImportError: `BaseSettings` has been moved to the `pydantic-settings` package. See https://docs.pydantic.dev/2.11/migration/#basesettings-has-moved-to-pydantic-settings for more details.\nE   \nE   For further information visit https://errors.pydantic.dev/2.11/u/import-error\n=========================== short test summary info ============================\nFAILED test_config.py::test_service_name - pydantic.errors.PydanticImportErro...\n1 failed in 0.06s\n",
+            "localization_basis": "Allowed application files plus parsed source locations; no learned precision claim."
+          },
+          "impact_graph": {
+            "nodes": [
+              {
+                "id": "app/config.py",
+                "kind": "file",
+                "sha256": "acf7e9aef58ff9c6ef82ecbfb5696d3e13ae740cb456fc7de1f00eec558be38f"
+              }
+            ],
+            "symbols": [
+              {
+                "name": "load_config",
+                "path": "app/config.py",
+                "line": 1,
+                "end_line": 10,
+                "kind": "FunctionDef"
+              },
+              {
+                "name": "Settings",
+                "path": "app/config.py",
+                "line": 4,
+                "end_line": 7,
+                "kind": "ClassDef"
+              }
+            ],
+            "edges": [
+              {
+                "from": "app/config.py",
+                "to": "pydantic",
+                "path": "app/config.py",
+                "line": 2,
+                "kind": "import",
+                "confidence": "exact_syntax"
+              },
+              {
+                "from": "app/config.py",
+                "to": "Settings",
+                "path": "app/config.py",
+                "line": 9,
+                "kind": "call",
+                "confidence": "heuristic_unresolved_receiver"
+              }
+            ],
+            "limitations": "Import syntax is exact; calls are heuristic, not a whole-program dependency graph."
+          },
+          "knowledge": [
+            {
+              "id": "pydantic-settings-v2",
+              "package": "pydantic",
+              "version_prefix": "2.",
+              "text": "Pydantic V2 moved BaseSettings to the separately installed pydantic-settings package. Preserve environment override behavior and field validation.",
+              "source_url": "https://docs.pydantic.dev/2.11/migration/",
+              "reviewed": "2026-11-06",
+              "scope": "Pydantic 2.11",
+              "retrieval_score": 8.1669,
+              "retrieval": "bounded BM25-style lexical ranking"
+            },
+            {
+              "id": "collections-abc-py310",
+              "package": "python",
+              "version_prefix": "3.",
+              "text": "Python 3.10 removed deprecated collections aliases for collections.abc abstract base classes, including Mapping. Check import consumers and preserve mapping behavior.",
+              "source_url": "https://docs.python.org/3.12/whatsnew/3.10.html",
+              "reviewed": "2026-11-06",
+              "scope": "Python 3.10-3.12",
+              "retrieval_score": 3.1011,
+              "retrieval": "bounded BM25-style lexical ranking"
+            }
+          ],
+          "allowed_paths": [
+            "app/config.py"
+          ],
+          "source_sha": "313a038748dab9208efb58db7e1d02edca7ead4b2cce900afd94949a6c9b6cbb",
+          "versions": {
+            "pydantic": "2.11.10",
+            "python": "3.12.0"
+          },
+          "adapter": {
+            "language": "Python",
+            "command": [
+              "python",
+              "-I",
+              "/opt/versionbridge/pytest_runner.py"
+            ],
+            "native_build_space": false,
+            "deadline_seconds": 35,
+            "scope": "Python application edits with existing pytest and independent checks"
+          }
+        },
+        {
+          "event": "routing",
+          "recorded_at": 1793981675.1677969,
+          "model": "glm-5.3-flash",
+          "provider": "vultr",
+          "categories": [
+            "api",
+            "algorithm"
+          ],
+          "reason": "Evidence-backed baseline; no category holdout promotion yet.",
+          "attempt": 1
+        },
+        {
+          "event": "stage",
+          "recorded_at": 1793981675.169097,
+          "step": 1,
+          "message": "V2 \u00b7 authoring manifest \u00b7 attempt 1 \u00b7 glm-5.3-flash"
+        },
+        {
+          "event": "diagnosis",
+          "recorded_at": 1793981680.4594045,
+          "attempt": 1,
+          "text": "`pydantic.BaseSettings` was removed in Pydantic v2 and moved to the standalone `pydantic-settings` package. The in-function import on line 2 must target `pydantic_settings.BaseSettings`. Field defaults, env prefix via `model_config`, validation, and environment override behavior remain unchanged.",
+          "provider": "Vultr Serverless Inference",
+          "receipt": {
+            "requested_model": "glm-5.3-flash",
+            "served_model": "glm-5.3-flash",
+            "model_substitution": false,
+            "identity_verified": true,
+            "provider": "Vultr Serverless Inference",
+            "completion_id": "chatcmpl-5600fda8-1a3d-4d2c-ab17-d0055e2266f6",
+            "tokens": {
+              "prompt_tokens": 1170,
+              "completion_tokens": 182,
+              "total_tokens": 1352
+            },
+            "latency_ms": 5086.0,
+            "budget": {
+              "reservation_id": 26,
+              "reserved_usd": 0.034164
+            }
+          }
+        },
+        {
+          "event": "stage",
+          "recorded_at": 1793981680.4640207,
+          "step": 2,
+          "message": "V2 \u00b7 original suite and independent checks in fresh containers\u2026"
+        },
+        {
+          "event": "sandbox",
+          "recorded_at": 1793981680.4655917,
+          "name": "versionbridge-03857702aef845808d5a3cf3efc7b5dc",
+          "status": "Dispatching",
+          "image": "sha256:fbbefae16ff6881f8a442ce1f8d87c4a03c9edc919c3a48f0a12119df8b51c98",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s"
+        },
+        {
+          "event": "sandbox",
+          "recorded_at": 1793981681.3566349,
+          "name": "versionbridge-03857702aef845808d5a3cf3efc7b5dc",
+          "status": "Removed",
+          "exit_code": 0,
+          "timed_out": false
+        },
+        {
+          "event": "sandbox",
+          "recorded_at": 1793981681.358875,
+          "name": "versionbridge-523f18b77924461dbcf1ac35fba846f6",
+          "status": "Dispatching",
+          "image": "sha256:fbbefae16ff6881f8a442ce1f8d87c4a03c9edc919c3a48f0a12119df8b51c98",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s"
+        },
+        {
+          "event": "sandbox",
+          "recorded_at": 1793981682.0008554,
+          "name": "versionbridge-523f18b77924461dbcf1ac35fba846f6",
+          "status": "Removed",
+          "exit_code": 0,
+          "timed_out": false
+        },
+        {
+          "event": "log",
+          "recorded_at": 1793981682.0073514,
+          "label": "V2 verification 1",
+          "text": ".                                                                        [100%]\n1 passed in 0.21s\n"
+        },
+        {
+          "event": "result",
+          "recorded_at": 1793981682.0101025,
+          "id": "9d8bdb30ed5b46b582fddcae04b52017",
+          "profile": "v2-settings",
+          "provider": "Vultr Serverless Inference",
+          "diagnosis": "`pydantic.BaseSettings` was removed in Pydantic v2 and moved to the standalone `pydantic-settings` package. The in-function import on line 2 must target `pydantic_settings.BaseSettings`. Field defaults, env prefix via `model_config`, validation, and environment override behavior remain unchanged.",
+          "attempt": 1,
+          "inference": {
+            "requested_model": "glm-5.3-flash",
+            "served_model": "glm-5.3-flash",
+            "model_substitution": false,
+            "identity_verified": true,
+            "provider": "Vultr Serverless Inference",
+            "completion_id": "chatcmpl-5600fda8-1a3d-4d2c-ab17-d0055e2266f6",
+            "tokens": {
+              "prompt_tokens": 1170,
+              "completion_tokens": 182,
+              "total_tokens": 1352
+            },
+            "latency_ms": 5086.0,
+            "budget": {
+              "reservation_id": 26,
+              "reserved_usd": 0.034164
+            }
+          },
+          "selection": {
+            "model": "glm-5.3-flash",
+            "provider": "vultr",
+            "categories": [
+              "api",
+              "algorithm"
+            ],
+            "reason": "Evidence-backed baseline; no category holdout promotion yet.",
+            "attempt": 1
+          },
+          "classification": {
+            "categories": [
+              "api",
+              "algorithm"
+            ],
+            "matches": [
+              {
+                "category": "api",
+                "evidence": "PydanticImportError",
+                "path": "app/config.py",
+                "basis": "deterministic_signature"
+              },
+              {
+                "category": "algorithm",
+                "evidence": "assert load_config()['service_name'] ==",
+                "path": "app/config.py",
+                "basis": "deterministic_signature"
+              }
+            ],
+            "confidence_source": "matched signatures",
+            "universal_guards": [
+              "patch_policy",
+              "original_test_inventory",
+              "independent_checks_when_available",
+              "sandbox_cleanup"
+            ],
+            "narrow_scope": false
+          },
+          "source_sha": "313a038748dab9208efb58db7e1d02edca7ead4b2cce900afd94949a6c9b6cbb",
+          "image_digest": "sha256:fbbefae16ff6881f8a442ce1f8d87c4a03c9edc919c3a48f0a12119df8b51c98",
+          "snapshot_sha256": "23e4d660b6aee64e2d0d3cce2000354c69a6a04aa758f89cb18fb3ff9f70055f",
+          "execution_command": [
+            "python",
+            "-I",
+            "/opt/versionbridge/pytest_runner.py"
+          ],
+          "cleanup_verified": true,
+          "tests_sha256": "2f3fe10a27ba8e7b930f9d9bfa81d6071657192905787ce212ee864446ae9015",
+          "commit": null,
+          "changed_paths": [
+            "app/config.py"
+          ],
+          "diff": "--- a/app/config.py\n+++ b/app/config.py\n@@ -1,6 +1,5 @@\n def load_config():\n-    from pydantic import BaseSettings\n-\n+    from pydantic_settings import BaseSettings\n     class Settings(BaseSettings):\n         service_name: str = 'bridge'\n         port: int = 8080\n",
+          "patch_sha256": "42463fba33f2644a13a564b23ba31ad606a5962cd79c7e4adeeeefa0f508a3f5",
+          "candidate_sha": "46d050621704ff2b4c98b58bd3ff89f6810eaa4cc1474ddaf57001c836610b4b",
+          "edit_manifest": {
+            "schema_version": 1,
+            "source_sha": "313a038748dab9208efb58db7e1d02edca7ead4b2cce900afd94949a6c9b6cbb",
+            "diagnosis": "`pydantic.BaseSettings` was removed in Pydantic v2 and moved to the standalone `pydantic-settings` package. The in-function import on line 2 must target `pydantic_settings.BaseSettings`. Field defaults, env prefix via `model_config`, validation, and environment override behavior remain unchanged.",
+            "edits": [
+              {
+                "path": "app/config.py",
+                "start_line": 2,
+                "end_line": 2,
+                "new_text": "    from pydantic_settings import BaseSettings",
+                "reason": "BaseSettings moved to pydantic-settings in Pydantic v2; import must be updated while preserving field defaults, env prefix, and override behavior.",
+                "old_sha256": "99b4cb441072eaf182339b2be621a4abdee66a21a7257a7cfaa8de4662cc4a69"
+              }
+            ]
+          },
+          "manifest_binding": "Trusted source and span hashes; model supplies only paths, spans and replacement text.",
+          "static_checks": [
+            {
+              "path": "app/config.py",
+              "check": "python_ast_policy",
+              "passed": true,
+              "scope": "conservative syntax and structural checks; not proof of safety"
+            }
+          ],
+          "baseline_exit_code": 1,
+          "verification_exit_code": 0,
+          "baseline_tests": {
+            "test_config.py::test_service_name": "failed"
+          },
+          "verification_tests": {
+            "test_config.py::test_service_name": "passed"
+          },
+          "independent_checks": {
+            "passed": true,
+            "checks": 4,
+            "seed": 7319,
+            "suite": "v2-settings",
+            "protocol": "behavior-supervisor-v2",
+            "provenance": "read-only supervisor; source executed only in isolated child",
+            "suite_sha256": "7bf050dfe94b8329017a1a4d59dab1021da7925994522df67fa991646092ce63"
+          },
+          "before": "F                                                                        [100%]\n=================================== FAILURES ===================================\n______________________________ test_service_name _______________________________\ntest_config.py:3: in test_service_name\n    assert load_config()['service_name'] == 'bridge'\napp/config.py:2: in load_config\n    from pydantic import BaseSettings\n/usr/local/lib/python3.12/site-packages/pydantic/__init__.py:426: in __getattr__\n    return _getattr_migration(attr_name)\n/usr/local/lib/python3.12/site-packages/pydantic/_migration.py:296: in wrapper\n    raise PydanticImportError(\nE   pydantic.errors.PydanticImportError: `BaseSettings` has been moved to the `pydantic-settings` package. See https://docs.pydantic.dev/2.11/migration/#basesettings-has-moved-to-pydantic-settings for more details.\nE   \nE   For further information visit https://errors.pydantic.dev/2.11/u/import-error\n=========================== short test summary info ============================\nFAILED test_config.py::test_service_name - pydantic.errors.PydanticImportErro...\n1 failed in 0.06s\n",
+          "after": ".                                                                        [100%]\n1 passed in 0.21s\n",
+          "verification_scope": "original suite plus independent checks",
+          "rejection_reason": null,
+          "eligibility": "verified_by_checks",
+          "human_decision": "pending maintainer review",
+          "elapsed_ms": 7545,
+          "controller_revision": "117f170fc8a09ee55983cce3fdf015d08b6c774e"
+        }
+      ]
+    },
+    {
+      "task": "v2-collections",
+      "id": "9a73548ca51542cfa07a05f577dbb480",
+      "state": "rejected",
+      "cursor": 15,
+      "events": [
+        {
+          "event": "project",
+          "recorded_at": 1793981684.0176802,
+          "profile": "v2-collections",
+          "title": "V2 \u00b7 open-ended collections migration"
+        },
+        {
+          "event": "stage",
+          "recorded_at": 1793981684.0686445,
+          "step": 0,
+          "message": "V2 \u00b7 reproducing the pinned migration failure\u2026"
+        },
+        {
+          "event": "sandbox",
+          "recorded_at": 1793981684.0703037,
+          "name": "versionbridge-c1a1a87b4e064e309dbb7ca90be973fa",
+          "status": "Dispatching",
+          "image": "sha256:fbbefae16ff6881f8a442ce1f8d87c4a03c9edc919c3a48f0a12119df8b51c98",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s"
+        },
+        {
+          "event": "sandbox",
+          "recorded_at": 1793981684.659643,
+          "name": "versionbridge-c1a1a87b4e064e309dbb7ca90be973fa",
+          "status": "Removed",
+          "exit_code": 1,
+          "timed_out": false
+        },
+        {
+          "event": "log",
+          "recorded_at": 1793981684.6616602,
+          "label": "V2 baseline",
+          "text": "F                                                                        [100%]\n=================================== FAILURES ===================================\n________________________________ test_mappings _________________________________\ntest_records.py:3: in test_mappings\n    assert only_mappings([{'id': 1}, 'ignore']) == [{'id': 1}]\napp/records.py:2: in only_mappings\n    from collections import Mapping\nE   ImportError: cannot import name 'Mapping' from 'collections' (/usr/local/lib/python3.12/collections/__init__.py)\n=========================== short test summary info ============================\nFAILED test_records.py::test_mappings - ImportError: cannot import name 'Mapp...\n1 failed in 0.02s\n"
+        },
+        {
+          "event": "analysis",
+          "recorded_at": 1793981684.664114,
+          "classification": {
+            "categories": [
+              "api",
+              "algorithm"
+            ],
+            "matches": [
+              {
+                "category": "api",
+                "evidence": "ImportError",
+                "path": "app/records.py",
+                "basis": "deterministic_signature"
+              },
+              {
+                "category": "algorithm",
+                "evidence": "assert only_mappings([{'id': 1}, 'ignore']) ==",
+                "path": "app/records.py",
+                "basis": "deterministic_signature"
+              }
+            ],
+            "confidence_source": "matched signatures",
+            "universal_guards": [
+              "patch_policy",
+              "original_test_inventory",
+              "independent_checks_when_available",
+              "sandbox_cleanup"
+            ],
+            "narrow_scope": false
+          },
+          "context": {
+            "symbols": [
+              {
+                "name": "only_mappings",
+                "path": "app/records.py",
+                "line": 1,
+                "end_line": 3,
+                "kind": "FunctionDef"
+              }
+            ],
+            "edges": [
+              {
+                "from": "app/records.py",
+                "to": "collections",
+                "path": "app/records.py",
+                "line": 2,
+                "kind": "import",
+                "confidence": "exact_syntax"
+              },
+              {
+                "from": "app/records.py",
+                "to": "dict",
+                "path": "app/records.py",
+                "line": 3,
+                "kind": "call",
+                "confidence": "heuristic_unresolved_receiver"
+              },
+              {
+                "from": "app/records.py",
+                "to": "isinstance",
+                "path": "app/records.py",
+                "line": 3,
+                "kind": "call",
+                "confidence": "heuristic_unresolved_receiver"
+              }
+            ],
+            "diagnostic_excerpt": "F                                                                        [100%]\n=================================== FAILURES ===================================\n________________________________ test_mappings _________________________________\ntest_records.py:3: in test_mappings\n    assert only_mappings([{'id': 1}, 'ignore']) == [{'id': 1}]\napp/records.py:2: in only_mappings\n    from collections import Mapping\nE   ImportError: cannot import name 'Mapping' from 'collections' (/usr/local/lib/python3.12/collections/__init__.py)\n=========================== short test summary info ============================\nFAILED test_records.py::test_mappings - ImportError: cannot import name 'Mapp...\n1 failed in 0.02s\n",
+            "localization_basis": "Allowed application files plus parsed source locations; no learned precision claim."
+          },
+          "impact_graph": {
+            "nodes": [
+              {
+                "id": "app/records.py",
+                "kind": "file",
+                "sha256": "7cf7cedbb4ee3694090cabffe8838d2c2f85f5458ff479710dc7403d1b44c441"
+              }
+            ],
+            "symbols": [
+              {
+                "name": "only_mappings",
+                "path": "app/records.py",
+                "line": 1,
+                "end_line": 3,
+                "kind": "FunctionDef"
+              }
+            ],
+            "edges": [
+              {
+                "from": "app/records.py",
+                "to": "collections",
+                "path": "app/records.py",
+                "line": 2,
+                "kind": "import",
+                "confidence": "exact_syntax"
+              },
+              {
+                "from": "app/records.py",
+                "to": "dict",
+                "path": "app/records.py",
+                "line": 3,
+                "kind": "call",
+                "confidence": "heuristic_unresolved_receiver"
+              },
+              {
+                "from": "app/records.py",
+                "to": "isinstance",
+                "path": "app/records.py",
+                "line": 3,
+                "kind": "call",
+                "confidence": "heuristic_unresolved_receiver"
+              }
+            ],
+            "limitations": "Import syntax is exact; calls are heuristic, not a whole-program dependency graph."
+          },
+          "knowledge": [
+            {
+              "id": "collections-abc-py310",
+              "package": "python",
+              "version_prefix": "3.",
+              "text": "Python 3.10 removed deprecated collections aliases for collections.abc abstract base classes, including Mapping. Check import consumers and preserve mapping behavior.",
+              "source_url": "https://docs.python.org/3.12/whatsnew/3.10.html",
+              "reviewed": "2026-11-06",
+              "scope": "Python 3.10-3.12",
+              "retrieval_score": 4.3141,
+              "retrieval": "bounded BM25-style lexical ranking"
+            }
+          ],
+          "allowed_paths": [
+            "app/records.py"
+          ],
+          "source_sha": "81ca807db254d21f3447f123e053ca7417cdcad4d4b973234c71b4b8651e5136",
+          "versions": {
+            "python": "3.12.0"
+          },
+          "adapter": {
+            "language": "Python",
+            "command": [
+              "python",
+              "-I",
+              "/opt/versionbridge/pytest_runner.py"
+            ],
+            "native_build_space": false,
+            "deadline_seconds": 35,
+            "scope": "Python application edits with existing pytest and independent checks"
+          }
+        },
+        {
+          "event": "routing",
+          "recorded_at": 1793981684.6653118,
+          "model": "glm-5.3-flash",
+          "provider": "vultr",
+          "categories": [
+            "api",
+            "algorithm"
+          ],
+          "reason": "Evidence-backed baseline; no category holdout promotion yet.",
+          "attempt": 1
+        },
+        {
+          "event": "stage",
+          "recorded_at": 1793981684.6665661,
+          "step": 1,
+          "message": "V2 \u00b7 authoring manifest \u00b7 attempt 1 \u00b7 glm-5.3-flash"
+        },
+        {
+          "event": "diagnosis",
+          "recorded_at": 1793981686.835163,
+          "attempt": 1,
+          "text": "Python 3.10+ removed `collections.Mapping`; import must come from `collections.abc`.",
+          "provider": "Vultr Serverless Inference",
+          "receipt": {
+            "requested_model": "glm-5.3-flash",
+            "served_model": "glm-5.3-flash",
+            "model_substitution": false,
+            "identity_verified": true,
+            "provider": "Vultr Serverless Inference",
+            "completion_id": "chatcmpl-121f0863-fda0-4733-88dd-e5fe42991905",
+            "tokens": {
+              "prompt_tokens": 851,
+              "completion_tokens": 75,
+              "total_tokens": 926
+            },
+            "latency_ms": 2166.29,
+            "budget": {
+              "reservation_id": 27,
+              "reserved_usd": 0.030783
+            }
+          }
+        },
+        {
+          "event": "rejected",
+          "recorded_at": 1793981686.8384917,
+          "id": "9a73548ca51542cfa07a05f577dbb480",
+          "attempt": 1,
+          "provider": "vultr",
+          "inference": {
+            "requested_model": "glm-5.3-flash",
+            "served_model": "glm-5.3-flash",
+            "model_substitution": false,
+            "identity_verified": true,
+            "provider": "Vultr Serverless Inference",
+            "completion_id": "chatcmpl-121f0863-fda0-4733-88dd-e5fe42991905",
+            "tokens": {
+              "prompt_tokens": 851,
+              "completion_tokens": 75,
+              "total_tokens": 926
+            },
+            "latency_ms": 2166.29,
+            "budget": {
+              "reservation_id": 27,
+              "reserved_usd": 0.030783
+            }
+          },
+          "source_sha": "81ca807db254d21f3447f123e053ca7417cdcad4d4b973234c71b4b8651e5136",
+          "rejection_reason": "Python syntax check failed: invalid syntax at line 2",
+          "diff": "",
+          "baseline_tests": {
+            "test_records.py::test_mappings": "failed"
+          },
+          "verification_tests": {},
+          "eligibility": "rejected",
+          "selection": {
+            "model": "glm-5.3-flash",
+            "provider": "vultr",
+            "categories": [
+              "api",
+              "algorithm"
+            ],
+            "reason": "Evidence-backed baseline; no category holdout promotion yet.",
+            "attempt": 1
+          },
+          "candidate_manifest": {
+            "diagnosis": "Python 3.10+ removed `collections.Mapping`; import must come from `collections.abc`.",
+            "edits": [
+              {
+                "path": "app/records.py",
+                "start_line": 2,
+                "end_line": 2,
+                "new_text": "    from collections.abc import Mapping",
+                "reason": "Use collections.abc.Mapping on Python 3.10+"
+              }
+            ]
+          }
+        },
+        {
+          "event": "routing",
+          "recorded_at": 1793981686.841421,
+          "model": "deepseek-v4.1-flash-1017",
+          "provider": "vultr",
+          "categories": [
+            "api",
+            "algorithm"
+          ],
+          "reason": "Bounded retry only after policy or execution failure; previous feedback supplied.",
+          "attempt": 2
+        },
+        {
+          "event": "stage",
+          "recorded_at": 1793981686.8428693,
+          "step": 1,
+          "message": "V2 \u00b7 authoring manifest \u00b7 attempt 2 \u00b7 deepseek-v4.1-flash-1017"
+        },
+        {
+          "event": "diagnosis",
+          "recorded_at": 1793981689.3281145,
+          "attempt": 2,
+          "text": "Python 3.10+ removed the deprecated collections.Mapping alias; import Mapping from collections.abc instead while preserving the existing function behavior.",
+          "provider": "Vultr Serverless Inference",
+          "receipt": {
+            "requested_model": "deepseek-v4.1-flash-1017",
+            "served_model": "deepseek-v4.1-flash-1017",
+            "model_substitution": false,
+            "identity_verified": true,
+            "provider": "Vultr Serverless Inference",
+            "completion_id": "chatcmpl-2bc9e1eb-9cb8-4a13-8408-beef9aac3dee",
+            "tokens": {
+              "prompt_tokens": 911,
+              "completion_tokens": 198,
+              "total_tokens": 1109
+            },
+            "latency_ms": 2482.47,
+            "budget": {
+              "reservation_id": 28,
+              "reserved_usd": 0.031014
+            }
+          }
+        },
+        {
+          "event": "rejected",
+          "recorded_at": 1793981689.3310134,
+          "id": "9a73548ca51542cfa07a05f577dbb480",
+          "attempt": 2,
+          "provider": "vultr",
+          "inference": {
+            "requested_model": "deepseek-v4.1-flash-1017",
+            "served_model": "deepseek-v4.1-flash-1017",
+            "model_substitution": false,
+            "identity_verified": true,
+            "provider": "Vultr Serverless Inference",
+            "completion_id": "chatcmpl-2bc9e1eb-9cb8-4a13-8408-beef9aac3dee",
+            "tokens": {
+              "prompt_tokens": 911,
+              "completion_tokens": 198,
+              "total_tokens": 1109
+            },
+            "latency_ms": 2482.47,
+            "budget": {
+              "reservation_id": 28,
+              "reserved_usd": 0.031014
+            }
+          },
+          "source_sha": "81ca807db254d21f3447f123e053ca7417cdcad4d4b973234c71b4b8651e5136",
+          "rejection_reason": "Python syntax check failed: invalid syntax at line 2",
+          "diff": "",
+          "baseline_tests": {
+            "test_records.py::test_mappings": "failed"
+          },
+          "verification_tests": {},
+          "eligibility": "rejected",
+          "selection": {
+            "model": "deepseek-v4.1-flash-1017",
+            "provider": "vultr",
+            "categories": [
+              "api",
+              "algorithm"
+            ],
+            "reason": "Bounded retry only after policy or execution failure; previous feedback supplied.",
+            "attempt": 2
+          },
+          "candidate_manifest": {
+            "diagnosis": "Python 3.10+ removed the deprecated collections.Mapping alias; import Mapping from collections.abc instead while preserving the existing function behavior.",
+            "edits": [
+              {
+                "path": "app/records.py",
+                "start_line": 2,
+                "end_line": 2,
+                "new_text": "    from collections.abc import Mapping",
+                "reason": "Use the current location of the Mapping abstract base class."
+              }
+            ]
+          }
+        },
+        {
+          "event": "error",
+          "message": "No V2 candidate completed all required checks. No verified patch was exported.",
+          "outcome": "rejected"
+        }
+      ]
+    },
+    {
+      "task": "v2-multifile",
+      "id": "61930d7e3e2847af8d7c2389304e3a93",
+      "state": "rejected",
+      "cursor": 15,
+      "events": [
+        {
+          "event": "project",
+          "recorded_at": 1793981694.3467362,
+          "profile": "v2-multifile",
+          "title": "V2 \u00b7 two-file import migration"
+        },
+        {
+          "event": "stage",
+          "recorded_at": 1793981694.3926282,
+          "step": 0,
+          "message": "V2 \u00b7 reproducing the pinned migration failure\u2026"
+        },
+        {
+          "event": "sandbox",
+          "recorded_at": 1793981694.3962934,
+          "name": "versionbridge-0ef16eadf1d04d24bd548114df24022a",
+          "status": "Dispatching",
+          "image": "sha256:fbbefae16ff6881f8a442ce1f8d87c4a03c9edc919c3a48f0a12119df8b51c98",
+          "runtime": "Docker default",
+          "location": "Vultr-Atlanta",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s"
+        },
+        {
+          "event": "sandbox",
+          "recorded_at": 1793981694.9849343,
+          "name": "versionbridge-0ef16eadf1d04d24bd548114df24022a",
+          "status": "Removed",
+          "exit_code": 1,
+          "timed_out": false
+        },
+        {
+          "event": "log",
+          "recorded_at": 1793981694.9866552,
+          "label": "V2 baseline",
+          "text": "F                                                                        [100%]\n=================================== FAILURES ===================================\n________________________________ test_normalize ________________________________\ntest_service.py:3: in test_normalize\n    assert normalize([{'id': 2}, None]) == [{'id': 2}]\napp/service.py:2: in normalize\n    from collections import Mapping\nE   ImportError: cannot import name 'Mapping' from 'collections' (/usr/local/lib/python3.12/collections/__init__.py)\n=========================== short test summary info ============================\nFAILED test_service.py::test_normalize - ImportError: cannot import name 'Map...\n1 failed in 0.02s\n"
+        },
+        {
+          "event": "analysis",
+          "recorded_at": 1793981694.9897203,
+          "classification": {
+            "categories": [
+              "api",
+              "algorithm"
+            ],
+            "matches": [
+              {
+                "category": "api",
+                "evidence": "ImportError",
+                "path": "app/types.py",
+                "basis": "deterministic_signature"
+              },
+              {
+                "category": "algorithm",
+                "evidence": "assert normalize([{'id': 2}, None]) ==",
+                "path": "app/types.py",
+                "basis": "deterministic_signature"
+              }
+            ],
+            "confidence_source": "matched signatures",
+            "universal_guards": [
+              "patch_policy",
+              "original_test_inventory",
+              "independent_checks_when_available",
+              "sandbox_cleanup"
+            ],
+            "narrow_scope": false
+          },
+          "context": {
+            "symbols": [
+              {
+                "name": "normalize",
+                "path": "app/service.py",
+                "line": 1,
+                "end_line": 4,
+                "kind": "FunctionDef"
+              },
+              {
+                "name": "is_record",
+                "path": "app/types.py",
+                "line": 1,
+                "end_line": 3,
+                "kind": "FunctionDef"
+              }
+            ],
+            "edges": [
+              {
+                "from": "app/service.py",
+                "to": "collections",
+                "path": "app/service.py",
+                "line": 2,
+                "kind": "import",
+                "confidence": "exact_syntax"
+              },
+              {
+                "from": "app/service.py",
+                "to": "app.types",
+                "path": "app/service.py",
+                "line": 3,
+                "kind": "import",
+                "confidence": "exact_syntax"
+              },
+              {
+                "from": "app/service.py",
+                "to": "dict",
+                "path": "app/service.py",
+                "line": 4,
+                "kind": "call",
+                "confidence": "heuristic_unresolved_receiver"
+              },
+              {
+                "from": "app/service.py",
+                "to": "isinstance",
+                "path": "app/service.py",
+                "line": 4,
+                "kind": "call",
+                "confidence": "heuristic_unresolved_receiver"
+              },
+              {
+                "from": "app/service.py",
+                "to": "is_record",
+                "path": "app/service.py",
+                "line": 4,
+                "kind": "call",
+                "confidence": "heuristic_unresolved_receiver"
+              },
+              {
+                "from": "app/types.py",
+                "to": "collections",
+                "path": "app/types.py",
+                "line": 2,
+                "kind": "import",
+                "confidence": "exact_syntax"
+              },
+              {
+                "from": "app/types.py",
+                "to": "isinstance",
+                "path": "app/types.py",
+                "line": 3,
+                "kind": "call",
+                "confidence": "heuristic_unresolved_receiver"
+              }
+            ],
+            "diagnostic_excerpt": "F                                                                        [100%]\n=================================== FAILURES ===================================\n________________________________ test_normalize ________________________________\ntest_service.py:3: in test_normalize\n    assert normalize([{'id': 2}, None]) == [{'id': 2}]\napp/service.py:2: in normalize\n    from collections import Mapping\nE   ImportError: cannot import name 'Mapping' from 'collections' (/usr/local/lib/python3.12/collections/__init__.py)\n=========================== short test summary info ============================\nFAILED test_service.py::test_normalize - ImportError: cannot import name 'Map...\n1 failed in 0.02s\n",
+            "localization_basis": "Allowed application files plus parsed source locations; no learned precision claim."
+          },
+          "impact_graph": {
+            "nodes": [
+              {
+                "id": "app/service.py",
+                "kind": "file",
+                "sha256": "207fc1251b614fccbe74afbf719c6b1a5794d998e55a1ab5f5630de6a1c37185"
+              },
+              {
+                "id": "app/types.py",
+                "kind": "file",
+                "sha256": "b187fc06698af4493e5d83579e4ce44981c30e37f9d4cb7d54529578aff4e984"
+              }
+            ],
+            "symbols": [
+              {
+                "name": "normalize",
+                "path": "app/service.py",
+                "line": 1,
+                "end_line": 4,
+                "kind": "FunctionDef"
+              },
+              {
+                "name": "is_record",
+                "path": "app/types.py",
+                "line": 1,
+                "end_line": 3,
+                "kind": "FunctionDef"
+              }
+            ],
+            "edges": [
+              {
+                "from": "app/service.py",
+                "to": "collections",
+                "path": "app/service.py",
+                "line": 2,
+                "kind": "import",
+                "confidence": "exact_syntax"
+              },
+              {
+                "from": "app/service.py",
+                "to": "app.types",
+                "path": "app/service.py",
+                "line": 3,
+                "kind": "import",
+                "confidence": "exact_syntax"
+              },
+              {
+                "from": "app/service.py",
+                "to": "dict",
+                "path": "app/service.py",
+                "line": 4,
+                "kind": "call",
+                "confidence": "heuristic_unresolved_receiver"
+              },
+              {
+                "from": "app/service.py",
+                "to": "isinstance",
+                "path": "app/service.py",
+                "line": 4,
+                "kind": "call",
+                "confidence": "heuristic_unresolved_receiver"
+              },
+              {
+                "from": "app/service.py",
+                "to": "is_record",
+                "path": "app/service.py",
+                "line": 4,
+                "kind": "call",
+                "confidence": "heuristic_unresolved_receiver"
+              },
+              {
+                "from": "app/types.py",
+                "to": "collections",
+                "path": "app/types.py",
+                "line": 2,
+                "kind": "import",
+                "confidence": "exact_syntax"
+              },
+              {
+                "from": "app/types.py",
+                "to": "isinstance",
+                "path": "app/types.py",
+                "line": 3,
+                "kind": "call",
+                "confidence": "heuristic_unresolved_receiver"
+              }
+            ],
+            "limitations": "Import syntax is exact; calls are heuristic, not a whole-program dependency graph."
+          },
+          "knowledge": [
+            {
+              "id": "collections-abc-py310",
+              "package": "python",
+              "version_prefix": "3.",
+              "text": "Python 3.10 removed deprecated collections aliases for collections.abc abstract base classes, including Mapping. Check import consumers and preserve mapping behavior.",
+              "source_url": "https://docs.python.org/3.12/whatsnew/3.10.html",
+              "reviewed": "2026-11-06",
+              "scope": "Python 3.10-3.12",
+              "retrieval_score": 4.3141,
+              "retrieval": "bounded BM25-style lexical ranking"
+            }
+          ],
+          "allowed_paths": [
+            "app/types.py",
+            "app/service.py"
+          ],
+          "source_sha": "975f54654f1ac84e337f84bee39557802ff78a499e0c7d0aaf438ade85d07f40",
+          "versions": {
+            "python": "3.12.0"
+          },
+          "adapter": {
+            "language": "Python",
+            "command": [
+              "python",
+              "-I",
+              "/opt/versionbridge/pytest_runner.py"
+            ],
+            "native_build_space": false,
+            "deadline_seconds": 35,
+            "scope": "Python application edits with existing pytest and independent checks"
+          }
+        },
+        {
+          "event": "routing",
+          "recorded_at": 1793981694.990907,
+          "model": "glm-5.3-flash",
+          "provider": "vultr",
+          "categories": [
+            "api",
+            "algorithm"
+          ],
+          "reason": "Evidence-backed baseline; no category holdout promotion yet.",
+          "attempt": 1
+        },
+        {
+          "event": "stage",
+          "recorded_at": 1793981694.9920945,
+          "step": 1,
+          "message": "V2 \u00b7 authoring manifest \u00b7 attempt 1 \u00b7 glm-5.3-flash"
+        },
+        {
+          "event": "diagnosis",
+          "recorded_at": 1793981698.6285071,
+          "attempt": 1,
+          "text": "Python 3.10+ removed the deprecated `collections.Mapping` alias; imports must come from `collections.abc`. Both modules import `Mapping` from `collections`, causing the ImportError in `normalize` and the same latent failure in `is_record`.",
+          "provider": "Vultr Serverless Inference",
+          "receipt": {
+            "requested_model": "glm-5.3-flash",
+            "served_model": "glm-5.3-flash",
+            "model_substitution": false,
+            "identity_verified": true,
+            "provider": "Vultr Serverless Inference",
+            "completion_id": "chatcmpl-2b5afc1d-1858-4e5f-869a-c5b88f0a6d86",
+            "tokens": {
+              "prompt_tokens": 1186,
+              "completion_tokens": 149,
+              "total_tokens": 1335
+            },
+            "latency_ms": 3634.26,
+            "budget": {
+              "reservation_id": 29,
+              "reserved_usd": 0.034323
+            }
+          }
+        },
+        {
+          "event": "rejected",
+          "recorded_at": 1793981698.6317165,
+          "id": "61930d7e3e2847af8d7c2389304e3a93",
+          "attempt": 1,
+          "provider": "vultr",
+          "inference": {
+            "requested_model": "glm-5.3-flash",
+            "served_model": "glm-5.3-flash",
+            "model_substitution": false,
+            "identity_verified": true,
+            "provider": "Vultr Serverless Inference",
+            "completion_id": "chatcmpl-2b5afc1d-1858-4e5f-869a-c5b88f0a6d86",
+            "tokens": {
+              "prompt_tokens": 1186,
+              "completion_tokens": 149,
+              "total_tokens": 1335
+            },
+            "latency_ms": 3634.26,
+            "budget": {
+              "reservation_id": 29,
+              "reserved_usd": 0.034323
+            }
+          },
+          "source_sha": "975f54654f1ac84e337f84bee39557802ff78a499e0c7d0aaf438ade85d07f40",
+          "rejection_reason": "Python syntax check failed: invalid syntax at line 2",
+          "diff": "",
+          "baseline_tests": {
+            "test_service.py::test_normalize": "failed"
+          },
+          "verification_tests": {},
+          "eligibility": "rejected",
+          "selection": {
+            "model": "glm-5.3-flash",
+            "provider": "vultr",
+            "categories": [
+              "api",
+              "algorithm"
+            ],
+            "reason": "Evidence-backed baseline; no category holdout promotion yet.",
+            "attempt": 1
+          },
+          "candidate_manifest": {
+            "diagnosis": "Python 3.10+ removed the deprecated `collections.Mapping` alias; imports must come from `collections.abc`. Both modules import `Mapping` from `collections`, causing the ImportError in `normalize` and the same latent failure in `is_record`.",
+            "edits": [
+              {
+                "path": "app/service.py",
+                "start_line": 2,
+                "end_line": 2,
+                "new_text": "    from collections.abc import Mapping",
+                "reason": "Import Mapping from collections.abc, compatible with Python 3.10+."
+              },
+              {
+                "path": "app/types.py",
+                "start_line": 2,
+                "end_line": 2,
+                "new_text": "    from collections.abc import Mapping",
+                "reason": "Same deprecated alias removal applies to is_record's import."
+              }
+            ]
+          }
+        },
+        {
+          "event": "routing",
+          "recorded_at": 1793981698.634543,
+          "model": "deepseek-v4.1-flash-1017",
+          "provider": "vultr",
+          "categories": [
+            "api",
+            "algorithm"
+          ],
+          "reason": "Bounded retry only after policy or execution failure; previous feedback supplied.",
+          "attempt": 2
+        },
+        {
+          "event": "stage",
+          "recorded_at": 1793981698.6357546,
+          "step": 1,
+          "message": "V2 \u00b7 authoring manifest \u00b7 attempt 2 \u00b7 deepseek-v4.1-flash-1017"
+        },
+        {
+          "event": "diagnosis",
+          "recorded_at": 1793981700.1132193,
+          "attempt": 2,
+          "text": "Python 3.12 no longer exposes collections.Mapping; use collections.abc.Mapping in both application modules while preserving existing normalization and classification behavior.",
+          "provider": "Vultr Serverless Inference",
+          "receipt": {
+            "requested_model": "deepseek-v4.1-flash-1017",
+            "served_model": "deepseek-v4.1-flash-1017",
+            "model_substitution": false,
+            "identity_verified": true,
+            "provider": "Vultr Serverless Inference",
+            "completion_id": "chatcmpl-0e890a0d-4f13-4fe9-96ea-c39a64a797c2",
+            "tokens": {
+              "prompt_tokens": 1253,
+              "completion_tokens": 237,
+              "total_tokens": 1490
+            },
+            "latency_ms": 1475.04,
+            "budget": {
+              "reservation_id": 30,
+              "reserved_usd": 0.034554
+            }
+          }
+        },
+        {
+          "event": "rejected",
+          "recorded_at": 1793981700.116404,
+          "id": "61930d7e3e2847af8d7c2389304e3a93",
+          "attempt": 2,
+          "provider": "vultr",
+          "inference": {
+            "requested_model": "deepseek-v4.1-flash-1017",
+            "served_model": "deepseek-v4.1-flash-1017",
+            "model_substitution": false,
+            "identity_verified": true,
+            "provider": "Vultr Serverless Inference",
+            "completion_id": "chatcmpl-0e890a0d-4f13-4fe9-96ea-c39a64a797c2",
+            "tokens": {
+              "prompt_tokens": 1253,
+              "completion_tokens": 237,
+              "total_tokens": 1490
+            },
+            "latency_ms": 1475.04,
+            "budget": {
+              "reservation_id": 30,
+              "reserved_usd": 0.034554
+            }
+          },
+          "source_sha": "975f54654f1ac84e337f84bee39557802ff78a499e0c7d0aaf438ade85d07f40",
+          "rejection_reason": "Python syntax check failed: invalid syntax at line 2",
+          "diff": "",
+          "baseline_tests": {
+            "test_service.py::test_normalize": "failed"
+          },
+          "verification_tests": {},
+          "eligibility": "rejected",
+          "selection": {
+            "model": "deepseek-v4.1-flash-1017",
+            "provider": "vultr",
+            "categories": [
+              "api",
+              "algorithm"
+            ],
+            "reason": "Bounded retry only after policy or execution failure; previous feedback supplied.",
+            "attempt": 2
+          },
+          "candidate_manifest": {
+            "diagnosis": "Python 3.12 no longer exposes collections.Mapping; use collections.abc.Mapping in both application modules while preserving existing normalization and classification behavior.",
+            "edits": [
+              {
+                "path": "app/service.py",
+                "start_line": 2,
+                "end_line": 2,
+                "new_text": "    from collections.abc import Mapping",
+                "reason": "Update deprecated collections.Mapping import so normalize can perform its existing mapping check on Python 3.12."
+              },
+              {
+                "path": "app/types.py",
+                "start_line": 2,
+                "end_line": 2,
+                "new_text": "    from collections.abc import Mapping",
+                "reason": "Update deprecated collections.Mapping import so is_record can preserve its existing mapping classification on Python 3.12."
+              }
+            ]
+          }
+        },
+        {
+          "event": "error",
+          "message": "No V2 candidate completed all required checks. No verified patch was exported.",
+          "outcome": "rejected"
+        }
+      ]
+    }
+  ],
+  "after_budget": {
+    "limit_usd": 4.0,
+    "reserved_usd": 0.832956,
+    "remaining_usd": 3.167044,
+    "requests_today": 15,
+    "daily_request_limit": 30,
+    "scope": "Application inference reservations. VM, bandwidth, and other account charges are separate."
+  },
+  "ready": {
+    "status": "ok",
+    "version": "0.2.0"
+  }
+}

@@ -1,0 +1,278 @@
+{
+  "model": "qwen2.5-coder:1.5b-instruct-q4_K_M",
+  "context": 2048,
+  "max_output": 1200,
+  "runs": [
+    {
+      "task": "v2-collections",
+      "events": [
+        {
+          "event": "project",
+          "recorded_at": 1793981505.830902,
+          "profile": "v2-collections",
+          "title": "V2 \u00b7 open-ended collections migration"
+        },
+        {
+          "event": "stage",
+          "recorded_at": 1793981505.9462368,
+          "step": 0,
+          "message": "V2 \u00b7 reproducing the pinned migration failure\u2026"
+        },
+        {
+          "event": "sandbox",
+          "recorded_at": 1793981505.94635,
+          "name": "versionbridge-30c682cc7b9642c88d269562d3b7cd27",
+          "status": "Dispatching",
+          "image": "sha256:a6103d7d7575ad40f16ed2259ad47f826ce4ea8d37ff2868a5c8b3158f0e91c0",
+          "runtime": "Docker default",
+          "location": "Local Docker daemon",
+          "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s"
+        },
+        {
+          "event": "sandbox",
+          "recorded_at": 1793981506.24937,
+          "name": "versionbridge-30c682cc7b9642c88d269562d3b7cd27",
+          "status": "Removed",
+          "exit_code": 1,
+          "timed_out": false
+        },
+        {
+          "event": "log",
+          "recorded_at": 1793981506.249454,
+          "label": "V2 baseline",
+          "text": "F                                                                        [100%]\n=================================== FAILURES ===================================\n________________________________ test_mappings _________________________________\ntest_records.py:3: in test_mappings\n    assert only_mappings([{'id': 1}, 'ignore']) == [{'id': 1}]\napp/records.py:2: in only_mappings\n    from collections import Mapping\nE   ImportError: cannot import name 'Mapping' from 'collections' (/usr/local/lib/python3.12/collections/__init__.py)\n=========================== short test summary info ============================\nFAILED test_records.py::test_mappings - ImportError: cannot import name 'Mapp...\n1 failed in 0.01s\n"
+        },
+        {
+          "event": "analysis",
+          "recorded_at": 1793981506.2512288,
+          "classification": {
+            "categories": [
+              "api",
+              "algorithm"
+            ],
+            "matches": [
+              {
+                "category": "api",
+                "evidence": "ImportError",
+                "path": "app/records.py",
+                "basis": "deterministic_signature"
+              },
+              {
+                "category": "algorithm",
+                "evidence": "assert only_mappings([{'id': 1}, 'ignore']) ==",
+                "path": "app/records.py",
+                "basis": "deterministic_signature"
+              }
+            ],
+            "confidence_source": "matched signatures",
+            "universal_guards": [
+              "patch_policy",
+              "original_test_inventory",
+              "independent_checks_when_available",
+              "sandbox_cleanup"
+            ],
+            "narrow_scope": false
+          },
+          "context": {
+            "symbols": [
+              {
+                "name": "only_mappings",
+                "path": "app/records.py",
+                "line": 1,
+                "end_line": 3,
+                "kind": "FunctionDef"
+              }
+            ],
+            "edges": [
+              {
+                "from": "app/records.py",
+                "to": "collections",
+                "path": "app/records.py",
+                "line": 2,
+                "kind": "import",
+                "confidence": "exact_syntax"
+              },
+              {
+                "from": "app/records.py",
+                "to": "dict",
+                "path": "app/records.py",
+                "line": 3,
+                "kind": "call",
+                "confidence": "heuristic_unresolved_receiver"
+              },
+              {
+                "from": "app/records.py",
+                "to": "isinstance",
+                "path": "app/records.py",
+                "line": 3,
+                "kind": "call",
+                "confidence": "heuristic_unresolved_receiver"
+              }
+            ],
+            "diagnostic_excerpt": "F                                                                        [100%]\n=================================== FAILURES ===================================\n________________________________ test_mappings _________________________________\ntest_records.py:3: in test_mappings\n    assert only_mappings([{'id': 1}, 'ignore']) == [{'id': 1}]\napp/records.py:2: in only_mappings\n    from collections import Mapping\nE   ImportError: cannot import name 'Mapping' from 'collections' (/usr/local/lib/python3.12/collections/__init__.py)\n=========================== short test summary info ============================\nFAILED test_records.py::test_mappings - ImportError: cannot import name 'Mapp...\n1 failed in 0.01s\n",
+            "localization_basis": "Allowed application files plus parsed source locations; no learned precision claim."
+          },
+          "impact_graph": {
+            "nodes": [
+              {
+                "id": "app/records.py",
+                "kind": "file",
+                "sha256": "7cf7cedbb4ee3694090cabffe8838d2c2f85f5458ff479710dc7403d1b44c441"
+              }
+            ],
+            "symbols": [
+              {
+                "name": "only_mappings",
+                "path": "app/records.py",
+                "line": 1,
+                "end_line": 3,
+                "kind": "FunctionDef"
+              }
+            ],
+            "edges": [
+              {
+                "from": "app/records.py",
+                "to": "collections",
+                "path": "app/records.py",
+                "line": 2,
+                "kind": "import",
+                "confidence": "exact_syntax"
+              },
+              {
+                "from": "app/records.py",
+                "to": "dict",
+                "path": "app/records.py",
+                "line": 3,
+                "kind": "call",
+                "confidence": "heuristic_unresolved_receiver"
+              },
+              {
+                "from": "app/records.py",
+                "to": "isinstance",
+                "path": "app/records.py",
+                "line": 3,
+                "kind": "call",
+                "confidence": "heuristic_unresolved_receiver"
+              }
+            ],
+            "limitations": "Import syntax is exact; calls are heuristic, not a whole-program dependency graph."
+          },
+          "knowledge": [
+            {
+              "id": "collections-abc-py310",
+              "package": "python",
+              "version_prefix": "3.",
+              "text": "Python 3.10 removed deprecated collections aliases for collections.abc abstract base classes, including Mapping. Check import consumers and preserve mapping behavior.",
+              "source_url": "https://docs.python.org/3.12/whatsnew/3.10.html",
+              "reviewed": "2026-11-06",
+              "scope": "Python 3.10-3.12",
+              "retrieval_score": 4.3141,
+              "retrieval": "bounded BM25-style lexical ranking"
+            }
+          ],
+          "allowed_paths": [
+            "app/records.py"
+          ],
+          "source_sha": "81ca807db254d21f3447f123e053ca7417cdcad4d4b973234c71b4b8651e5136",
+          "versions": {
+            "python": "3.12.0"
+          },
+          "adapter": {
+            "language": "Python",
+            "command": [
+              "python",
+              "-I",
+              "/opt/versionbridge/pytest_runner.py"
+            ],
+            "native_build_space": false,
+            "deadline_seconds": 35,
+            "scope": "Python application edits with existing pytest and independent checks"
+          }
+        },
+        {
+          "event": "routing",
+          "recorded_at": 1793981506.251252,
+          "model": "qwen2.5-coder:1.5b-instruct-q4_K_M",
+          "provider": "ollama",
+          "categories": [
+            "api",
+            "algorithm"
+          ],
+          "reason": "Evidence-backed baseline; no category holdout promotion yet.",
+          "attempt": 1
+        },
+        {
+          "event": "stage",
+          "recorded_at": 1793981506.251254,
+          "step": 1,
+          "message": "V2 \u00b7 authoring manifest \u00b7 attempt 1 \u00b7 qwen2.5-coder:1.5b-instruct-q4_K_M"
+        },
+        {
+          "event": "diagnosis",
+          "recorded_at": 1793981510.715737,
+          "attempt": 1,
+          "text": "The migration script attempted to import the 'Mapping' class from the 'collections' module, which was removed in Python 3.10. The script should be updated to use the 'abc' module instead, which provides the 'Mapping' abstract base class.",
+          "provider": "Ollama",
+          "receipt": {
+            "requested_model": "qwen2.5-coder:1.5b-instruct-q4_K_M",
+            "served_model": "qwen2.5-coder:1.5b-instruct-q4_K_M",
+            "model_substitution": false,
+            "identity_verified": true,
+            "provider": "Ollama",
+            "completion_id": null,
+            "tokens": {
+              "prompt_tokens": 1084,
+              "completion_tokens": 286
+            },
+            "latency_ms": 4464.21,
+            "budget": {}
+          }
+        },
+        {
+          "event": "rejected",
+          "recorded_at": 1793981510.7167099,
+          "id": "dell-v2-1793981505830898000",
+          "attempt": 1,
+          "provider": "ollama",
+          "inference": {
+            "requested_model": "qwen2.5-coder:1.5b-instruct-q4_K_M",
+            "served_model": "qwen2.5-coder:1.5b-instruct-q4_K_M",
+            "model_substitution": false,
+            "identity_verified": true,
+            "provider": "Ollama",
+            "completion_id": null,
+            "tokens": {
+              "prompt_tokens": 1084,
+              "completion_tokens": 286
+            },
+            "latency_ms": 4464.21,
+            "budget": {}
+          },
+          "source_sha": "81ca807db254d21f3447f123e053ca7417cdcad4d4b973234c71b4b8651e5136",
+          "rejection_reason": "Old span checksum mismatch.",
+          "diff": "",
+          "baseline_tests": {
+            "test_records.py::test_mappings": "failed"
+          },
+          "verification_tests": {},
+          "eligibility": "rejected",
+          "selection": {
+            "model": "qwen2.5-coder:1.5b-instruct-q4_K_M",
+            "provider": "ollama",
+            "categories": [
+              "api",
+              "algorithm"
+            ],
+            "reason": "Evidence-backed baseline; no category holdout promotion yet.",
+            "attempt": 1
+          }
+        },
+        {
+          "event": "error",
+          "outcome": "rejected",
+          "message": "No V2 candidate completed all required checks. No verified patch was exported."
+        }
+      ]
+    }
+  ]
+}

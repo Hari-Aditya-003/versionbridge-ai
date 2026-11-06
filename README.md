@@ -6,6 +6,12 @@ VersionBridge reproduces a supported code failure in Docker, proposes a scoped r
 
 The release includes a persistent job queue, browser refresh recovery, cancellation, an optional workspace access token, project metadata inspection, a usage dashboard, and downloadable JSON, Markdown, and patch artifacts. The HTTP service and execution worker can run under separate OS users. Only the worker needs Docker access and inference credentials.
 
+## V2 update
+
+The [technical blueprint implementation checklist](V2_IMPLEMENTATION.md) maps shipped behavior, live evidence and remaining boundaries. Three additional reviewed Python migrations use model-authored source edits without a replacement enum, including a two-file migration. The shared pipeline adds diagnostic routing, catalog-checked providers, bounded model fallback, trusted manifest hashes, independent behavior verification and source impact/attempt inspection.
+
+The workspace includes a live resource panel for host RAM/CPU, available clock/temperature readings, and accessible local or trusted Dell GPU sensors. Serverless inference hardware readings are explicitly unavailable. Readings refresh every three seconds and identify their source.
+
 ## Run locally
 
 Use Python 3.10 or newer and a running Docker engine.
@@ -41,10 +47,12 @@ These language examples are scoped, bundled repair profiles. General projects, d
 ```sh
 python3 smoke.py
 python3 api_smoke.py
+python3 -m unittest test_v2 test_v2_sandbox -v
 node --check web/app.js
+node --check web/resources.js
 ```
 
-The current release has 23 acceptance test methods and 20 HTTP integration checks. The acceptance suite checks all repair profiles, rejection of weakened tests, sandbox teardown, model validation, queue behavior, inference allowances, and GPU telemetry policy. The HTTP suite starts a separate worker with a temporary database and checks authentication, idempotency, artifact checksums, queued containment, and regression rejection. It uses sample proposals and real sandbox execution, consuming no inference credits. GitHub Actions runs both suites.
+The current release retains 23 V1 acceptance methods and adds 28 V2 unit/Docker methods, with 24 HTTP integration checks. The acceptance suite checks all repair profiles, rejection of weakened tests, sandbox teardown, model validation, queue behavior, inference allowances, and GPU telemetry policy. The HTTP suite starts a separate worker with a temporary database and checks authentication, idempotency, artifact checksums, queued containment, and regression rejection. It uses sample proposals and real sandbox execution, consuming no inference credits. GitHub Actions runs both suites.
 
 ## Inspect verification evidence
 
@@ -89,7 +97,7 @@ The optional Ollama mode uses a small quantized model through a loopback SSH tun
 
 The implemented release covers the listed scoped repair examples, Python snapshot imports, persistent jobs, bounded execution, test comparison, artifacts, model receipts, and a containment lab.
 
-Broader repository adapters, arbitrary package installation, GitHub App authentication, automated repair PRs, organizations and roles, scheduled monitoring, general multi-file patches, and independent generated regression tests remain future work. Each requires its own release tests before being offered as a supported capability.
+Broader repository adapters, arbitrary package installation, GitHub App authentication, automated repair PRs, organizations and roles, scheduled monitoring, arbitrary multi-file repository patches, and general independent generated regression tests remain future work. Bounded two-file Python migration and independent reviewed behavior checks are implemented in V2. Each requires its own release tests before being offered as a supported capability.
 
 | Area | Files |
 | --- | --- |

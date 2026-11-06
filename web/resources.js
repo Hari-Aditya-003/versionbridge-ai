@@ -2,7 +2,7 @@
 (() => {
   const panel = document.querySelector("#resource-panel");
   if (!panel) return;
-  if (matchMedia("(max-width: 700px)").matches) panel.open = false;
+  if (matchMedia("(max-width: 1050px)").matches) panel.open = false;
   const put = (id, text) => { document.getElementById(`resource-${id}`).textContent = text; };
   const valid = value => typeof value === "number" && Number.isFinite(value);
   const pct = value => valid(value) ? `${value.toFixed(1)}%` : "Unavailable";
@@ -20,6 +20,7 @@
       put("host", host.label || "Application host");
       put("ram", `${pct(ram.percent)} · ${gib(ram.used_bytes)}/${gib(ram.total_bytes)} GiB`);
       put("cpu", pct(cpu.percent));
+      put("compact", `RAM ${pct(ram.percent)} · CPU ${pct(cpu.percent)} · GPU ${gpu.available ? pct(gpu.utilization_percent) : "—"}`);
       put("speed", valid(cpu.speed_mhz) ? `${(cpu.speed_mhz/1000).toFixed(2)} GHz` : "Unavailable");
       const temperature = gpu.available ? gpu.temperature_c : cpu.temperature_c;
       put("temp", valid(temperature) ? `${temperature.toFixed(0)}°C · ${gpu.available ? "GPU" : "host"}` : "Sensor unavailable");
@@ -31,6 +32,7 @@
       panel.classList.remove("sensor-error");
     } catch (error) {
       put("live", "Offline");
+      put("compact", "RAM — · CPU — · GPU —");
       for (const id of ["ram", "cpu", "speed", "temp", "gpu", "vram"]) put(id, "Unavailable");
       put("updated", "No current reading");
       put("note", error.name === "TimeoutError" ? "Resource request timed out. Retrying…" : "Waiting for current sensor readings…");

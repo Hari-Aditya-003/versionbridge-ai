@@ -1,0 +1,52 @@
+{
+  "recorded_at": "2026-11-06T16:19:58.320706+00:00",
+  "source_revision": "0cf03813a46ba567cc98337545c4fe9c09f91143",
+  "commands": [
+    "python3 smoke.py",
+    "python3 -m unittest test_v2 test_v2_sandbox -v",
+    "python3 api_smoke.py",
+    "node --check web/app.js",
+    "node --check web/resources.js"
+  ],
+  "v1_acceptance_methods": 23,
+  "v2_unit_methods": 24,
+  "v2_docker_methods": 4,
+  "http_integration_checks": 24,
+  "status": "passed",
+  "coverage": {
+    "scope": "listed V2 and shared core modules, not whole-repository coverage",
+    "totals": {
+      "covered_lines": 582,
+      "num_statements": 679,
+      "percent_covered": 85.71428571428571,
+      "percent_covered_display": "86",
+      "missing_lines": 97,
+      "excluded_lines": 0
+    },
+    "modules": [
+      "candidate_scheduler.py",
+      "category_router.py",
+      "context_builder.py",
+      "critics.py",
+      "evaluation_scoreboard.py",
+      "evidence_graph.py",
+      "language_adapters/__init__.py",
+      "migration_knowledge.py",
+      "model_registry.py",
+      "patch_engine.py",
+      "policy_gate.py",
+      "providers/__init__.py",
+      "providers/base.py",
+      "providers/ollama.py",
+      "providers/vultr.py",
+      "reports.py",
+      "telemetry.py",
+      "v2_pipeline.py"
+    ]
+  },
+  "live_evidence": {
+    "vultr": "vultr-v2-live-2026-11-06.json",
+    "dell": "dell-v2-final-2026-11-06.json"
+  },
+  "limits": "Controlled migration projects; not general unseen repository accuracy."
+}

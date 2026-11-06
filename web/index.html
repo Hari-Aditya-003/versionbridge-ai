@@ -21,7 +21,7 @@
 <h1>When dependencies break,<br><em>prove the fix.</em></h1>
 <p>Reproduce a supported failure, generate a scoped patch, and inspect the tests that prove the change. Explore Python, JavaScript, TypeScript, SQL, and compiled-language examples.</p>
 <div class="actions"><a href="/demo.html" target="_blank" rel="noopener" class="button primary">Run the demo <span aria-hidden="true">↗</span></a><a class="button secondary" href="https://github.com/Hari-Aditya-003/versionbridge-ai">View GitHub ↗</a></div>
-<div class="hero-meta"><span>13 REPAIR PROFILES</span><span>TEST-BACKED PATCHES</span></div></div>
+<div class="hero-meta"><span>13 CLASSIC + 3 V2 PROFILES</span><span>TEST-BACKED PATCHES</span></div></div>
 <figure class="hero-visual">
 <div class="diagram-label"><span>VB / EXECUTION PATH</span><span>FIG. 01</span></div>
 <div class="diagram">
@@ -42,6 +42,7 @@
 <div class="cards"><article><span>01 / CONTROL PLANE</span><h3>Vultr Cloud Compute</h3><p>The web API queues work and stores evidence. A separate worker controls execution and holds the model credential.</p></article>
 <article><span>02 / PATCH AUTHOR</span><h3>Vultr Inference</h3><p>The configured coding model receives the failing test output and the relevant source. The server validates its proposed change.</p></article>
 <article><span>03 / EXECUTION</span><h3>Disposable Docker sandboxes</h3><p>Each baseline, verification, and probe runs in its own container. The workspace shows its ID and cleanup result.</p></article></div>
+<div class="faq"><h3>V2: authored edits, independent checks.</h3><p>Diagnose failures across five tracks. Review model-authored Python edits, including a two-file migration, then inspect original tests and independent behavior checks. The workspace displays source impact, each model attempt and live system resources. Public runs use reviewed projects.</p><a class="button secondary small" href="https://github.com/Hari-Aditya-003/versionbridge-ai/blob/main/V2_IMPLEMENTATION.md">Read the V2 implementation ↗</a></div>
 <div class="faq"><h3>Measured on controlled examples.</h3>
 <p>GLM 5.3 Flash verified twelve repairs and rejected the seeded regression in the thirteen-profile model evaluation.
 Every outcome includes its candidate patch, test output, and provider receipt.</p>
@@ -49,7 +50,7 @@ Every outcome includes its candidate patch, test output, and provider receipt.</
 </div>
 <div class="faq"><h3>Common questions</h3>
 <details><summary>When would a team use VersionBridge?</summary><p>Use it to investigate a failing dependency upgrade, compare test results, and hand a verified patch to a maintainer for review.</p></details>
-<details><summary>What can I repair?</summary><p>Explore thirteen scoped examples across Python, JavaScript, TypeScript, Go, Rust, Java, C++, SQLite, and PostgreSQL. The public demo runs curated workloads. Compatible Python repository imports are available in private development mode.</p></details>
+<details><summary>What can I repair?</summary><p>Explore thirteen classic examples and three V2 Python migration projects across Python, JavaScript, TypeScript, Go, Rust, Java, C++, SQLite, and PostgreSQL. The public demo runs curated workloads. Compatible Python repository imports are available in private development mode.</p></details>
 <details><summary>Does it change my repository?</summary><p>The patch applies to a temporary copy. Download the diff and decide whether to apply it to your project.</p></details></div>
 </section>
 </main>
