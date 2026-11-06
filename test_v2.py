@@ -167,14 +167,25 @@ class PatchTests(unittest.TestCase):
 
     def test_trusted_binding_hashes_model_edits_and_rejects_stale_source(self):
         from patch_engine import bind_proposal, apply_manifest, snapshot_hash
-        source_sha = snapshot_hash(self.root,["app/core.py"])
-        edit = self.manifest()["edits"][0]; edit.pop("old_sha256")
-        proposal = {"diagnosis":"Move deprecated import.","edits":[edit]}
-        manifest = bind_proposal(self.root,proposal,["app/core.py"],source_sha)
-        self.assertEqual(manifest["edits"][0]["old_sha256"],digest(self.original.splitlines(keepends=True)[0]))
-        self.assertIn("collections.abc",apply_manifest(self.root,manifest,["app/core.py"])["files"]["app/core.py"])
-        (self.root/"app/core.py").write_text(self.original+"\n")
-        with self.assertRaises(ValueError):bind_proposal(self.root,proposal,["app/core.py"],source_sha)
+
+        source_sha = snapshot_hash(self.root, ["app/core.py"])
+        edit = self.manifest()["edits"][0]
+        edit.pop("old_sha256")
+        proposal = {"diagnosis": "Move deprecated import.", "edits": [edit]}
+        manifest = bind_proposal(self.root, proposal, ["app/core.py"], source_sha)
+        self.assertEqual(
+            manifest["edits"][0]["old_sha256"],
+            digest(self.original.splitlines(keepends=True)[0]),
+        )
+        self.assertIn(
+            "collections.abc",
+            apply_manifest(self.root, manifest, ["app/core.py"])["files"][
+                "app/core.py"
+            ],
+        )
+        (self.root / "app/core.py").write_text(self.original + "\n")
+        with self.assertRaises(ValueError):
+            bind_proposal(self.root, proposal, ["app/core.py"], source_sha)
 
     def test_unterminated_export_applies_with_git(self):
         import subprocess

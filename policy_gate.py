@@ -103,7 +103,12 @@ def parse_safe_change(before, after):
         original = ast.parse(before)
         candidate = ast.parse(after)
     except (SyntaxError, ValueError, RecursionError) as exc:
-        raise ValueError("Python syntax check failed.") from exc
+        detail = (
+            f"{exc.msg} at line {exc.lineno}"
+            if isinstance(exc, SyntaxError)
+            else "invalid syntax tree"
+        )
+        raise ValueError("Python syntax check failed: " + detail) from exc
 
     def signatures(tree):
         return [

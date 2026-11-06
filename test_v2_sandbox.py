@@ -1,6 +1,5 @@
 """Real Docker V2 checks with explicit transport doubles, not answer-key prompts."""
 
-import hashlib
 import json
 from pathlib import Path
 import tempfile
@@ -38,7 +37,6 @@ class V2SandboxTests(unittest.TestCase):
                             "path": item["path"],
                             "start_line": index + 1,
                             "end_line": index + 1,
-                            "old_sha256": hashlib.sha256(line.encode()).hexdigest(),
                             "new_text": changed,
                             "reason": "Migrate the removed application import.",
                         }
@@ -52,8 +50,6 @@ class V2SandboxTests(unittest.TestCase):
             {},
             1,
             {
-                "schema_version": 1,
-                "source_sha": data["source_sha"],
                 "diagnosis": "Migrate removed import.",
                 "edits": edits,
             },
@@ -101,7 +97,6 @@ class V2SandboxTests(unittest.TestCase):
                 "path": item["path"],
                 "start_line": 1,
                 "end_line": len(lines),
-                "old_sha256": hashlib.sha256(text.encode()).hexdigest(),
                 "new_text": text.replace(
                     "from pydantic import BaseSettings",
                     "from pydantic_settings import BaseSettings",
@@ -119,8 +114,6 @@ class V2SandboxTests(unittest.TestCase):
                 {},
                 1,
                 {
-                    "schema_version": 1,
-                    "source_sha": data["source_sha"],
                     "diagnosis": "Shortcut existing case.",
                     "edits": [edit],
                 },

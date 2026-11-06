@@ -135,3 +135,44 @@ def apply_manifest(root, manifest, allowed):
         "source_sha": manifest["source_sha"],
         "candidate_sha": sha(json.dumps({**files, **output}, sort_keys=True)),
     }
+
+
+def bind_proposal(root, proposal, allowed, expected_sha):
+    """Trusted hashes bind an untrusted span proposal to the original intake."""
+    if snapshot_hash(root, allowed) != expected_sha:
+        raise ValueError("Original source changed before manifest binding.")
+    if not isinstance(proposal, dict) or set(proposal) != {"diagnosis", "edits"}:
+        raise ValueError("Invalid model edit proposal fields.")
+    edits = proposal["edits"]
+    if not isinstance(edits, list) or not 1 <= len(edits) <= 8:
+        raise ValueError("Expected one to eight edit proposals.")
+    files = source_files(root, allowed)
+    bound = []
+    for edit in edits:
+        if not isinstance(edit, dict) or set(edit) != {
+            "path",
+            "start_line",
+            "end_line",
+            "new_text",
+            "reason",
+        }:
+            raise ValueError("Invalid model edit fields.")
+        name = safe_path(edit["path"])
+        start = edit["start_line"]
+        end = edit["end_line"]
+        if name not in files:
+            raise ValueError("Model edit is outside the allowed source paths.")
+        lines = physical_lines(files[name])
+        if (
+            type(start) is not int
+            or type(end) is not int
+            or not 1 <= start <= end <= len(lines)
+        ):
+            raise ValueError("Model edit span is outside the original file.")
+        bound.append({**edit, "old_sha256": sha("".join(lines[start - 1 : end]))})
+    return {
+        "schema_version": 1,
+        "source_sha": expected_sha,
+        "diagnosis": proposal["diagnosis"],
+        "edits": bound,
+    }
