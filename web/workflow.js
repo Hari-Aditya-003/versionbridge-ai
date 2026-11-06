@@ -21,6 +21,7 @@ function reduceFlow(previous, event) {
     done('source','baseline','analysis','policy','verify','evidence');if(['cloud','local'].includes(state.backend))done(state.backend);state.nodes.review='active';
     state.label='Verified against listed checks · review the patch';
   }
+  if(event.event==='contained') {done('source','baseline','evidence');state.nodes.review='active';state.label='Containment checks completed';}
   if(event.event==='error') {state.label='Unverified';Object.keys(state.nodes).forEach(k=>{if(state.nodes[k]==='active')state.nodes[k]='rejected';});}
   return state;
 }

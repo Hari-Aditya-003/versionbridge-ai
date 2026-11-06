@@ -192,7 +192,7 @@ function renderInspector() {
   document.querySelector("#sandbox-console").textContent = selected?.output || "Waiting for captured stdout…";
   document.querySelector("#sandbox-details").textContent = selected ? JSON.stringify({...selected, output:undefined}, null, 2) : "Container details appear when execution starts.";
   const file = capturedFiles.get(fileSelect.value);
-  document.querySelector("#sandbox-file-content").textContent = file ? `${file.phase} / ${file.path}\nSHA-256: ${file.sha256}\n${file.truncated ? "Snapshot truncated by the export allowance.\n" : ""}\n${file.content}` : "Scoped files appear after intake.";
+  document.querySelector("#sandbox-file-content").textContent = file ? `${file.phase} / ${file.path}\nSHA-256: ${file.sha256}\n${file.truncated ? "Snapshot truncated by the export allowance.\n" : ""}\n${file.content}` : sandboxRecords.size ? "No application file snapshot for this run. Inline probe commands appear under Container details." : "Scoped files appear after intake.";
 }
 function openInspector(name) {
   if (name) sandboxSelect.value = name;
