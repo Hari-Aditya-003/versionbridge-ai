@@ -27,3 +27,7 @@ sample=reduceFlow(sample,{event:'result'});
 assert.equal(sample.nodes.cloud,'pending');
 assert.equal(sample.nodes.local,'pending');
 console.log('Workflow state transitions passed');
+const lab=reduceFlow(reduceFlow(initialFlow(),{event:'stage',step:0}),{event:'contained'});
+assert.equal(lab.nodes.baseline,'done');
+assert.equal(lab.nodes.evidence,'done');
+assert.equal(lab.label,'Containment checks completed');
