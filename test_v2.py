@@ -153,6 +153,12 @@ class PatchTests(unittest.TestCase):
             with self.subTest(prefix=prefix), self.assertRaises(ValueError):
                 parse_safe_change(before, prefix + before)
 
+    def test_new_module_mutations_and_monkeypatches_are_forbidden(self):
+        from policy_gate import parse_safe_change
+        before = "def f(value):\n    return value\n"
+        for prefix in ["import json\njson.dumps = lambda value: 'fake'\n", "import json\nseen = []\n", "import json\njson.__dict__['dumps'] = str\n"]:
+            with self.subTest(prefix=prefix),self.assertRaises(ValueError):parse_safe_change(before,prefix+before)
+
     def test_unterminated_export_applies_with_git(self):
         import subprocess
         from patch_engine import apply_manifest, snapshot_hash
