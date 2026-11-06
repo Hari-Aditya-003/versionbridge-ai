@@ -48,3 +48,12 @@ def stats():
         counts = dict(db.execute("SELECT status, COUNT(*) FROM runs GROUP BY status"))
     return {"retained_runs": sum(counts.values()), "verified": counts.get("Verified", 0),
             "unverified": counts.get("Unverified", 0), "retention_limit": 100}
+
+
+def record_candidate(run_id, attempt, state, receipt):
+    """Atomic per-attempt records alongside the recoverable job event stream."""
+    with closing(connect()) as db, db:
+        db.execute("CREATE TABLE IF NOT EXISTS candidates (run_id TEXT, attempt INTEGER, state TEXT, receipt TEXT, PRIMARY KEY(run_id, attempt))")
+        db.execute("INSERT OR REPLACE INTO candidates VALUES (?, ?, ?, ?)",
+                   (run_id, attempt, state, json.dumps(receipt)))
+        db.execute("DELETE FROM candidates WHERE run_id NOT IN (SELECT run_id FROM candidates GROUP BY run_id ORDER BY MAX(rowid) DESC LIMIT 100)")

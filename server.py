@@ -21,6 +21,10 @@ from inspection import inspect_project
 import history
 import jobs
 import reports
+import telemetry
+from v2_tasks import TASKS as V2_TASKS
+from category_router import classify
+from candidate_scheduler import plan as plan_candidates
 from inference import inference_mode, propose
 from projects import snapshot, is_pinned_example
 from profiles import PROFILES
@@ -110,6 +114,11 @@ def patch_diff(original, patched, path):
 
 
 def repair(emit, run_id, repository="", ref="", profile_id="pandas", filename="", function="", attempts=2):
+    if profile_id in V2_TASKS:
+        if repository:
+            raise RuntimeError("V2 migration profiles currently use reviewed source snapshots only.")
+        from v2_pipeline import run
+        return run(emit, run_id, profile_id, attempts)
     if type(attempts) is not int or attempts not in (1, 2):
         raise RuntimeError("Choose one or two repair attempts.")
     if os.getenv("PUBLIC_DEMO") == "1" and repository and not is_pinned_example(repository, ref, profile_id):
@@ -178,6 +187,11 @@ def repair(emit, run_id, repository="", ref="", profile_id="pandas", filename=""
             raise RuntimeError("The expected baseline failure was not reproduced. Check the execution log.")
         if "failed" not in baseline_tests.values():
             raise RuntimeError("The baseline did not report a completed failing test inventory.")
+        classification = classify(before, path)
+        emit("analysis", {"classification": classification, "source_sha": hashlib.sha256(source.encode()).hexdigest(),
+                          "verification_scope": "controlled V1 profile; original test suite"})
+        pool = os.getenv("VULTR_MODEL_POOL", "")
+        routes = plan_candidates(inference_mode(), classification["categories"], attempts, pool) if pool else []
         previous = None
         for attempt in range(1, attempts + 1):
             emit("stage", {"step": 1, "message": f"Preparing candidate patch · attempt {attempt}"})
@@ -187,7 +201,11 @@ def repair(emit, run_id, repository="", ref="", profile_id="pandas", filename=""
             if inference_mode() == "local-gpu":
                 lines = source.split("\n")
                 context = "\n".join(lines[max(0, line_number - 12):line_number + 4])
-            proposal = propose(profile, before, context, previous)
+            if routes:
+                emit("routing", routes[attempt - 1])
+                proposal = propose(profile, before, context, previous, model_id=routes[attempt - 1]["model"])
+            else:
+                proposal = propose(profile, before, context, previous)
             replacement = proposal.replacement
             emit("diagnosis", {"attempt": attempt, "text": proposal.diagnosis,
                                "provider": proposal.provider, "receipt": proposal.receipt})
@@ -313,13 +331,13 @@ def job_worker():
                 except jobs.Cancelled:
                     pass
                 except (RuntimeError, OSError, subprocess.SubprocessError) as exc:
-                    emit("error", {"message": str(exc)})
+                    emit("error", {"message": str(exc), "outcome": getattr(exc, "outcome", "unverified")})
                 except Exception:
                     logging.exception("Repair job failed")
                     emit("error", {"message": "The repair could not complete. Review the server log for this run."})
                 profile = PROFILES.get(settings[2])
                 project = ("Containment Lab" if len(settings) == 6 and settings[5] == "containment"
-                           else settings[0] or (profile.title if profile else "Python scoped repair"))
+                           else settings[0] or (V2_TASKS[settings[2]]["title"] if settings[2] in V2_TASKS else profile.title if profile else "Python scoped repair"))
                 jobs.publish(job_id, events, project=project)
         if not job:
             JOB_WAKE.wait(0.5)
@@ -373,6 +391,9 @@ class Handler(SimpleHTTPRequestHandler):
             return
         if self.path.startswith("/api/") and self.path != "/api/config" and not self.authorized():
             return
+        if self.path == "/api/telemetry":
+            self.respond_json(200, telemetry.snapshot())
+            return
         if self.path == "/api/stats":
             self.respond_json(200, history.stats())
             return
@@ -424,6 +445,7 @@ class Handler(SimpleHTTPRequestHandler):
             "job_queue": QUEUE_ENABLED,
             "external_worker": os.getenv("EXTERNAL_WORKER") == "1",
             "auth_required": bool(os.getenv("VERSIONBRIDGE_ACCESS_TOKEN")),
+            "v2_profiles": [{"id": key, "title": value["title"]} for key, value in V2_TASKS.items()],
             "profiles": [{"id": key, "title": value.title, "language": value.language,
                           "bundled_only": value.bundled_only} for key, value in PROFILES.items()],
             "mode": {"vultr": "Vultr inference", "local-gpu": "Local Ollama", "sample": "Local sample"}[inference_mode()],
@@ -464,7 +486,7 @@ class Handler(SimpleHTTPRequestHandler):
                 raise ValueError
             if not isinstance(filename, str) or not isinstance(function, str) or len(filename) > 180 or len(function) > 80:
                 raise ValueError
-            if not isinstance(profile_id, str) or (profile_id not in PROFILES and profile_id != "python"):
+            if not isinstance(profile_id, str) or (profile_id not in PROFILES and profile_id not in V2_TASKS and profile_id != "python"):
                 raise ValueError
             if not isinstance(repository, str) or not isinstance(ref, str) or len(repository) > 220 or len(ref) > 128:
                 raise ValueError
@@ -524,7 +546,7 @@ class Handler(SimpleHTTPRequestHandler):
                 else:
                     containment(emit)
             except (RuntimeError, OSError, subprocess.SubprocessError) as exc:
-                emit("error", {"message": str(exc)})
+                emit("error", {"message": str(exc), "outcome": getattr(exc, "outcome", "unverified")})
             if action is repair:
                 status = "Verified" if events[-1]["event"] == "result" else "Unverified"
                 history.save(run_id, repository or (PROFILES[profile_id].title if profile_id in PROFILES else "Python scoped repair"), status, events)

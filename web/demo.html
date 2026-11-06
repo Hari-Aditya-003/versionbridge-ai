@@ -11,11 +11,29 @@
 <link rel="stylesheet" href="/style.css">
 <script src="/motion.js" defer></script>
 <script src="/app.js" defer></script>
+<script src="/resources.js" defer></script>
 </head>
 <body>
 <header><div class="nav shell"><a class="brand" href="/"><img src="/mark.svg" alt="">VersionBridge<span>AI</span></a>
 <nav aria-label="Demo"><a href="#workspace">Repair</a><a href="#containment">Containment</a><a href="#history">Run history</a></nav>
 <a class="button secondary small" href="/">Project overview</a></div></header>
+<aside class="resource-dock" aria-label="Live system resources">
+<details id="resource-panel" open>
+<summary><span class="sensor-dot" aria-hidden="true"></span> System resources <span id="resource-live">Connecting</span></summary>
+<div class="resource-body">
+<p id="resource-host" class="micro">APPLICATION HOST</p>
+<dl class="sensor-grid">
+<div><dt><span aria-hidden="true">▦</span> RAM</dt><dd id="resource-ram">—</dd></div>
+<div><dt><span aria-hidden="true">◈</span> CPU</dt><dd id="resource-cpu">—</dd></div>
+<div><dt><span aria-hidden="true">ϟ</span> CPU speed</dt><dd id="resource-speed">—</dd></div>
+<div><dt><span aria-hidden="true">♨</span> Temperature</dt><dd id="resource-temp">—</dd></div>
+<div><dt><span aria-hidden="true">▣</span> GPU</dt><dd id="resource-gpu">—</dd></div>
+<div><dt><span aria-hidden="true">▤</span> VRAM</dt><dd id="resource-vram">—</dd></div>
+</dl>
+<p id="resource-inference" class="resource-caption"></p>
+<p id="resource-note" class="resource-caption">Measured on the application host. Sensor availability varies.</p>
+<p id="resource-updated" class="resource-caption"></p>
+</div></details></aside>
 <main id="top">
 <section class="shell section" id="access" hidden>
 <form id="access-form" class="source-form"><label>Workspace access token
@@ -37,6 +55,9 @@
 <label for="profile">Repair profile</label>
 <select id="profile">
 <option value="python" id="scoped-option" hidden disabled>Python · scoped function repair</option>
+<option value="v2-settings">V2 · open-ended Pydantic migration</option>
+<option value="v2-collections">V2 · open-ended collections migration</option>
+<option value="v2-multifile">V2 · two-file import migration</option>
 <option value="pandas">pandas 2 · removed append API</option>
 <option value="settings">Pydantic 2 · settings import</option>
 <option value="billing">Python · invoice total bug</option>
@@ -68,6 +89,9 @@
 <div class="terminal"><div class="terminal-head"><span>⌘ &nbsp; EXECUTION LOG</span><span id="state">READY</span></div><pre id="logs" tabindex="0">Choose a profile and run it to capture baseline and verification output.</pre></div></div>
 <section class="runtime" aria-labelledby="runtime-title"><div id="runtime-title" class="micro">SANDBOX ACTIVITY</div><div id="sandboxes" role="status">Containers appear here when a repair starts.</div></section>
 <div class="workspace-foot"><span id="status" role="status">Ready to start a sandbox run.</span><button class="button secondary small" id="cancel-run" hidden>Cancel run</button><button class="button secondary small" id="download" hidden>Download evidence ↓</button><button class="button secondary small" id="download-markdown" hidden>Markdown report ↓</button><button class="button secondary small" id="download-patch" hidden>Download patch ↓</button></div>
+<details id="analysis-panel" hidden><summary>Diagnosis, source impact and model attempts</summary>
+<div class="analysis-body"><p id="category-result"></p><div id="candidate-history" class="candidate-history"></div>
+<div id="impact-graph" class="impact-graph"></div><pre id="analysis-evidence"></pre></div></details>
 <details id="inventory-panel" hidden><summary>Inspect project metadata</summary><pre id="inventory"></pre></details>
 <details id="test-panel" hidden><summary>Compare test outcomes</summary><pre id="test-outcomes"></pre></details>
 <details id="patch-panel" hidden><summary>View verified patch</summary><pre id="patch"></pre></details>
@@ -85,7 +109,7 @@
 </section>
 <section class="shell section" id="history">
 <div class="section-index">03 <span>/</span> RUN HISTORY</div>
-<div class="section-head"><div><h2>Review prior repairs.</h2><p>Open a recorded run to inspect and export its evidence.</p></div><label class="micro">STATUS <select id="history-filter"><option>All</option><option>Verified</option><option>Unverified</option></select></label></div>
+<div class="section-head"><div><h2>Review prior repairs.</h2><p>Open a recorded run to inspect and export its evidence.</p></div><label class="micro">STATUS <select id="history-filter"><option>All</option><option>Verified</option><option>Unverified</option><option>Rejected</option><option>Inconclusive</option><option>Contained</option></select></label></div>
 <div id="history-list" class="workspace history-list" aria-live="polite">Loading run history…</div>
 </section>
 </main>

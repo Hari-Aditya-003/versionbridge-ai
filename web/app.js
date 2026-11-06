@@ -44,6 +44,7 @@ const markdownDownload = document.querySelector("#download-markdown");
 let report;
 let runs = [];
 let runEvents = [];
+const candidates = new Map();
 
 document.querySelector("#source").addEventListener("submit", event => {
   event.preventDefault();
@@ -101,7 +102,7 @@ function showInventory(event) {
 
 function updateScope() {
   const scoped = profile.value === "python";
-  const bundled = ["go", "rust", "java", "cpp", "postgresql", "typescript", "javascript", "sqlite", "algorithm"].includes(profile.value);
+  const bundled = profile.value.startsWith("v2-") || ["go", "rust", "java", "cpp", "postgresql", "typescript", "javascript", "sqlite", "algorithm"].includes(profile.value);
   repository.disabled = ref.disabled = !publicImport || bundled || pinnedOnly;
   if (bundled || (pinnedOnly && profile.value !== "pandas")) repository.value = ref.value = "";
   pythonTarget.hidden = filename.disabled = functionName.disabled = !scoped;
@@ -114,6 +115,39 @@ loadExample.addEventListener("click", () => {
   repository.value = "https://github.com/Hari-Aditya-003/versionbridge-ai";
   ref.value = "274b7ba6ec8fd8d418f686f37538517d4f87ca82";
 });
+
+function showAnalysis(event) {
+  document.querySelector("#analysis-panel").hidden = false;
+  const classification = event.classification;
+  if (classification) document.querySelector("#category-result").textContent =
+    `Diagnosis · ${classification.categories.join(" + ")} · ${classification.confidence_source}`;
+  document.querySelector("#analysis-evidence").textContent = JSON.stringify(event, null, 2);
+  const graph = document.querySelector("#impact-graph");
+  graph.textContent = "";
+  for (const edge of (event.impact_graph?.edges || []).slice(0, 30)) {
+    const row = document.createElement("p");
+    row.className = "impact-edge";
+    row.textContent = `${edge.from} → ${edge.to} · ${edge.kind} · ${edge.path}:${edge.line} · ${edge.confidence}`;
+    graph.append(row);
+  }
+}
+
+function showAttempt(event) {
+  const old = candidates.get(event.attempt) || {};
+  candidates.set(event.attempt, { ...old, ...event });
+  const target = document.querySelector("#candidate-history");
+  target.textContent = "";
+  for (const [attempt, item] of candidates) {
+    const card = document.createElement("article");
+    const title = document.createElement("strong");
+    title.textContent = `Attempt ${attempt} · ${item.receipt?.served_model || item.inference?.served_model || item.model || item.provider || "proposal"}`;
+    const detail = document.createElement("p");
+    detail.textContent = item.rejection_reason || item.eligibility || item.reason || "Model proposal received; awaiting verification.";
+    if (item.receipt?.model_substitution || item.inference?.model_substitution) detail.textContent += " · Model substitution recorded";
+    card.append(title, detail);
+    target.append(card);
+  }
+}
 
 function showSandbox(event) {
   let row = sandboxRows.get(event.name);
@@ -145,6 +179,7 @@ function showTestOutcomes(event) {
 
 function showResult(event) {
   showTestOutcomes(event);
+  showAttempt(event);
   markdownDownload.hidden = false;
   report = event;
   steps.forEach(step => step.className = "done");
@@ -163,6 +198,7 @@ function showResult(event) {
 
 function showRejected(event) {
   showTestOutcomes(event);
+  showAttempt(event);
   markdownDownload.hidden = false;
   patchPanel.querySelector("summary").textContent = "Inspect rejected candidate";
   document.querySelector("#patch").textContent = event.diff;
@@ -189,6 +225,8 @@ function showHistory() {
       for (const event of item.evidence) {
         if (event.event === "diagnosis") appendLog(logs, `[Diagnosis · ${event.provider}]\n${event.text}\n`);
         if (event.event === "inventory") showInventory(event);
+        if (event.event === "analysis") showAnalysis(event);
+        if (event.event === "routing" || event.event === "diagnosis") showAttempt(event);
         if (event.event === "project") projectTitle.textContent = event.title;
         if (event.event === "sandbox") showSandbox(event);
         if (event.event === "rejected") showRejected(event);
@@ -265,6 +303,9 @@ function appendLog(target, text) {
 function resetRepair() {
   logs.textContent = "";
   report = undefined;
+  candidates.clear();
+  document.querySelector("#candidate-history").textContent = "";
+  document.querySelector("#analysis-panel").hidden = true;
   runEvents = [];
   sandboxRows.clear();
   sandboxes.textContent = "Waiting for sandbox dispatch…";
@@ -305,7 +346,7 @@ async function followJob(onEvent, settings, resumeId) {
     sessionStorage.removeItem(jobKey);
     if (job.state === "verified" || job.state === "contained") return;
     const message = job.events.find(event => event.event === "error")?.message;
-    const labels = { cancelled: "Repair cancelled.", interrupted: "Repair interrupted by a server restart." };
+    const labels = { rejected: "All candidates were rejected.", inconclusive: "Evidence was insufficient for verification.", cancelled: "Repair cancelled.", interrupted: "Repair interrupted by a server restart." };
     const failure = new Error(message || labels[job.state] || "Verification did not complete.");
     failure.jobState = job.state;
     throw failure;
@@ -340,6 +381,8 @@ async function execute(isProbe, resumeId) {
       if (!isProbe) runEvents.push(event);
       if (event.event === "diagnosis") appendLog(target, `[Diagnosis · ${event.provider}]\n${event.text}\n`);
       if (event.event === "inventory") showInventory(event);
+      if (event.event === "analysis") showAnalysis(event);
+      if (event.event === "routing" || event.event === "diagnosis") showAttempt(event);
       if (event.event === "project") projectTitle.textContent = event.title;
       if (event.event === "rejected") showRejected(event);
       if (event.event === "sandbox") {

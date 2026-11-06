@@ -216,8 +216,11 @@ class AcceptanceTests(unittest.TestCase):
         self.assertEqual(transport.call_args.args[0].full_url,
                          "https://api.vultrinference.com/v1/chat/completions")
         self.assertGreater(proposal.receipt.pop("budget")["reserved_usd"], 0)
-        self.assertEqual(proposal.receipt, {"requested_model": "fixture-model", "served_model": "served-model",
-                                           "completion_id": "test-receipt", "tokens": {"total_tokens": 123}})
+        self.assertEqual(proposal.receipt["requested_model"], "fixture-model")
+        self.assertEqual(proposal.receipt["served_model"], "served-model")
+        self.assertTrue(proposal.receipt["model_substitution"])
+        self.assertFalse(proposal.receipt["identity_verified"])
+        self.assertGreaterEqual(proposal.receipt["latency_ms"], 0)
 
     def test_model_style_feedback_retries_in_fresh_containers(self):
         events = []

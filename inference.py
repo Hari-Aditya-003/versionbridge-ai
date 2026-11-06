@@ -3,11 +3,12 @@ import ast
 from dataclasses import dataclass
 import json
 import os
-from urllib.request import Request, urlopen
+from urllib.request import urlopen
 
 from arithmetic import candidate_expressions, examples
 import local_gpu
-import budget
+from providers.base import ModelRequest
+from providers import vultr
 
 
 @dataclass(frozen=True)
@@ -73,9 +74,9 @@ def local_failure_context(log):
                      for actual, expected, function, args in comparisons)[:1300]
 
 
-def propose(profile, log, code, previous=None):
+def propose(profile, log, code, previous=None, *, model_id=None):
     key = os.getenv("VULTR_API_KEY")
-    model = os.getenv("VULTR_MODEL", "glm-5.3-flash")
+    model = model_id or os.getenv("VULTR_MODEL", "glm-5.3-flash")
     mode = inference_mode()
     if mode == "sample":
         if not profile.candidates:
@@ -136,35 +137,14 @@ def propose(profile, log, code, previous=None):
     }
     if profile.candidates and not profile.arithmetic_names:
         schema["properties"]["replacement"]["enum"] = [line.strip() for line in profile.candidates]
-    body = {
-        "model": model, "max_tokens": 1200, "messages": messages, "reasoning_effort": "minimal",
-        "response_format": {"type": "json_schema", "json_schema": {
-            "name": "repair_proposal", "strict": True, "schema": schema,
-        }},
-    }
-    encoded = json.dumps(body).encode()
-    allowance = budget.reserve(len(encoded), body["max_tokens"])
-    request = Request("https://api.vultrinference.com/v1/chat/completions", encoded,
-                      {"Authorization": f"Bearer {key}", "Content-Type": "application/json"})
+    response = vultr.complete(ModelRequest("legacy-profile", model, messages, schema, 1200), opener=urlopen)
+    candidate = response.candidate
     try:
-        with urlopen(request, timeout=30) as response:
-            result = json.loads(response.read(524288))
-        answer = result["choices"][0]["message"]["content"]
-        if not isinstance(answer, str):
-            raise ValueError("Empty model response")
-        candidate = parse_candidate(answer)
         replacement = validate_replacement(profile, candidate)
-        usage = result.get("usage")
-        receipt = {"requested_model": model, "served_model": result.get("model"),
-                   "completion_id": result.get("id"),
-                   "tokens": {field: usage[field]
-                              for field in ("prompt_tokens", "completion_tokens", "total_tokens")
-                              if isinstance(usage, dict) and type(usage.get(field)) is int}}
-        receipt["budget"] = allowance
-        return Proposal(replacement, f"Vultr Serverless Inference · {model}",
-                        candidate["diagnosis"].strip(), receipt)
-    except (OSError, ValueError, KeyError, IndexError, TypeError, RecursionError) as exc:
+    except ValueError as exc:
         raise RuntimeError("Vultr did not return a supported diagnosis and patch.") from exc
+    return Proposal(replacement, f"Vultr Serverless Inference · {response.served_model}",
+                    candidate["diagnosis"].strip(), response.receipt())
 
 
 def parse_candidate(answer):

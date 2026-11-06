@@ -1,3 +1,5 @@
 **
 !Sandbox.Dockerfile
 !pytest_runner.py
+
+!independent_tests.py

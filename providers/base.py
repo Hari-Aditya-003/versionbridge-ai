@@ -1,4 +1,5 @@
 """Provider-neutral bounded requests, responses, and error taxonomy."""
+
 from dataclasses import dataclass
 from model_registry import receipt_identity
 
@@ -18,9 +19,13 @@ class ModelRequest:
     max_tokens: int = 1200
 
     def __post_init__(self):
-        if (type(self.max_tokens) is not int or not 1 <= self.max_tokens <= 4000
-                or not self.messages or len(self.messages) > 6):
-            raise ValueError('Invalid bounded model request.')
+        if (
+            type(self.max_tokens) is not int
+            or not 1 <= self.max_tokens <= 4000
+            or not self.messages
+            or len(self.messages) > 6
+        ):
+            raise ValueError("Invalid bounded model request.")
 
 
 @dataclass(frozen=True)
@@ -35,6 +40,11 @@ class ModelResponse:
     reservation: dict
 
     def receipt(self):
-        return {**receipt_identity(self.requested_model, self.served_model),
-                'provider': self.provider, 'completion_id': self.completion_id,
-                'tokens': self.usage, 'latency_ms': round(self.latency_ms, 2), 'budget': self.reservation}
+        return {
+            **receipt_identity(self.requested_model, self.served_model),
+            "provider": self.provider,
+            "completion_id": self.completion_id,
+            "tokens": self.usage,
+            "latency_ms": round(self.latency_ms, 2),
+            "budget": self.reservation,
+        }

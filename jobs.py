@@ -117,6 +117,8 @@ def publish(job_id, events, *, project=None):
         evidence = json.dumps(events)
         if final:
             next_state = {"result": "verified", "contained": "contained"}.get(events[-1]["event"], "unverified")
+            if events[-1].get("outcome") in ("rejected", "inconclusive"):
+                next_state = events[-1]["outcome"]
             history.store(db, job_id, project, next_state.capitalize(), evidence)
         db.execute("UPDATE jobs SET state = ?, events = ? WHERE id = ?",
                    (next_state, evidence, job_id))
