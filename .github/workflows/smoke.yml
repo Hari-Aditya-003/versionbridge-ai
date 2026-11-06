@@ -17,4 +17,4 @@ jobs:
       - name: Verify V2 safety and independent behavior contracts
         run: python3 -m unittest test_v2 test_v2_sandbox test_experience -v
       - name: Check browser JavaScript syntax
-        run: node --check web/app.js && node --check web/resources.js && node test_workflow.cjs && node test_edge.mjs
+        run: node --check web/app.js && node --check web/resources.js && node test_workflow.cjs && node test_edge.mjs && python3 version_assets.py --check
