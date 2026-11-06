@@ -15,10 +15,10 @@ For a real GitHub import without using the repository that contains all three fi
 For a live provider comparison, check the model IDs available to your Vultr account, set `VULTR_API_KEY` through the service environment, and run:
 
 ```sh
-python3 evaluate_models.py qwen2.5-coder-32b-instruct SECOND_AVAILABLE_MODEL > model-evidence.json
+python3 evaluate_models.py deepseek-v4.1-flash-1017 glm-5.3-flash > model-evidence.json
 ```
 
-Each model sees the same four tasks. The script ranks correct observed outcomes first, then total elapsed time. Provider errors, missing evidence and false acceptance of the regression count against the model. This comparison uses real inference requests and can consume credits. The fixtures check this repair workflow and do not establish general model quality.
+Each model sees the same thirteen supported profiles. The script ranks correct observed outcomes first, then total elapsed time. Provider errors, missing evidence and false acceptance of the regression count against the model. This comparison uses real inference requests and can consume credits. The fixtures check this repair workflow and do not establish general model quality.
 
 ## Private Dell run on November 4, 2026
 
@@ -31,11 +31,11 @@ The application called Qwen2.5 Coder 1.5B Instruct Q4_K_M on the Dell RTX 3050 T
 | Pydantic settings migration | Two failing tests became two passing tests | 2.62 s |
 | Audit metadata regression | Both candidates failed the unchanged suite and were rejected | 5.91 s |
 
-Ollama reported all 29 layers offloaded to CUDA. Over 62 half-second device samples, peak total device memory use was 1,267 MiB, peak temperature was 58°C, and utilization reached 95% briefly. The model list reported zero resident models after the run. These measurements describe one test session. Vultr model and deployment results are pending.
+Ollama reported all 29 layers offloaded to CUDA. Over 62 half-second device samples, peak total device memory use was 1,267 MiB, peak temperature was 58°C, and utilization reached 95% briefly. The model list reported zero resident models after the run. These measurements describe one test session. Vultr model and deployment results were pending at the time of this Dell session; subsequent results appear below.
 
 ## Expanded local release checks on November 5, 2026
 
-The updated image was exercised with `python3 smoke.py` and `python3 api_smoke.py`. The latest suite contains twenty-one acceptance methods and nineteen HTTP checks. Earlier runs passed twenty acceptance methods and eighteen HTTP checks before the deployment permission regressions were added. The profile subtests include JavaScript, TypeScript, Go, Rust, Java, C++, SQLite, PostgreSQL, and the algorithm example. These runs use labeled sample patches and actual container execution.
+The updated image was exercised with `python3 smoke.py` and `python3 api_smoke.py`. That intermediate suite contained twenty-one acceptance methods and nineteen HTTP checks. Earlier runs passed twenty acceptance methods and eighteen HTTP checks before the deployment permission regressions were added. The profile subtests include JavaScript, TypeScript, Go, Rust, Java, C++, SQLite, PostgreSQL, and the algorithm example. These runs use labeled sample patches and actual container execution.
 
 The HTTP suite starts separate web and worker processes with a temporary database. It exercises authenticated access, duplicate submission handling, versioned routes, artifact checksums, containment dispatch, and rejection of a regression. The model transport test uses a test double. Live provider evaluation is recorded separately.
 
@@ -63,3 +63,12 @@ The worker ran on a Vultr Atlanta shared-CPU VM. The HTTP user was independently
 ## Release regression checks on November 6, 2026
 
 The final local run passed 23 acceptance methods and 20 HTTP integration checks. Added checks cover archive traversal and symbolic links, deeply nested package metadata, shared database write permissions, and containment history labeling. The public pinned GitHub repair also completed with live GLM inference, preserving the pinned source revision and passing both original tests.
+
+
+## Recorded browser walkthrough on November 6
+
+The live public browser session verified the pinned GitHub pandas repair, rejected the audit regression, and passed the containment lab. The browser downloaded both the Markdown report and the patch. The downloaded patch hash matched the run evidence. The mobile workspace was checked at a 390-pixel viewport without horizontal overflow.
+
+[Browser run records](evidence/vultr-browser-demo-2026-11-06.json) · [Watch the recording](https://hari-aditya-003.github.io/versionbridge-ai/demo.html)
+
+The recording shortens static pauses between captured frames. It preserves the actual execution results.

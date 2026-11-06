@@ -1,6 +1,6 @@
 # VersionBridge AI
 
-[Live Vultr workspace](https://versionbridge.64.177.53.254.sslip.io/demo.html) · [Project showcase and recorded demo](https://hari-aditya-003.github.io/versionbridge-ai/) · [Architecture](ARCHITECTURE.md) · [Evaluation](EVALUATION.md) · [Deployment](DEPLOYMENT.md)
+[Live Vultr workspace](https://versionbridge.64.177.53.254.sslip.io/demo.html) · [Project showcase](https://hari-aditya-003.github.io/versionbridge-ai/) · [Recorded live demo](https://hari-aditya-003.github.io/versionbridge-ai/demo.html) · [Presentation](showcase/VersionBridge-Vultr-pitch.pptx) · [Architecture](ARCHITECTURE.md) · [Evaluation](EVALUATION.md) · [Deployment](DEPLOYMENT.md)
 
 VersionBridge reproduces a supported code failure in Docker, proposes a scoped repair, and reruns the same tests in a fresh container. Review the patch, individual test outcomes, model receipt, and sandbox lifecycle before exporting the change.
 

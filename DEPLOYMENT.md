@@ -1,6 +1,6 @@
 # Deploy VersionBridge on Vultr
 
-The deployment uses a dedicated Ubuntu 24.04 VM, Caddy for HTTPS, a web API without Docker privileges, and a separate execution worker. The worker alone receives the Vultr inference key. Public mode executes the curated examples and rejects arbitrary repository imports.
+The deployment uses a dedicated Ubuntu 24.04 VM, Caddy for HTTPS, a web API without Docker privileges, and a separate execution worker. The worker alone receives the Vultr inference key. Public mode executes the curated examples and rejects arbitrary repository imports. The deployed workspace also permits the exact reviewed pinned pandas example documented in the README.
 
 ## Install
 
@@ -50,7 +50,7 @@ The $200 credit is the overall authorization ceiling. Application allowances do 
 - Review `journalctl -u versionbridge-worker` for task errors.
 - After deployment updates, rebuild the sandbox and restart both services.
 - Back up `/var/lib/versionbridge/runs.sqlite3` using SQLite's backup mechanism before restoring state or rolling back.
-- Keep public imports disabled until a dedicated hardened execution environment is validated.
+- Keep arbitrary public imports disabled. With `ENABLE_PUBLIC_IMPORT=1` and `PUBLIC_DEMO=1`, only the exact reviewed pinned example is permitted; both the API and worker validate it.
 - To roll back application code, restore a previously tested checkout, rebuild its sandbox image, and restart the services. Preserve the database backup.
 
 The optional legacy nginx configuration is an alternative reverse proxy example. The retired single-service unit must not be used.

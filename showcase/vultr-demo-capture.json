@@ -1,0 +1,55 @@
+{
+  "origin": "https://versionbridge.64.177.53.254.sslip.io/demo.html",
+  "capture_date": "2026-11-06",
+  "frames": 521,
+  "source_duration_seconds": 79.75,
+  "edited_duration_seconds": 42.094,
+  "editing": "Static gaps between captured frames capped at two seconds. Live execution results are unchanged.",
+  "segments": [
+    {
+      "label": "VersionBridge AI on Vultr",
+      "start": 0,
+      "end": 2.333
+    },
+    {
+      "label": "Pinned GitHub source",
+      "start": 2.333,
+      "end": 6.269
+    },
+    {
+      "label": "Live GitHub repair",
+      "start": 6.269,
+      "end": 13.031999999999993
+    },
+    {
+      "label": "Verified patch and unchanged tests",
+      "start": 13.031999999999993,
+      "end": 17.987999999999992
+    },
+    {
+      "label": "Regression guard",
+      "start": 17.987999999999992,
+      "end": 19.598999999999997
+    },
+    {
+      "label": "Live regression verification",
+      "start": 19.598999999999997,
+      "end": 27.46599999999998
+    },
+    {
+      "label": "Rejected regression: existing test fails",
+      "start": 27.46599999999998,
+      "end": 32.434999999999995
+    },
+    {
+      "label": "Live containment probes",
+      "start": 32.434999999999995,
+      "end": 37.104999999999976
+    },
+    {
+      "label": "Containment checks passed and containers removed",
+      "start": 37.104999999999976,
+      "end": 42.09399999999995
+    }
+  ]
+}

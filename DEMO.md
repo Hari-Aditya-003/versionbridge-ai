@@ -11,3 +11,12 @@ Record the public Vultr deployment in a 16:9 browser window. Open the demo in it
 | 1:42–2:00 | Architecture and GitHub link | The control plane runs on Vultr Cloud Compute, the model runs on Vultr Serverless Inference, and execution happens in disposable containers. |
 
 Use a local recording for rehearsal. For the submission capture, confirm that the browser address and the verified run show your public Vultr deployment and live model.
+
+
+## Published Vultr recording
+
+The November 6 recording covers a pinned GitHub pandas repair, rejection of the audit-metadata regression, and the containment lab. GLM 5.3 Flash runs through Vultr Serverless Inference and the worker executes on the Vultr VM.
+
+[Watch the recording](https://hari-aditya-003.github.io/versionbridge-ai/demo.html) · [Capture metadata](showcase/vultr-demo-capture.json) · [Browser run evidence](evidence/vultr-browser-demo-2026-11-06.json)
+
+The video is built from actual browser captures. Static gaps between captured frames are capped at two seconds to shorten pauses. The model and sandbox results are unchanged.
