@@ -91,4 +91,31 @@ def validate_available(provider, model):
     entry = require_model(provider, model)
     if provider == "vultr" and model not in catalog()["ids"]:
         raise RuntimeError("Configured model is absent from the current Vultr catalog.")
+    if provider == "ollama":
+        try:
+            port = int(os.getenv("VERSIONBRIDGE_OLLAMA_PORT", "11434"))
+            if not 1 <= port <= 65535:
+                raise ValueError
+            with urlopen(
+                Request(f"http://127.0.0.1:{port}/api/tags"), timeout=5
+            ) as response:
+                models = json.loads(response.read(262144))["models"]
+            installed = next(item for item in models if item.get("name") == model)
+            if installed.get("details", {}).get(
+                "quantization_level"
+            ) != "Q4_K_M" or not isinstance(installed.get("digest"), str):
+                raise ValueError
+            entry["asset_digest"] = installed["digest"]
+        except (
+            OSError,
+            ValueError,
+            KeyError,
+            TypeError,
+            AttributeError,
+            StopIteration,
+            RecursionError,
+        ) as exc:
+            raise RuntimeError(
+                "Registered quantized model is not confirmed by the local Ollama manifest."
+            ) from exc
     return entry

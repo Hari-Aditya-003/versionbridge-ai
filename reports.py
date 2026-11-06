@@ -9,6 +9,12 @@ def markdown(events):
     outcome = "Verified" if terminal == "result" else "Unverified"
     lines = ["# VersionBridge repair evidence", "", f"Outcome — {outcome}", "",
              f"Run — {result.get('id', 'unavailable')}",
+             f"Verification scope — {result.get('verification_scope', 'Existing repository tests; controlled profile policy')}",
+             f"Human decision — {result.get('human_decision', 'pending maintainer review')}",
+             f"Diagnostic categories — {', '.join(result.get('classification', {}).get('categories', ['not recorded']))}",
+             f"Independent checks — {json.dumps(result.get('independent_checks', {'status': 'not recorded for this profile'}))}",
+             f"Source SHA — {result.get('source_sha', 'not recorded by legacy profile')}",
+             f"Runtime image — {result.get('image_digest', 'inspect sandbox events')}",
              f"Source commit — {result.get('commit') or 'bundled fixture'}",
              f"Provider — {result.get('provider', 'unavailable')}",
              f"Patch SHA-256 — {result.get('patch_sha256', 'unavailable')}",
