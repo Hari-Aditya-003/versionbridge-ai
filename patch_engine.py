@@ -3,6 +3,7 @@
 import difflib
 import hashlib
 import json
+import re
 from pathlib import Path
 from policy_gate import safe_path, parse_safe_change
 
@@ -169,7 +170,16 @@ def bind_proposal(root, proposal, allowed, expected_sha):
             or not 1 <= start <= end <= len(lines)
         ):
             raise ValueError("Model edit span is outside the original file.")
-        bound.append({**edit, "old_sha256": sha("".join(lines[start - 1 : end]))})
+        normalized = dict(edit)
+        text = edit["new_text"]
+        if start == end and isinstance(text, str) and len(physical_lines(text)) == 1:
+            prefix = re.match(r"[ \t]*", lines[start - 1])[0]
+            normalized["new_text"] = prefix + text.lstrip(" \t")
+            if lines[start - 1].endswith("\n") and not normalized["new_text"].endswith(
+                "\n"
+            ):
+                normalized["new_text"] += "\n"
+        bound.append({**normalized, "old_sha256": sha("".join(lines[start - 1 : end]))})
     return {
         "schema_version": 1,
         "source_sha": expected_sha,

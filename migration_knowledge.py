@@ -18,7 +18,7 @@ NOTES = [
         "id": "collections-abc-py310",
         "package": "python",
         "version_prefix": "3.",
-        "text": "Python 3.10 removed deprecated collections aliases for collections.abc abstract base classes, including Mapping. Check import consumers and preserve mapping behavior.",
+        "text": "Python 3.10 removed deprecated collections aliases for collections.abc abstract base classes, including Mapping. The qualified replacement namespace is collections.abc.Mapping, not abc.Mapping. Check import consumers and preserve mapping behavior.",
         "source_url": "https://docs.python.org/3.12/whatsnew/3.10.html",
         "reviewed": "2026-11-06",
         "scope": "Python 3.10-3.12",

@@ -390,7 +390,7 @@ def run(emit, run_id, task_id, attempts=2):
                 "patch_sha256": applied["patch_sha256"],
                 "candidate_sha": applied["candidate_sha"],
                 "edit_manifest": manifest,
-                "manifest_binding": "Trusted source and span hashes; model supplies only paths, spans and replacement text.",
+                "manifest_binding": "Trusted source and span hashes; single-line edits inherit original indentation. Model supplies paths, spans and replacement text.",
                 "static_checks": applied["static_checks"],
                 "baseline_exit_code": baseline,
                 "verification_exit_code": status,
