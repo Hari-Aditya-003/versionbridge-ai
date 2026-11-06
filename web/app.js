@@ -34,7 +34,7 @@ const sandboxes = document.querySelector("#sandboxes");
 const sandboxRows = new Map();
 const patchDownload = document.querySelector("#download-patch");
 const jobKey = "versionbridge-active-job";
-let queueEnabled = false;
+let queueEnabled = null;
 let publicImport = false;
 let pinnedOnly = false;
 let activeJob;
@@ -56,7 +56,7 @@ document.querySelector("#source").addEventListener("submit", event => {
   if (!run.disabled) execute(false);
 });
 
-workspaceFetch("/api/config").then(response => response.json()).then(config => {
+workspaceFetch("/api/config").then(response => { if (!response.ok) throw new Error("Configuration unavailable"); return response.json(); }).then(config => {
   publicImport = config.public_import;
   pinnedOnly = config.pinned_only;
   updateScope();
@@ -66,13 +66,18 @@ workspaceFetch("/api/config").then(response => response.json()).then(config => {
     ? `${config.mode} · ${pinnedOnly ? "curated projects and the pinned GitHub example" : "pinned GitHub imports for Python profiles"}`
     : `${config.mode} · this deployment runs bundled projects`;
   queueEnabled = config.job_queue;
+  run.disabled = probe.disabled = config.auth_required && !sessionStorage.getItem("versionbridge-access-token");
+  state.textContent = "READY";
+  statusLine.textContent = run.disabled ? "Unlock this workspace to start execution." : "Ready to start a sandbox run.";
   document.querySelector("#access").hidden = !config.auth_required || Boolean(sessionStorage.getItem("versionbridge-access-token"));
   loadUsage();
   if (queueEnabled && sessionStorage.getItem(jobKey) && !run.disabled) {
     execute(sessionStorage.getItem("versionbridge-active-task") === "containment", sessionStorage.getItem(jobKey));
   }
 }).catch(() => {
-  document.querySelector("#source-note").textContent = "Repair settings are unavailable.";
+  document.querySelector("#source-note").textContent = "Repair settings are unavailable. Reload to reconnect.";
+  state.textContent = "OFFLINE";
+  statusLine.textContent = "Could not load execution configuration.";
 });
 
 document.querySelector("#access-form").addEventListener("submit", async event => {
@@ -408,6 +413,7 @@ cancelRun.addEventListener("click", async () => {
 });
 
 async function execute(isProbe, resumeId) {
+  if (queueEnabled === null) { statusLine.textContent = "Waiting for execution configuration…"; return; }
   run.disabled = probe.disabled = profile.disabled = loadExample.disabled = true;
   if (isProbe) {
     resetRepair();

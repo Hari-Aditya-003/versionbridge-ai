@@ -11,11 +11,11 @@ export default {
     forward.headers.set('X-Forwarded-Host',incoming.host);
     forward.headers.set('X-Forwarded-Proto','https');
     try {
-      const result=await fetch(forward,{redirect:'manual'});
+      const result=await fetch(forward,{redirect:'manual',cf:{cacheTtl:0,cacheEverything:false}});
       const response=new Response(result.body,result);
       const location=response.headers.get('Location');
       if(location?.startsWith(ORIGIN)) response.headers.set('Location',location.replace(ORIGIN,incoming.origin));
-      if(incoming.pathname.startsWith('/api/') || incoming.pathname.endsWith('.html') || incoming.pathname==='/') response.headers.set('Cache-Control','no-store');
+      response.headers.set('Cache-Control','no-store');
       response.headers.set('X-Content-Type-Options','nosniff');
       return response;
     } catch(error) {

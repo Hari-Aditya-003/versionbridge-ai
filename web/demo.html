@@ -94,11 +94,11 @@
 <button type="button" id="load-example" class="button secondary small" hidden>Load pinned GitHub example</button>
 <p id="source-note">Checking available repair sources…</p>
 </form>
-<div class="workspace-top"><span><i></i> <span id="project-title">pandas 2 · removed append API</span></span><button id="run" class="button primary small">▶ &nbsp;Run repair</button></div>
+<div class="workspace-top"><span><i></i> <span id="project-title">pandas 2 · removed append API</span></span><button id="run" class="button primary small" disabled>▶ &nbsp;Run repair</button></div>
 <div class="workspace-body"><aside class="steps"><p class="micro">EXECUTION PLAN</p><ol><li><b>01</b><span>Reproduce failure<small>Run the original tests</small></span></li><li><b>02</b><span>Prepare patch<small>Propose a scoped repair</small></span></li><li><b>03</b><span>Verify result<small>Rerun the unchanged tests</small></span></li></ol></aside>
-<div class="terminal"><div class="terminal-head"><span>⌘ &nbsp; EXECUTION LOG</span><span id="state">READY</span></div><pre id="logs" tabindex="0">Choose a profile and run it to capture baseline and verification output.</pre></div></div>
+<div class="terminal"><div class="terminal-head"><span>⌘ &nbsp; EXECUTION LOG</span><span id="state">CONNECTING</span></div><pre id="logs" tabindex="0">Choose a profile and run it to capture baseline and verification output.</pre></div></div>
 <section class="runtime" aria-labelledby="runtime-title"><div class="runtime-heading"><div id="runtime-title" class="micro">SANDBOX ACTIVITY</div><button type="button" id="open-sandbox" class="button secondary small" disabled>Open sandbox ↗</button></div><div id="sandboxes" role="status">Containers appear here when a repair starts.</div><pre id="live-console" class="live-console" tabindex="0">Live stdout will appear as the container runs.</pre></section>
-<div class="workspace-foot"><span id="status" role="status">Ready to start a sandbox run.</span><button class="button secondary small" id="cancel-run" hidden>Cancel run</button><button class="button secondary small" id="download-txt" hidden>Save run files · TXT ↓</button><button class="button secondary small" id="download" hidden>Download evidence ↓</button><button class="button secondary small" id="download-markdown" hidden>Markdown report ↓</button><button class="button secondary small" id="download-patch" hidden>Download patch ↓</button></div>
+<div class="workspace-foot"><span id="status" role="status">Connecting to the execution worker…</span><button class="button secondary small" id="cancel-run" hidden>Cancel run</button><button class="button secondary small" id="download-txt" hidden>Save run files · TXT ↓</button><button class="button secondary small" id="download" hidden>Download evidence ↓</button><button class="button secondary small" id="download-markdown" hidden>Markdown report ↓</button><button class="button secondary small" id="download-patch" hidden>Download patch ↓</button></div>
 <details id="analysis-panel" hidden><summary>Diagnosis, source impact and model attempts</summary>
 <div class="analysis-body"><p id="category-result"></p><div id="candidate-history" class="candidate-history"></div>
 <div id="impact-graph" class="impact-graph"></div><pre id="analysis-evidence"></pre></div></details>
@@ -107,7 +107,7 @@
 <details id="patch-panel" hidden><summary>View verified patch</summary><pre id="patch"></pre></details>
 </div></section>
 <section class="shell section" id="containment">
-<div class="lab"><div><div class="section-index">02 <span>/</span> CONTAINMENT LAB</div><h2>Test the boundary.</h2><p>Watch outbound connections and filesystem writes get blocked. The lab also checks the memory cap, forces a timeout, and confirms that Docker removed the container.</p><button class="button secondary" id="probe">Run containment check <span aria-hidden="true">→</span></button></div>
+<div class="lab"><div><div class="section-index">02 <span>/</span> CONTAINMENT LAB</div><h2>Test the boundary.</h2><p>Watch outbound connections and filesystem writes get blocked. The lab also checks the memory cap, forces a timeout, and confirms that Docker removed the container.</p><button class="button secondary" id="probe" disabled>Run containment check <span aria-hidden="true">→</span></button></div>
 <pre id="probe-log" tabindex="0" aria-live="polite">BOUNDARY PROBE
 ────────────────────────
 01  Outbound networking
