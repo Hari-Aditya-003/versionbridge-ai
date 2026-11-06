@@ -1,0 +1,20 @@
+versionbridge.64.177.53.254.sslip.io {
+    encode gzip
+    header {
+        X-Content-Type-Options nosniff
+        Referrer-Policy strict-origin-when-cross-origin
+        X-Frame-Options DENY
+    }
+    @legacy_page {
+        method GET HEAD
+        path / /demo.html
+        not header X-Forwarded-Host versionbridge.pages.dev
+    }
+    redir @legacy_page https://versionbridge.pages.dev{uri} 308
+    request_body {
+        max_size 8KB
+    }
+    reverse_proxy 127.0.0.1:8787 {
+        flush_interval -1
+    }
+}

@@ -19,7 +19,7 @@ def versioned(text):
 
 def main():
     changed=[]
-    for page in [ROOT/'web/index.html',ROOT/'web/demo.html',ROOT/'showcase/demo.html']:
+    for page in [ROOT/'web/index.html',ROOT/'web/demo.html']:
         original=page.read_text();updated=versioned(original)
         if updated!=original:
             changed.append(page.relative_to(ROOT).as_posix())
