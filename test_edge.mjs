@@ -1,9 +1,10 @@
 import assert from 'node:assert/strict';
 import worker from './deploy/edge/_worker.js';
-let target,method;
-globalThis.fetch=async request=>{target=new URL(request.url);method=request.method;return new Response('ok',{headers:{'content-type':'text/plain'}});};
-const result=await worker.fetch(new Request('https://versionbridge.pages.dev//other.invalid/api?x=1'));
+let target,method,host;
+globalThis.fetch=async request=>{target=new URL(request.url);method=request.method;host=request.headers.get("Host");return new Response('ok',{headers:{'content-type':'text/plain'}});};
+const result=await worker.fetch(new Request('https://versionbridge.pages.dev//other.invalid/api?x=1',{headers:{Host:'versionbridge.pages.dev'}}));
 assert.equal(result.status,200);
+assert.equal(host,'versionbridge.64.177.53.254.sslip.io');
 assert.equal(target.hostname,'versionbridge.64.177.53.254.sslip.io');
 assert.equal(target.pathname,'//other.invalid/api');
 await worker.fetch(new Request('https://versionbridge.pages.dev/api/jobs',{method:'POST',body:'{}'}));
