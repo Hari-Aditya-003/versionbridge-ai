@@ -141,6 +141,17 @@ class PatchTests(unittest.TestCase):
             apply_manifest(self.root, m, allowed)
         self.assertEqual((self.root / "app/core.py").read_text(), self.original)
 
+    def test_candidate_cannot_take_over_the_independent_runner(self):
+        from policy_gate import parse_safe_change
+        before = "def only_mappings(items):\n    return items\n"
+        for prefix in [
+            "from dataclasses import sys\nif 'pytest' not in sys.modules:\n    print('{\"passed\":true}')\n    sys.exit(0)\n",
+            "from collections import _sys as runtime\nruntime.exit(0)\n",
+            "from dataclasses import sys as harmless\nharmless.stdout.write('fake')\n",
+        ]:
+            with self.subTest(prefix=prefix), self.assertRaises(ValueError):
+                parse_safe_change(before, prefix+before)
+
     def test_unterminated_export_applies_with_git(self):
         import subprocess
         from patch_engine import apply_manifest, snapshot_hash
