@@ -103,7 +103,7 @@ function updateScope() {
   const scoped = profile.value === "python";
   const bundled = ["go", "rust", "java", "cpp", "postgresql", "typescript", "javascript", "sqlite", "algorithm"].includes(profile.value);
   repository.disabled = ref.disabled = !publicImport || bundled || pinnedOnly;
-  if (bundled) repository.value = ref.value = "";
+  if (bundled || (pinnedOnly && profile.value !== "pandas")) repository.value = ref.value = "";
   pythonTarget.hidden = filename.disabled = functionName.disabled = !scoped;
 }
 

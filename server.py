@@ -318,7 +318,8 @@ def job_worker():
                     logging.exception("Repair job failed")
                     emit("error", {"message": "The repair could not complete. Review the server log for this run."})
                 profile = PROFILES.get(settings[2])
-                project = settings[0] or (profile.title if profile else "Python scoped repair")
+                project = ("Containment Lab" if len(settings) == 6 and settings[5] == "containment"
+                           else settings[0] or (profile.title if profile else "Python scoped repair"))
                 jobs.publish(job_id, events, project=project)
         if not job:
             JOB_WAKE.wait(0.5)

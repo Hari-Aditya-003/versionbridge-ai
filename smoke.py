@@ -15,7 +15,8 @@ import history
 import jobs
 from arithmetic import candidate_expressions, examples
 from profiles import PROFILES, Profile
-from projects import is_pinned_example, PINNED_REPOSITORY, PINNED_REVISION
+from projects import is_pinned_example, PINNED_REPOSITORY, PINNED_REVISION, snapshot
+from inspection import inspect_project
 from inference import Proposal, propose, validate_replacement
 from server import containment, patch_diff, repair
 from python_target import resolve_target
@@ -163,6 +164,28 @@ class AcceptanceTests(unittest.TestCase):
             (PINNED_REPOSITORY, PINNED_REVISION, "python"),
         ):
             self.assertFalse(is_pinned_example(repository, ref, profile))
+
+    def test_snapshot_rejects_archive_traversal_and_links(self):
+        from zipfile import ZipFile, ZipInfo
+        for name, mode in (("root/../../escape.py", 0), ("root/link.py", 0o120777 << 16)):
+            with self.subTest(path=name), tempfile.TemporaryDirectory() as folder:
+                archive = io.BytesIO()
+                with ZipFile(archive, "w") as output:
+                    member = ZipInfo(name)
+                    member.external_attr = mode
+                    output.writestr(member, "outside")
+                with patch("projects.fetch", side_effect=[
+                    json.dumps({"sha": PINNED_REVISION}).encode(), archive.getvalue(),
+                ]):
+                    with self.assertRaisesRegex(RuntimeError, "archive path"):
+                        snapshot(PINNED_REPOSITORY, PINNED_REVISION, Path(folder))
+
+    def test_static_inventory_rejects_nested_manifest(self):
+        with tempfile.TemporaryDirectory() as folder:
+            project = Path(folder)
+            (project / "package.json").write_text("[" * 2000 + "0" + "]" * 2000)
+            inventory = inspect_project(project)
+            self.assertEqual(inventory["manifests"][0]["error"], "Invalid package metadata")
 
     def test_containment(self):
         events = []

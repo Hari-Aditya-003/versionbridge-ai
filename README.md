@@ -44,7 +44,7 @@ python3 api_smoke.py
 node --check web/app.js
 ```
 
-The current release has 21 acceptance test methods and 19 HTTP integration checks. The acceptance suite checks all repair profiles, rejection of weakened tests, sandbox teardown, model validation, queue behavior, inference allowances, and GPU telemetry policy. The HTTP suite starts a separate worker with a temporary database and checks authentication, idempotency, artifact checksums, queued containment, and regression rejection. It uses sample proposals and real sandbox execution, consuming no inference credits. GitHub Actions runs both suites.
+The current release has 23 acceptance test methods and 20 HTTP integration checks. The acceptance suite checks all repair profiles, rejection of weakened tests, sandbox teardown, model validation, queue behavior, inference allowances, and GPU telemetry policy. The HTTP suite starts a separate worker with a temporary database and checks authentication, idempotency, artifact checksums, queued containment, and regression rejection. It uses sample proposals and real sandbox execution, consuming no inference credits. GitHub Actions runs both suites.
 
 ## Inspect verification evidence
 

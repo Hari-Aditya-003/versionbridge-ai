@@ -100,6 +100,8 @@ def main():
         check(status == 200 and b"Test comparison" in markdown, "Markdown evidence is downloadable")
         _, probe = request("/api/jobs", {"task": "containment"})
         check(wait_job(request, probe["id"])["state"] == "contained", "external worker runs containment checks")
+        check(any(row["id"] == probe["id"] and row["project"] == "Containment Lab"
+                  for row in request("/api/history")[1]), "containment history has its own task label")
         _, regression = request("/api/jobs", {"profile": "regression"})
         rejected = wait_job(request, regression["id"])
         check(rejected["state"] == "unverified", "regression repair is rejected through API")

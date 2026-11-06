@@ -10,6 +10,7 @@ Group=versionbridge
 SupplementaryGroups=docker
 WorkingDirectory=/opt/versionbridge
 EnvironmentFile=/etc/versionbridge-worker.env
+Environment=DOCKER_CONFIG=/var/lib/versionbridge/docker-config
 ExecStart=/usr/bin/python3 /opt/versionbridge/worker.py
 Restart=on-failure
 RestartSec=3

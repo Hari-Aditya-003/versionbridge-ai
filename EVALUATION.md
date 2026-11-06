@@ -59,3 +59,7 @@ The public HTTPS API at https://versionbridge.64.177.53.254.sslip.io processed a
 The worker ran on a Vultr Atlanta shared-CPU VM. The HTTP user was independently denied Docker access. The provider key file was root-owned with mode 0600. The fourteen inference requests reserved $0.347013 against the hosted application's $4 allowance under its conservative pricing assumptions. Reservations are application bookkeeping and do not represent a Vultr billing invoice.
 
 [Full hosted run events and provider receipts](evidence/vultr-live-qa-2026-11-05.json)
+
+## Release regression checks on November 6, 2026
+
+The final local run passed 23 acceptance methods and 20 HTTP integration checks. Added checks cover archive traversal and symbolic links, deeply nested package metadata, shared database write permissions, and containment history labeling. The public pinned GitHub repair also completed with live GLM inference, preserving the pinned source revision and passing both original tests.
