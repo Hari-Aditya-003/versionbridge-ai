@@ -23,3 +23,7 @@ assert.equal(s.nodes.review, 'active');
 assert.equal(s.nodes.local, 'pending');
 assert.equal(reduceFlow(initialFlow(),{event:'error',message:'missing report'}).label,'Unverified');
 console.log('Workflow state transitions passed');
+let sample=reduceFlow(initialFlow(),{event:'diagnosis',provider:'Built-in sample patch'});
+sample=reduceFlow(sample,{event:'result'});
+assert.equal(sample.nodes.cloud,'pending');
+assert.equal(sample.nodes.local,'pending');
