@@ -6,6 +6,7 @@ import os
 from urllib.request import Request, urlopen
 
 from arithmetic import candidate_expressions, examples
+from model_routing import valid_model_id
 import local_gpu
 import budget
 
@@ -73,10 +74,12 @@ def local_failure_context(log):
                      for actual, expected, function, args in comparisons)[:1300]
 
 
-def propose(profile, log, code, previous=None):
+def propose(profile, log, code, previous=None, *, model_id=None):
     key = os.getenv("VULTR_API_KEY")
-    model = os.getenv("VULTR_MODEL", "glm-5.3-flash")
+    model = model_id if model_id is not None else os.getenv("VULTR_MODEL", "glm-5.3-flash")
     mode = inference_mode()
+    if model_id is not None and (mode != "vultr" or not valid_model_id(model_id)):
+        raise RuntimeError("Model overrides require a valid Vultr model ID.")
     if mode == "sample":
         if not profile.candidates:
             raise RuntimeError("Scoped Python repair requires configured model inference.")
