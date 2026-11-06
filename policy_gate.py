@@ -55,6 +55,15 @@ DANGEROUS = {
     "execve",
     "load",
     "loads",
+    "exit",
+    "quit",
+    "_exit",
+    "print",
+    "write",
+    "getattr",
+    "vars",
+    "type",
+    "help",
 }
 
 
@@ -114,6 +123,26 @@ def parse_safe_change(before, after):
         if ast.dump(node) in original_nodes:
             continue
         if isinstance(node, (ast.Import, ast.ImportFrom)):
+            forbidden = {
+                "sys",
+                "os",
+                "builtins",
+                "subprocess",
+                "inspect",
+                "importlib",
+                "ctypes",
+                "signal",
+                "pathlib",
+                "socket",
+                "io",
+            }
+            if any(
+                n.name.startswith("_") or n.name.split(".")[0] in forbidden
+                for n in node.names
+            ):
+                raise ValueError(
+                    "Importing runtime internals or sensitive aliases is prohibited."
+                )
             names = (
                 [n.name for n in node.names]
                 if isinstance(node, ast.Import)
@@ -121,7 +150,19 @@ def parse_safe_change(before, after):
             )
             if any(name.split(".")[0] not in SAFE_IMPORTS for name in names):
                 raise ValueError("New import is outside the migration policy.")
-        if isinstance(node, ast.Attribute) and node.attr.startswith("__"):
+        if isinstance(node, ast.Attribute) and (
+            node.attr.startswith("_")
+            or node.attr
+            in {
+                "modules",
+                "stdout",
+                "stderr",
+                "stdin",
+                "f_globals",
+                "f_locals",
+                "gi_frame",
+            }
+        ):
             raise ValueError("New private runtime introspection is prohibited.")
         if isinstance(node, ast.Call):
             name = (

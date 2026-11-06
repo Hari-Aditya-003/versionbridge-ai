@@ -187,13 +187,12 @@ def snapshot():
         if _CACHE and time.time() - _CACHE["sampled_at"] < 2:
             return _CACHE
         cloud = bool(os.getenv("SANDBOX_LOCATION", "").startswith("Vultr"))
-        mode = (
-            "local-gpu"
-            if os.getenv("VERSIONBRIDGE_INFERENCE_MODE") == "local-gpu"
-            else "vultr"
-            if os.getenv("REQUIRE_INFERENCE") or os.getenv("VULTR_MODEL")
-            else "sample"
-        )
+        from inference import inference_mode
+
+        try:
+            mode = inference_mode()
+        except RuntimeError:
+            mode = "unavailable"
         try:
             host = (
                 read_linux(previous=_PREVIOUS)

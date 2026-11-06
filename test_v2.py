@@ -143,6 +143,7 @@ class PatchTests(unittest.TestCase):
 
     def test_candidate_cannot_take_over_the_independent_runner(self):
         from policy_gate import parse_safe_change
+
         before = "def only_mappings(items):\n    return items\n"
         for prefix in [
             "from dataclasses import sys\nif 'pytest' not in sys.modules:\n    print('{\"passed\":true}')\n    sys.exit(0)\n",
@@ -150,7 +151,7 @@ class PatchTests(unittest.TestCase):
             "from dataclasses import sys as harmless\nharmless.stdout.write('fake')\n",
         ]:
             with self.subTest(prefix=prefix), self.assertRaises(ValueError):
-                parse_safe_change(before, prefix+before)
+                parse_safe_change(before, prefix + before)
 
     def test_unterminated_export_applies_with_git(self):
         import subprocess
@@ -220,6 +221,41 @@ class RegistryTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             ModelRequest("task", "x", [], {}, 999999)
         self.assertIsInstance(ProviderError("transport", "unavailable"), RuntimeError)
+
+    def test_catalog_cache_and_missing_model_fail_closed(self):
+        import io
+        from unittest.mock import patch
+        import model_registry
+
+        with (
+            patch.dict("os.environ", {"VULTR_API_KEY": "test"}),
+            patch.object(model_registry, "_CACHE", None),
+            patch(
+                "model_registry.urlopen",
+                return_value=io.BytesIO(b'{"data":[{"id":"glm-5.3-flash"}]}'),
+            ) as transport,
+        ):
+            self.assertEqual(
+                model_registry.validate_available("vultr", "glm-5.3-flash")["id"],
+                "glm-5.3-flash",
+            )
+            self.assertEqual(model_registry.catalog()["ids"], ["glm-5.3-flash"])
+            self.assertEqual(transport.call_count, 1)
+            with self.assertRaises(RuntimeError):
+                model_registry.validate_available("vultr", "deepseek-v4.1-flash-1017")
+        with (
+            patch.dict("os.environ", {}, clear=True),
+            patch.object(model_registry, "_CACHE", None),
+        ):
+            with self.assertRaises(RuntimeError):
+                model_registry.catalog()
+        with (
+            patch.dict("os.environ", {"VULTR_API_KEY": "test"}),
+            patch.object(model_registry, "_CACHE", None),
+            patch("model_registry.urlopen", side_effect=OSError),
+        ):
+            with self.assertRaises(RuntimeError):
+                model_registry.catalog()
 
     def test_critic_cannot_override_a_failed_verifier(self):
         from critics import decision
@@ -312,6 +348,16 @@ class TelemetryTests(unittest.TestCase):
             r = read_gpu_file(p)
             self.assertTrue(r["available"])
             self.assertEqual(r["memory_percent"], 25)
+
+    def test_key_only_cloud_mode_is_not_mislabeled_as_sample(self):
+        from unittest.mock import patch
+        import telemetry
+
+        with (
+            patch.dict("os.environ", {"VULTR_API_KEY": "test"}, clear=True),
+            patch.object(telemetry, "_CACHE", None),
+        ):
+            self.assertEqual(telemetry.snapshot()["inference"]["mode"], "vultr")
 
     def test_snapshot_has_backend_labels_and_no_private_identifiers(self):
         from telemetry import snapshot

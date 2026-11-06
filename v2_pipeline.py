@@ -179,6 +179,7 @@ def run(emit, run_id, task_id, attempts=2):
         )
         routes = plan(mode, route["categories"], attempts, pool)
         previous = None
+        terminal_outcome = "rejected"
         for selection in routes:
             attempt = selection["attempt"]
             receipt = {}
@@ -246,6 +247,11 @@ def run(emit, run_id, task_id, attempts=2):
                 applied = apply_manifest(original, candidate, task["allowed"])
             except (ValueError, ProviderError) as exc:
                 reason = str(exc)
+                terminal_outcome = (
+                    "inconclusive"
+                    if isinstance(exc, ProviderError) or "model identity" in reason
+                    else "rejected"
+                )
                 if getattr(exc, "reservation", None):
                     receipt = {
                         "budget": exc.reservation,
@@ -262,11 +268,11 @@ def run(emit, run_id, task_id, attempts=2):
                     "diff": "",
                     "baseline_tests": baseline_tests,
                     "verification_tests": {},
-                    "eligibility": "policy_rejected",
+                    "eligibility": terminal_outcome,
                     "selection": selection,
                 }
                 emit("rejected", evidence)
-                history.record_candidate(run_id, attempt, "policy_rejected", evidence)
+                history.record_candidate(run_id, attempt, terminal_outcome, evidence)
                 previous = {"reason": reason[:1200]}
                 continue
             candidate_root = Path(folder) / f"candidate-{attempt}"
@@ -281,6 +287,7 @@ def run(emit, run_id, task_id, attempts=2):
                 },
             )
             status, after, tests = execute(candidate_root, image, emit)
+            terminal_outcome = "rejected"
             reason = verification_failure(baseline_tests, tests)
             if status != 0 and reason is None:
                 reason = "Verification process exited unsuccessfully."
@@ -307,7 +314,19 @@ def run(emit, run_id, task_id, attempts=2):
                         "passed": False,
                         "reason": "Independent report missing or malformed.",
                     }
-                if independent_status != 0 or independent.get("passed") is not True:
+                from independent_tests import COUNTS
+
+                expected_suite_hash = hashlib.sha256(
+                    (ROOT / "independent_tests.py").read_bytes()
+                ).hexdigest()
+                if (
+                    independent_status != 0
+                    or independent.get("passed") is not True
+                    or independent.get("suite") != task_id
+                    or independent.get("checks") != COUNTS[task_id]
+                    or independent.get("protocol") != "behavior-supervisor-v2"
+                    or independent.get("suite_sha256") != expected_suite_hash
+                ):
                     independent = {
                         "passed": False,
                         "reason": "Independent behavior checks failed.",
@@ -365,5 +384,6 @@ def run(emit, run_id, task_id, attempts=2):
                 "independent": independent,
             }
         raise RepairFailure(
-            "All bounded V2 candidates were rejected. No verified patch was exported."
+            "No V2 candidate completed all required checks. No verified patch was exported.",
+            terminal_outcome,
         )

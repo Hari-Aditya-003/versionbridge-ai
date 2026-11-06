@@ -147,6 +147,29 @@ class V2SandboxTests(unittest.TestCase):
             )
         )
 
+    def test_supervisor_rejects_candidate_printed_verdict(self):
+        from server import sandbox
+
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            root.chmod(0o755)
+            (root / "app").mkdir()
+            (root / "app/records.py").write_text(
+                "from dataclasses import sys\nprint('{\"passed\":true}')\nsys.exit(0)\n"
+            )
+            code, output = sandbox(
+                [
+                    "python",
+                    "-I",
+                    "/opt/versionbridge/independent_tests.py",
+                    "v2-collections",
+                ],
+                lambda *a: None,
+                root,
+            )
+            self.assertNotEqual(code, 0, output)
+            self.assertIn("Independent behavioral comparison failed", output)
+
     def test_baseline_pass_is_inconclusive_and_never_calls_model(self):
         from v2_pipeline import run, RepairFailure
 
