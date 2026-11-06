@@ -28,6 +28,7 @@ PORT=8787
 ENABLE_JOB_QUEUE=1
 EXTERNAL_WORKER=1
 PUBLIC_DEMO=1
+SANDBOX_LOCATION="Vultr Cloud Compute"
 VERSIONBRIDGE_DB=/var/lib/versionbridge/runs.sqlite3
 ENV
 fi

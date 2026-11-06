@@ -9,7 +9,10 @@ from providers.base import ModelResponse, ProviderError
 
 
 def complete(request):
-    gpu_guard.check()
+    try:
+        gpu_guard.check()
+    except RuntimeError as exc:
+        raise ProviderError("resource_paused", str(exc)) from exc
     try:
         context = int(os.getenv("VERSIONBRIDGE_LOCAL_CONTEXT", "2048"))
         output = min(
@@ -50,6 +53,8 @@ def complete(request):
         if result.get("done") is not True:
             raise ValueError("Incomplete Ollama response.")
         answer = result["message"]["content"]
+        if not isinstance(answer, str):
+            raise ValueError("Missing model content.")
         candidate = json.loads(
             answer.strip().removeprefix("```json").removesuffix("```").strip()
         )

@@ -114,6 +114,9 @@ def main():
         check(request(f"/api/runs/{regression['id']}/patch")[0] == 409, "unverified patch cannot be exported as verified")
         check(request("/api/stats")[1]["verified"] == 1, "dashboard counts stored outcomes")
         check(request("/api/budget")[1]["reserved_usd"] == 0, "sample tests consume no inference credits")
+        _, unsupported_v2 = request("/api/jobs", {"profile":"v2-settings", "attempts":1})
+        check(wait_job(request, unsupported_v2["id"])["state"] == "inconclusive",
+              "open-ended repair without live inference remains inconclusive")
         print(f"{checks} HTTP integration checks passed", flush=True)
 
 

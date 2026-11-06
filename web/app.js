@@ -102,6 +102,7 @@ function showInventory(event) {
 
 function updateScope() {
   const scoped = profile.value === "python";
+  projectTitle.textContent = profile.selectedOptions[0]?.textContent || "Repair workspace";
   const bundled = profile.value.startsWith("v2-") || ["go", "rust", "java", "cpp", "postgresql", "typescript", "javascript", "sqlite", "algorithm"].includes(profile.value);
   repository.disabled = ref.disabled = !publicImport || bundled || pinnedOnly;
   if (bundled || (pinnedOnly && profile.value !== "pandas")) repository.value = ref.value = "";
@@ -413,7 +414,7 @@ async function execute(isProbe, resumeId) {
     appendLog(target, `\n${error.message}\n`);
     if (!isProbe) {
       state.textContent = "UNVERIFIED";
-      if (error.jobState === "cancelled" || error.jobState === "interrupted") {
+      if (["cancelled", "interrupted", "rejected", "inconclusive"].includes(error.jobState)) {
         state.textContent = error.jobState.toUpperCase();
       }
       download.hidden = !runEvents.length;

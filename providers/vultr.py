@@ -40,6 +40,8 @@ def complete(request, *, opener=None):
         with (opener or urlopen)(http, timeout=30) as response:
             result = json.loads(response.read(524288))
         answer = result["choices"][0]["message"]["content"]
+        if not isinstance(answer, str):
+            raise ValueError("Missing model content.")
         candidate = json.loads(
             answer.strip().removeprefix("```json").removesuffix("```").strip()
         )
