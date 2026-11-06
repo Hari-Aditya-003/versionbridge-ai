@@ -23,6 +23,7 @@ from providers.base import ModelRequest, ProviderError
 from providers import vultr, ollama
 from v2_tasks import TASKS
 from verification import verification_failure
+from run_files import capture as capture_files
 
 ROOT = Path(__file__).resolve().parent
 SCHEMA = {
@@ -76,6 +77,11 @@ def execute(project, image, emit, command=None):
         test_report=tests if command is None else None,
         image_id=image,
         timeout=contract.timeout,
+        purpose="Independent checks"
+        if command
+        else "Baseline"
+        if project.name == "original"
+        else "Candidate verification",
     )
     return code, log, tests
 
@@ -134,6 +140,10 @@ def run(emit, run_id, task_id, attempts=2):
         for p in [original, *original.rglob("*")]:
             p.chmod(0o755 if p.is_dir() else 0o644)
         image = image_digest()
+        snapshot_paths = task["allowed"] + [
+            p.relative_to(original).as_posix() for p in original.rglob("test_*.py")
+        ]
+        emit("files", capture_files(original, snapshot_paths, "Original"))
         emit(
             "stage",
             {"step": 0, "message": "V2 · reproducing the pinned migration failure…"},
@@ -313,6 +323,10 @@ def run(emit, run_id, task_id, attempts=2):
             shutil.copytree(original, candidate_root)
             for name, text in applied["files"].items():
                 (candidate_root / name).write_bytes(text.encode())
+            emit(
+                "files",
+                capture_files(candidate_root, snapshot_paths, f"Candidate {attempt}"),
+            )
             emit(
                 "stage",
                 {

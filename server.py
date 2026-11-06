@@ -1,5 +1,8 @@
 """Serve the workspace and orchestrate the bundled, bounded repair."""
 import difflib
+import queue
+import time
+import codecs
 import hmac
 import logging
 import hashlib
@@ -22,6 +25,7 @@ import history
 import jobs
 import reports
 import telemetry
+from run_files import capture as capture_files
 from v2_tasks import TASKS as V2_TASKS
 from category_router import classify
 from candidate_scheduler import plan as plan_candidates
@@ -40,7 +44,7 @@ QUEUE_ENABLED = False
 WORKER_THREAD = None
 
 
-def sandbox(command, emit, project=None, timeout=35, *, test_report=None, native=False, image_id=None):
+def sandbox(command, emit, project=None, timeout=35, *, test_report=None, native=False, image_id=None, purpose="Sandbox execution"):
     name = f"versionbridge-{uuid4().hex}"
     args = [
         "docker", "run", "--rm", "--pull", "never", "--log-driver", "none",
@@ -61,40 +65,70 @@ def sandbox(command, emit, project=None, timeout=35, *, test_report=None, native
     emit("sandbox", {"name": name, "status": "Dispatching", "image": image,
                      "runtime": os.environ.get("SANDBOX_RUNTIME", "Docker default"),
                      "location": os.environ.get("SANDBOX_LOCATION", "Local Docker daemon"),
-                     "limits": f"1 CPU · 384 MiB · 64 PIDs · {timeout}s"})
+                     "limits": f"1 CPU · 384 MiB · 64 PIDs · {timeout}s",
+                     "command": command, "purpose": purpose, "project_read_only": bool(project)})
     captured = bytearray()
     tail = bytearray()
+    updates = queue.Queue()
     timed_out = False
+    pending_error = None
+    decoder = codecs.getincrementaldecoder("utf-8")(errors="replace")
+    visible = ""
+    published = 0
     with subprocess.Popen(args + [image] + command, stdout=subprocess.PIPE,
                           stderr=subprocess.STDOUT) as process:
         def drain_output():
-            for chunk in iter(lambda: process.stdout.read(4096), b""):
+            for chunk in iter(lambda: os.read(process.stdout.fileno(), 2048), b""):
                 remaining = 18000 - len(captured)
-                if remaining:
-                    captured.extend(chunk[:remaining])
+                if remaining > 0:
+                    part = chunk[:remaining]
+                    captured.extend(part)
+                    updates.put(part)
                 if test_report is not None:
                     tail.extend(chunk)
                     if len(tail) > REPORT_WINDOW:
                         del tail[:-REPORT_WINDOW]
 
+        def publish_output(part):
+            nonlocal visible, published
+            visible += decoder.decode(part)
+            clean = visible.split("\n" + REPORT_PREFIX, 1)[0]
+            if len(clean) > published:
+                emit("sandbox_output", {"name": name, "text": clean[published:], "recorded_at": time.time()})
+                published = len(clean)
+
         reader = threading.Thread(target=drain_output, daemon=True)
         reader.start()
+        deadline = time.monotonic() + timeout
         try:
-            exit_code = process.wait(timeout=timeout)
-        except subprocess.TimeoutExpired:
-            timed_out = True
-            process.kill()
-            process.wait()
-            subprocess.run(["docker", "rm", "-f", name], capture_output=True, timeout=10)
-            exit_code = 124
+            while process.poll() is None:
+                if time.monotonic() >= deadline:
+                    timed_out = True
+                    break
+                try:
+                    publish_output(updates.get(timeout=0.08))
+                except queue.Empty:
+                    pass
+        except BaseException as exc:
+            pending_error = exc
         finally:
+            if process.poll() is None:
+                process.kill()
+                process.wait()
+                subprocess.run(["docker", "rm", "-f", name], capture_output=True, timeout=10, check=True)
+            exit_code = 124 if timed_out else process.wait()
             reader.join(timeout=5)
+        if pending_error is None:
+            while not updates.empty():
+                publish_output(updates.get_nowait())
     listing = subprocess.run(["docker", "ps", "-aq", "--filter", f"name=^/{name}$"],
                              capture_output=True, timeout=10, check=True)
     if listing.stdout.strip():
         raise RuntimeError("Docker still reports a sandbox after teardown.")
     emit("sandbox", {"name": name, "status": "Removed" if timed_out or exit_code < 125 else "Absent",
                      "exit_code": exit_code, "timed_out": timed_out})
+    if pending_error is not None:
+        raise pending_error
     output = captured.decode(errors="replace")
     if test_report is not None:
         test_report.update(parse_report(tail))
@@ -177,11 +211,12 @@ def repair(emit, run_id, repository="", ref="", profile_id="pandas", filename=""
         for file in test_files:
             test_digest.update(file.relative_to(project).as_posix().encode() + b"\0")
             test_digest.update(hashlib.sha256(file.read_bytes()).digest())
+        emit("files", capture_files(project, [path] + [p.relative_to(project).as_posix() for p in test_files], "Original"))
         emit("stage", {"step": 0, "message": "Reproducing the failure in a fresh container…"})
         execution_image = subprocess.run(["docker", "image", "inspect", "--format", "{{.Id}}", IMAGE],
                                          capture_output=True, text=True, timeout=10, check=True).stdout.strip()
         baseline_tests = {}
-        baseline, before = sandbox(PYTEST_COMMAND, emit, project, test_report=baseline_tests, native=profile.native, timeout=profile.timeout, image_id=execution_image)
+        baseline, before = sandbox(PYTEST_COMMAND, emit, project, test_report=baseline_tests, native=profile.native, timeout=profile.timeout, image_id=execution_image, purpose="Baseline")
         emit("log", {"label": "Baseline", "text": before})
         if baseline != 1 or (not scoped and profile.failure not in before):
             raise RuntimeError("The expected baseline failure was not reproduced. Check the execution log.")
@@ -221,6 +256,7 @@ def repair(emit, run_id, repository="", ref="", profile_id="pandas", filename=""
                 raise RuntimeError("The candidate did not change the selected statement.")
             diff = patch_diff(source, patched, path)
             target.write_bytes(patched.encode("utf-8"))
+            emit("files", capture_files(project, [path] + [p.relative_to(project).as_posix() for p in test_files], f"Candidate {attempt}"))
             emit("stage", {"step": 2, "message": "Running the unchanged tests in a fresh container…"})
             candidate_tests = {}
             status, after = sandbox(PYTEST_COMMAND, emit, project, test_report=candidate_tests, native=profile.native, timeout=profile.timeout, image_id=execution_image)
@@ -401,9 +437,12 @@ class Handler(SimpleHTTPRequestHandler):
             self.respond_json(200, budget.status())
             return
         url = urlsplit(self.path)
-        artifact = re.fullmatch(r"/api/runs/([a-f0-9]{12}|[a-f0-9]{32})/(report.json|report.md|patch)", url.path)
+        artifact = re.fullmatch(r"/api/runs/([a-f0-9]{12}|[a-f0-9]{32})/(report.json|report.md|report.txt|patch)", url.path)
         if artifact:
             events = history.find(artifact[1])
+            if events is None and artifact[2] == "report.txt":
+                job = jobs.get(artifact[1], 0)
+                events = job["events"] if job else None
             if events is None:
                 self.send_error(404, "Run not found")
                 return
@@ -416,6 +455,8 @@ class Handler(SimpleHTTPRequestHandler):
                     self.send_error(409, "This run has no verified patch")
                     return
                 content = events[-1]["diff"]
+            elif kind == "report.txt":
+                content = reports.plaintext(events)
             else:
                 content = reports.markdown(events)
             encoded = content.encode()

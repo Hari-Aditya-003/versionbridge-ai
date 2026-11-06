@@ -66,21 +66,32 @@ class ExperienceTests(unittest.TestCase):
 
     def test_export_preserves_chunk_boundaries_and_legacy_output(self):
         from reports import plaintext
-        text=plaintext([{"event":"sandbox","name":"box","status":"Dispatching"},
-                        {"event":"sandbox_output","name":"box","text":"1 pa"},
-                        {"event":"sandbox_output","name":"box","text":"ssed\n"},
-                        {"event":"sandbox","name":"box","status":"Removed"}])
-        self.assertIn("1 passed",text)
-        legacy=plaintext([{"event":"log","label":"Baseline","text":"BASELINE FAILED"}])
-        self.assertIn("BASELINE FAILED",legacy)
+
+        text = plaintext(
+            [
+                {"event": "sandbox", "name": "box", "status": "Dispatching"},
+                {"event": "sandbox_output", "name": "box", "text": "1 pa"},
+                {"event": "sandbox_output", "name": "box", "text": "ssed\n"},
+                {"event": "sandbox", "name": "box", "status": "Removed"},
+            ]
+        )
+        self.assertIn("1 passed", text)
+        legacy = plaintext(
+            [{"event": "log", "label": "Baseline", "text": "BASELINE FAILED"}]
+        )
+        self.assertIn("BASELINE FAILED", legacy)
 
     def test_capture_reads_only_the_export_allowance(self):
         from unittest.mock import patch
         from run_files import capture
+
         with tempfile.TemporaryDirectory() as folder:
-            root=Path(folder);(root/"app.py").write_text("x=1\n")
-            with patch.object(Path,"read_bytes",side_effect=AssertionError("Unbounded read")):
-                self.assertTrue(capture(root,["app.py"],"Original")["complete"])
+            root = Path(folder)
+            (root / "app.py").write_text("x=1\n")
+            with patch.object(
+                Path, "read_bytes", side_effect=AssertionError("Unbounded read")
+            ):
+                self.assertTrue(capture(root, ["app.py"], "Original")["complete"])
 
     def test_file_capture_has_a_total_byte_limit(self):
         from run_files import capture
