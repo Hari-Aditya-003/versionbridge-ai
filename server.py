@@ -259,7 +259,7 @@ def repair(emit, run_id, repository="", ref="", profile_id="pandas", filename=""
             emit("files", capture_files(project, [path] + [p.relative_to(project).as_posix() for p in test_files], f"Candidate {attempt}"))
             emit("stage", {"step": 2, "message": "Running the unchanged tests in a fresh container…"})
             candidate_tests = {}
-            status, after = sandbox(PYTEST_COMMAND, emit, project, test_report=candidate_tests, native=profile.native, timeout=profile.timeout, image_id=execution_image)
+            status, after = sandbox(PYTEST_COMMAND, emit, project, test_report=candidate_tests, native=profile.native, timeout=profile.timeout, image_id=execution_image, purpose=f"Candidate {attempt} verification")
             reason = verification_failure(baseline_tests, candidate_tests)
             if status != 0 and reason is None:
                 reason = "The verification process exited unsuccessfully."
@@ -456,7 +456,8 @@ class Handler(SimpleHTTPRequestHandler):
                     return
                 content = events[-1]["diff"]
             elif kind == "report.txt":
-                content = reports.plaintext(events)
+                job = jobs.get(artifact[1], 0)
+                content = reports.plaintext(events, state=job["state"] if job else None)
             else:
                 content = reports.markdown(events)
             encoded = content.encode()

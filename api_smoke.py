@@ -104,6 +104,13 @@ def main():
               "downloaded patch matches recorded checksum")
         status, markdown = request(f"/api/runs/{queued['id']}/report.md")
         check(status == 200 and b"Test comparison" in markdown, "Markdown evidence is downloadable")
+        status, bundle = request(f"/api/runs/{queued['id']}/report.txt")
+        check(status == 200 and b"FILES / Original" in bundle and b"Test outcomes" in bundle,
+              "TXT bundle includes source files and test results")
+        check(any(e["event"] == "sandbox_output" for e in evidence["events"]),
+              "worker publishes captured container output")
+        check(len([e for e in evidence["events"] if e["event"] == "files"]) >= 2,
+              "original and candidate snapshots are available")
         _, probe = request("/api/jobs", {"task": "containment"})
         check(wait_job(request, probe["id"])["state"] == "contained", "external worker runs containment checks")
         check(any(row["id"] == probe["id"] and row["project"] == "Containment Lab"

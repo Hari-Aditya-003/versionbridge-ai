@@ -1,6 +1,6 @@
 # VersionBridge AI
 
-[Live Vultr workspace](https://versionbridge.64.177.53.254.sslip.io/demo.html) · [Project showcase](https://hari-aditya-003.github.io/versionbridge-ai/) · [Recorded live demo](https://hari-aditya-003.github.io/versionbridge-ai/demo.html) · [Presentation](showcase/VersionBridge-Vultr-pitch.pptx) · [Architecture](ARCHITECTURE.md) · [Evaluation](EVALUATION.md) · [Deployment](DEPLOYMENT.md)
+[Live Vultr workspace](https://versionbridge.pages.dev/demo.html) · [Project showcase](https://hari-aditya-003.github.io/versionbridge-ai/) · [Recorded live demo](https://hari-aditya-003.github.io/versionbridge-ai/demo.html) · [Architecture](ARCHITECTURE.md) · [Evaluation](EVALUATION.md) · [Deployment](DEPLOYMENT.md)
 
 VersionBridge reproduces a supported code failure in Docker, proposes a scoped repair, and reruns the same tests in a fresh container. Review the patch, individual test outcomes, model receipt, and sandbox lifecycle before exporting the change.
 
@@ -52,7 +52,7 @@ node --check web/app.js
 node --check web/resources.js
 ```
 
-The current release retains 23 V1 acceptance methods and adds 28 V2 unit/Docker methods, with 24 HTTP integration checks. The acceptance suite checks all repair profiles, rejection of weakened tests, sandbox teardown, model validation, queue behavior, inference allowances, and GPU telemetry policy. The HTTP suite starts a separate worker with a temporary database and checks authentication, idempotency, artifact checksums, queued containment, and regression rejection. It uses sample proposals and real sandbox execution, consuming no inference credits. GitHub Actions runs both suites.
+The release retains 23 V1 acceptance methods, 28 V2 methods and five streaming/export methods, with 27 HTTP integration checks. Node checks also verify workflow transitions and fixed-origin proxy routing. The acceptance suite checks all repair profiles, rejection of weakened tests, sandbox teardown, model validation, queue behavior, inference allowances, and GPU telemetry policy. The HTTP suite starts a separate worker with a temporary database and checks authentication, idempotency, artifact checksums, queued containment, and regression rejection. It uses sample proposals and real sandbox execution, consuming no inference credits. GitHub Actions runs both suites.
 
 ## Inspect verification evidence
 
@@ -89,6 +89,12 @@ The deployment installer creates separate web and worker users. The web user has
 
 Queued jobs survive a restart. Running jobs become interrupted after their recorded containers are cleaned up. Cancellation stops an active job at the next step boundary. The queue holds at most five active jobs and retains 100 completed jobs. Public mode permits up to 100 new jobs per UTC day. Idempotency keys prevent duplicate submissions.
 
+## Inspect a live sandbox and save a run
+
+The workspace renders container output while execution is in progress. Choose **Open sandbox** to inspect Console, Run files, and Container details. After a run, **Save run files · TXT** downloads scoped original/candidate application and test snapshots, console output, patch changes and verification outcomes. Snapshots have a 16-file / 64 KiB limit per phase and clearly mark omissions. The current run stays inspectable without a prior-run history list.
+
+The homepage architecture is an interactive animated guide. The workspace workflow uses actual execution events.
+
 ## Private Dell inference
 
 The optional Ollama mode uses a small quantized model through a loopback SSH tunnel. GPU quiet mode can require fresh telemetry, pause above 65°C, pause when utilization reaches 30%, and require 1,536 MiB of free GPU memory before dispatch. These are admission checks. Runtime power and cooling are managed by the device. [Setup and observed Dell results](LOCAL_GPU.md)
@@ -112,4 +118,4 @@ Broader repository adapters, arbitrary package installation, GitHub App authenti
 | Reproducible examples | `fixture/`, `scenarios/` |
 | Deployment and QA | `deploy/`, `smoke.py`, `api_smoke.py` |
 
-[MIT license](LICENSE) · [Hackathon submission checklist](SUBMISSION.md) · [AegisPR comparison](COMPARISON.md)
+[MIT license](LICENSE) · [User guide](USER_GUIDE.md) · [AegisPR comparison](COMPARISON.md)

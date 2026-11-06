@@ -22,7 +22,7 @@ jobs:
       - name: Build static showcase
         run: |
           mkdir site
-          cp web/mark.svg web/style.css web/motion.js web/brand.png showcase/dell-demo.mp4 showcase/vultr-demo.mp4 showcase/VersionBridge-Vultr-pitch.pptx site/
+          cp web/mark.svg web/style.css web/motion.js web/workflow.js web/brand.png showcase/dell-demo.mp4 showcase/vultr-demo.mp4 showcase/VersionBridge-Vultr-pitch.pptx site/
           sed -e 's|href="/|href="./|g' -e 's|src="/|src="./|g' \
               -e 's|Run the demo|Watch the demo|g' \
               -e 's|Open demo|Watch demo|g' web/index.html > site/index.html

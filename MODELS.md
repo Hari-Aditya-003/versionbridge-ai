@@ -15,7 +15,7 @@ The deployed model is `glm-5.3-flash`. It achieved all 13 expected outcomes in t
 
 The evaluation command covers supported profile cases, allows at most two patch attempts per case, and accepts up to three models. It sorts by correct outcomes and then elapsed time. Treat this as an evaluation of the supported workflow and fixtures. Acceptance tests use labeled sample patches. The published model comparison and hosted run use authenticated Vultr inference. [Evaluation and commands](EVALUATION.md)
 
-Keep model calls for the judged application on Vultr Serverless Inference. The private Ollama mode uses a quantized Qwen2.5 Coder 1.5B model on a trusted Dell. It is a separate development profile. [Private Dell setup](LOCAL_GPU.md). [LabLab Blast Radius Zero rules](https://lablab.ai/ai-hackathons/vultr-hackathon/)
+The public deployment uses Vultr Serverless Inference. The private Ollama mode uses a quantized Qwen2.5 Coder 1.5B model on a trusted Dell. It is a separate development profile. [Private Dell setup](LOCAL_GPU.md).
 
 ## Comparable projects
 

@@ -54,3 +54,15 @@ The $200 credit is the overall authorization ceiling. Application allowances do 
 - To roll back application code, restore a previously tested checkout, rebuild its sandbox image, and restart the services. Preserve the database backup.
 
 The optional legacy nginx configuration is an alternative reverse proxy example. The retired single-service unit must not be used.
+
+## Clean public address
+
+The public entry point is https://versionbridge.pages.dev. The Cloudflare Pages advanced-mode function in `deploy/edge/_worker.js` forwards requests to the fixed HTTPS Vultr origin. It preserves API methods, streaming responses and workspace authentication. Request paths cannot select a different upstream host.
+
+This hostname uses the existing Cloudflare account's Pages deployment; no paid domain purchase is required. The application, persistent jobs, Docker execution and inference credentials remain on the existing VM. Deploy the entry point with:
+
+```sh
+CLOUDFLARE_ACCOUNT_ID=YOUR_ACCOUNT_ID wrangler pages deploy deploy/edge --project-name versionbridge --branch main
+```
+
+The edge function has no inference key. Keep the backend HTTPS origin available because it serves both the application and APIs.

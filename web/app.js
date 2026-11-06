@@ -33,16 +33,21 @@ const ref = document.querySelector("#ref");
 const sandboxes = document.querySelector("#sandboxes");
 const sandboxRows = new Map();
 const patchDownload = document.querySelector("#download-patch");
-const historyList = document.querySelector("#history-list");
-const historyFilter = document.querySelector("#history-filter");
 const jobKey = "versionbridge-active-job";
 let queueEnabled = false;
 let publicImport = false;
 let pinnedOnly = false;
 let activeJob;
+let currentRunId;
+const textDownload = document.querySelector("#download-txt");
+const sandboxRecords = new Map();
+const capturedFiles = new Map();
+const inspector = document.querySelector("#sandbox-dialog");
+const sandboxSelect = document.querySelector("#sandbox-select");
+const fileSelect = document.querySelector("#sandbox-file");
+let latestSandbox;
 const markdownDownload = document.querySelector("#download-markdown");
 let report;
-let runs = [];
 let runEvents = [];
 const candidates = new Map();
 
@@ -102,8 +107,10 @@ function showInventory(event) {
 
 function updateScope() {
   const scoped = profile.value === "python";
+  describeProfile();
   projectTitle.textContent = profile.selectedOptions[0]?.textContent || "Repair workspace";
   const bundled = profile.value.startsWith("v2-") || ["go", "rust", "java", "cpp", "postgresql", "typescript", "javascript", "sqlite", "algorithm"].includes(profile.value);
+  document.querySelector("#repository-fields").hidden = bundled || !publicImport;
   repository.disabled = ref.disabled = !publicImport || bundled || pinnedOnly;
   if (bundled || (pinnedOnly && profile.value !== "pandas")) repository.value = ref.value = "";
   pythonTarget.hidden = filename.disabled = functionName.disabled = !scoped;
@@ -150,19 +157,103 @@ function showAttempt(event) {
   }
 }
 
+const profileDescriptions = {
+  "v2-settings": ["AI-AUTHORED · PYTHON", "Migrate a reviewed Pydantic settings project. The model writes a scoped edit; the existing tests and independent environment/validation checks verify behavior.", "Original suite + 4 independent checks · live inference required"],
+  "v2-collections": ["AI-AUTHORED · PYTHON", "Repair a moved collections API in a reviewed source snapshot. The model authors the change without a replacement answer list.", "Original suite + 101 independent mapping checks · live inference required"],
+  "v2-multifile": ["AI-AUTHORED · TWO PYTHON FILES", "Repair related import failures across two application modules, applying every candidate to a clean copy of the original source.", "Original suite + 102 independent cross-file checks · live inference required"],
+  pandas: ["CONSTRAINED EXAMPLE · PYTHON", "Replace the removed pandas append call. Use the bundled source or load the reviewed pinned GitHub example.", "2 existing tests · constrained replacement policy"],
+  settings: ["CONSTRAINED EXAMPLE · PYTHON", "Move BaseSettings to its installed Pydantic 2 package and preserve environment overrides.", "2 existing tests · constrained replacement policy"],
+  billing: ["BOUNDED ARITHMETIC · PYTHON", "Repair an invoice expression using the named integer inputs and permitted arithmetic operators.", "4 test cases · quantity, price and flat fee"],
+  algorithm: ["REVIEWED EXAMPLE · ALGORITHM", "Fix a binary-search boundary while preserving the expected threshold behavior.", "Boundary checks + 200 seeded comparisons"],
+  regression: ["NEGATIVE EXAMPLE · REGRESSION GUARD", "Observe a candidate that fixes the initial error but loses audit metadata. Verification should reject it.", "Expected outcome: rejected · no verified patch export"],
+  python: ["PRIVATE IMPORT · SCOPED PYTHON", "Choose a compatible pinned repository, application file and top-level arithmetic function.", "Existing pytest suite · private deployment capability"],
+  javascript: ["REVIEWED EXAMPLE · JAVASCRIPT", "Repair the discount cap and execute the actual Node module.", "4 runtime cases"],
+  typescript: ["REVIEWED EXAMPLE · TYPESCRIPT", "Repair an inventory property and verify both types and runtime behavior.", "Strict compilation + 3 runtime cases"],
+  sqlite: ["REVIEWED EXAMPLE · SQLITE", "Repair paid-order aggregation using a disposable database.", "Empty inputs, missing matches, duplicates and NULL values"],
+  postgresql: ["REVIEWED EXAMPLE · POSTGRESQL", "Repair a query in an isolated disposable PostgreSQL instance.", "Database behavior checks · no shared database"],
+  go: ["REVIEWED EXAMPLE · GO", "Fix pagination and compile/run the real Go program.", "4 boundary cases · longer cold compiler deadline"],
+  rust: ["REVIEWED EXAMPLE · RUST", "Repair an inclusive limit and compile/run the Rust program.", "4 boundary cases"],
+  java: ["REVIEWED EXAMPLE · JAVA", "Repair role comparison and execute the compiled Java program.", "4 string-content cases"],
+  cpp: ["REVIEWED EXAMPLE · C++", "Repair integer overflow and execute with undefined-behavior sanitization.", "4 cases including large signed products"]
+};
+function describeProfile() {
+  const [kind, description, checks] = profileDescriptions[profile.value] || ["REVIEWED SOURCE", "Choose a supported repair task.", "Inspect its executed checks before applying a patch."];
+  document.querySelector("#profile-kind").textContent = kind;
+  document.querySelector("#profile-description").textContent = description;
+  document.querySelector("#profile-checks").textContent = checks;
+}
+function renderInspector() {
+  const selected = sandboxRecords.get(sandboxSelect.value);
+  document.querySelector("#sandbox-console").textContent = selected?.output || "Waiting for captured stdout…";
+  document.querySelector("#sandbox-details").textContent = selected ? JSON.stringify({...selected, output:undefined}, null, 2) : "Container details appear when execution starts.";
+  const file = capturedFiles.get(fileSelect.value);
+  document.querySelector("#sandbox-file-content").textContent = file ? `${file.phase} / ${file.path}\nSHA-256: ${file.sha256}\n${file.truncated ? "Snapshot truncated by the export allowance.\n" : ""}\n${file.content}` : "Scoped files appear after intake.";
+}
+function openInspector(name) {
+  if (name) sandboxSelect.value = name;
+  renderInspector();
+  if (!inspector.open) inspector.showModal();
+}
 function showSandbox(event) {
+  const old = sandboxRecords.get(event.name) || {output:""};
+  sandboxRecords.set(event.name, {...old, ...event});
   let row = sandboxRows.get(event.name);
   if (!row) {
-    row = document.createElement("div");
-    row.className = "runtime-entry";
+    row = document.createElement("div"); row.className = "runtime-entry";
+    const text = document.createElement("span"), button = document.createElement("button");
+    button.type = "button"; button.textContent = "Open sandbox";
+    button.addEventListener("click", () => openInspector(event.name));
+    row.append(text,button);
     if (!sandboxRows.size) sandboxes.textContent = "";
-    sandboxes.append(row);
-    sandboxRows.set(event.name, row);
+    sandboxes.append(row); sandboxRows.set(event.name,row);
+    const option = document.createElement("option");option.value = event.name;sandboxSelect.append(option);
   }
-  if (event.location) row.dataset.context = `${event.location} / ${event.runtime} · ${event.limits}`;
-  row.textContent = `${event.name.slice(-12)} · ${event.status} · ${row.dataset.context || ""}`;
-  if (event.exit_code !== undefined) row.textContent += ` · exit ${event.exit_code}`;
+  const record = sandboxRecords.get(event.name);
+  row.querySelector("span").textContent = `${record.purpose || "Sandbox"} · ${event.name.slice(-12)} · ${record.status}${record.exit_code !== undefined ? ` · exit ${record.exit_code}` : ""}`;
+  sandboxSelect.querySelector(`option[value="${event.name}"]`).textContent = `${record.purpose || "Sandbox"} · ${event.name.slice(-12)} · ${record.status}`;
+  if (event.status === "Dispatching") {
+    latestSandbox = event.name;
+    document.querySelector("#live-console").textContent = "Starting the container…";
+    if (!inspector.open) sandboxSelect.value = event.name;
+  }
+  document.querySelector("#open-sandbox").disabled = false;
+  renderInspector();
 }
+function handleRuntime(event) {
+  window.VersionBridgeWorkflow?.event(event);
+  if (event.event === "sandbox") showSandbox(event);
+  if (event.event === "sandbox_output") {
+    const record = sandboxRecords.get(event.name) || {name:event.name,output:""};
+    record.output = (record.output + event.text).slice(0,18000);
+    if (record.status === "Dispatching") {
+      record.status = "Running";
+      const row = sandboxRows.get(event.name);
+      if (row) row.querySelector("span").textContent = `${record.purpose || "Sandbox"} · ${event.name.slice(-12)} · Running`;
+    }
+    sandboxRecords.set(event.name,record);
+    if (latestSandbox === event.name) {
+      const output = document.querySelector("#live-console");output.textContent = record.output;output.scrollTop = output.scrollHeight;
+    }
+    if (sandboxSelect.value === event.name) renderInspector();
+  }
+  if (event.event === "files") {
+    for (const file of event.files) {
+      const key = `${event.phase}::${file.path}`;
+      if (!capturedFiles.has(key)) { const option=document.createElement("option");option.value=key;option.textContent=`${event.phase} / ${file.path}`;fileSelect.append(option); }
+      capturedFiles.set(key,{...file,phase:event.phase});
+    }
+    document.querySelector("#open-sandbox").disabled = false;
+    renderInspector();
+  }
+}
+sandboxSelect.addEventListener("change",renderInspector);
+fileSelect.addEventListener("change",renderInspector);
+document.querySelector("#open-sandbox").addEventListener("click",()=>openInspector(latestSandbox));
+document.querySelector("#close-sandbox").addEventListener("click",()=>inspector.close());
+document.querySelectorAll("[data-sandbox-tab]").forEach(button=>button.addEventListener("click",()=>{
+  document.querySelectorAll("[data-sandbox-tab]").forEach(tab=>tab.setAttribute("aria-selected",String(tab===button)));
+  for (const name of ["console","files","details"]) document.querySelector(`#view-${name}`).hidden = button.dataset.sandboxTab !== name;
+}));
 
 function showTestOutcomes(event) {
   if (!event.baseline_tests || !event.verification_tests) return;
@@ -208,64 +299,6 @@ function showRejected(event) {
   if (event.rejection_reason) appendLog(logs, `[Verification gate] ${event.rejection_reason}\n`);
 }
 
-function showHistory() {
-  const selected = historyFilter.value;
-  const visible = runs.filter(item => selected === "All" || item.status === selected);
-  historyList.textContent = visible.length ? "" : "No matching repairs.";
-  for (const item of visible) {
-    const button = document.createElement("button");
-    button.className = "history-row";
-    for (const value of [item.project, new Date(item.created).toLocaleString(), item.status]) {
-      const cell = document.createElement("span");
-      cell.textContent = value;
-      button.append(cell);
-    }
-    button.addEventListener("click", () => {
-      if (run.disabled) return;
-      resetRepair();
-      runEvents = item.evidence;
-      for (const event of item.evidence) {
-        if (event.event === "diagnosis") appendLog(logs, `[Diagnosis · ${event.provider}]\n${event.text}\n`);
-        if (event.event === "inventory") showInventory(event);
-        if (event.event === "analysis") showAnalysis(event);
-        if (event.event === "routing" || event.event === "diagnosis") showAttempt(event);
-        if (event.event === "project") projectTitle.textContent = event.title;
-        if (event.event === "sandbox") showSandbox(event);
-        if (event.event === "rejected") showRejected(event);
-        if (event.event === "log") appendLog(logs, `[${event.label}]\n${event.text}\n`);
-        if (event.event === "contained") {
-          state.textContent = "CONTAINED";
-          statusLine.textContent = event.message;
-          download.hidden = false;
-        }
-        if (event.event === "result") showResult(event);
-        if (event.event === "error") {
-          state.textContent = "UNVERIFIED";
-          statusLine.textContent = event.message;
-          download.hidden = false;
-        }
-      }
-      location.hash = "workspace";
-    });
-    historyList.append(button);
-  }
-}
-
-async function loadHistory() {
-  try {
-    const response = await workspaceFetch("/api/history");
-    if (!response.ok) throw new Error("Could not load history.");
-    runs = await response.json();
-    showHistory();
-    loadUsage();
-  } catch {
-    historyList.textContent = "Could not load run history.";
-  }
-}
-
-historyFilter.addEventListener("change", showHistory);
-loadHistory();
-
 async function streamEvents(path, onEvent, settings = {}) {
   const response = await workspaceFetch(path, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(settings) });
   if (!response.ok || !response.body) {
@@ -309,6 +342,12 @@ function resetRepair() {
   document.querySelector("#candidate-history").textContent = "";
   document.querySelector("#analysis-panel").hidden = true;
   runEvents = [];
+  currentRunId = undefined;
+  sandboxRecords.clear();capturedFiles.clear();sandboxSelect.textContent = fileSelect.textContent = "";
+  document.querySelector("#open-sandbox").disabled = true;
+  document.querySelector("#live-console").textContent = "Live stdout will appear as the container runs.";
+  textDownload.hidden = true;
+  window.VersionBridgeWorkflow?.reset();
   sandboxRows.clear();
   sandboxes.textContent = "Waiting for sandbox dispatch…";
   patchPanel.hidden = download.hidden = patchDownload.hidden = true;
@@ -329,6 +368,7 @@ async function followJob(onEvent, settings, resumeId) {
     sessionStorage.setItem(jobKey, activeJob);
     sessionStorage.setItem("versionbridge-active-task", settings.task);
   }
+  currentRunId = activeJob;
   cancelRun.hidden = false;
   let cursor = 0;
   for (;;) {
@@ -370,6 +410,8 @@ cancelRun.addEventListener("click", async () => {
 async function execute(isProbe, resumeId) {
   run.disabled = probe.disabled = profile.disabled = loadExample.disabled = true;
   if (isProbe) {
+    resetRepair();
+    projectTitle.textContent = "Containment Lab";
     probeLog.textContent = "Starting containment probe…\n";
   } else {
     resetRepair();
@@ -380,7 +422,9 @@ async function execute(isProbe, resumeId) {
   const target = isProbe ? probeLog : logs;
   try {
     const onEvent = event => {
-      if (!isProbe) runEvents.push(event);
+      runEvents.push(event);
+      handleRuntime(event);
+      if (event.id) currentRunId = event.id;
       if (event.event === "diagnosis") appendLog(target, `[Diagnosis · ${event.provider}]\n${event.text}\n`);
       if (event.event === "inventory") showInventory(event);
       if (event.event === "analysis") showAnalysis(event);
@@ -389,7 +433,7 @@ async function execute(isProbe, resumeId) {
       if (event.event === "rejected") showRejected(event);
       if (event.event === "sandbox") {
         if (isProbe) appendLog(target, `› Sandbox ${event.name.slice(-12)} · ${event.status} · ${event.location || `exit ${event.exit_code}`}\n`);
-        else showSandbox(event);
+
       }
       if (event.event === "stage") {
         appendLog(target, `› ${event.message}\n`);
@@ -423,11 +467,12 @@ async function execute(isProbe, resumeId) {
       steps.find(step => step.classList.contains("active"))?.classList.remove("active");
     }
   } finally {
+    textDownload.hidden = !runEvents.length || !currentRunId;
     activeJob = undefined;
     cancelRun.hidden = true;
     cancelRun.disabled = false;
     run.disabled = probe.disabled = profile.disabled = loadExample.disabled = false;
-    loadHistory();
+    loadUsage();
   }
 }
 
@@ -461,4 +506,13 @@ markdownDownload.addEventListener("click", async () => {
   } catch (error) {
     statusLine.textContent = error.message;
   }
+});
+
+textDownload.addEventListener("click", async () => {
+  if (!currentRunId) return;
+  try {
+    const response = await workspaceFetch(`/api/runs/${currentRunId}/report.txt`);
+    if (!response.ok) throw new Error("The run bundle is not ready. Try again after execution finishes.");
+    saveFile(await response.text(), "text/plain;charset=utf-8", `versionbridge-${currentRunId}.txt`);
+  } catch (error) { statusLine.textContent = error.message; }
 });

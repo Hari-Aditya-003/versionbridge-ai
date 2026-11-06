@@ -10,14 +10,15 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/style.css">
 <script src="/motion.js" defer></script>
+<script src="/workflow.js" defer></script>
 </head>
 <body>
 <header><div class="nav shell"><a class="brand" href="#top"><img src="/mark.svg" alt="">VersionBridge<span>AI</span></a>
-<nav aria-label="Project"><a href="#workflow">How it works</a><a href="#architecture">Architecture</a><a href="https://versionbridge.64.177.53.254.sslip.io/demo.html" target="_blank" rel="noopener">Live workspace ↗</a></nav>
+<nav aria-label="Project"><a href="#workflow">How it works</a><a href="#architecture">Architecture</a><a href="https://versionbridge.pages.dev/demo.html" target="_blank" rel="noopener">Live workspace ↗</a></nav>
 <a class="button secondary small" href="/demo.html" target="_blank" rel="noopener">Open demo <span aria-hidden="true">↗</span></a></div></header>
 <main id="top">
 <section class="hero"><div class="grid-glow"></div><div class="shell hero-grid">
-<div class="intro"><div class="eyebrow"><i></i> AGENT RUSH / BLAST RADIUS ZERO</div>
+<div class="intro"><div class="eyebrow"><i></i> CODE REPAIR / VERIFIED BY EXECUTION</div>
 <h1>When dependencies break,<br><em>prove the fix.</em></h1>
 <p>Reproduce a supported failure, generate a scoped patch, and inspect the tests that prove the change. Explore Python, JavaScript, TypeScript, SQL, and compiled-language examples.</p>
 <div class="actions"><a href="/demo.html" target="_blank" rel="noopener" class="button primary">Run the demo <span aria-hidden="true">↗</span></a><a class="button secondary" href="https://github.com/Hari-Aditya-003/versionbridge-ai">View GitHub ↗</a></div>
@@ -39,9 +40,9 @@
 </section>
 <section class="shell section" id="architecture">
 <div class="section-index">02 <span>/</span> ARCHITECTURE</div><h2>Follow the work.</h2>
-<div class="cards"><article><span>01 / CONTROL PLANE</span><h3>Vultr Cloud Compute</h3><p>The web API queues work and stores evidence. A separate worker controls execution and holds the model credential.</p></article>
-<article><span>02 / PATCH AUTHOR</span><h3>Vultr Inference</h3><p>The configured coding model receives the failing test output and the relevant source. The server validates its proposed change.</p></article>
-<article><span>03 / EXECUTION</span><h3>Disposable Docker sandboxes</h3><p>Each baseline, verification, and probe runs in its own container. The workspace shows its ID and cleanup result.</p></article></div>
+<p class="architecture-lead">A shared verification pipeline. Cloud or private inference. Every accepted patch follows the same policy and execution gates.</p>
+<div data-workflow="guide"></div>
+<div class="architecture-notes"><p><b>01 · Reproduce.</b> Capture a real failure from a pinned project inside a fresh sandbox.</p><p><b>02 · Propose and validate.</b> Diagnose the fault, generate a bounded edit, and check its scope and syntax.</p><p><b>03 · Execute and inspect.</b> Rerun the tests, collect evidence, and leave the final application decision with the maintainer.</p></div>
 <div class="faq"><h3>V2: authored edits, independent checks.</h3><p>Diagnose failures across five tracks. Review model-authored Python edits, including a two-file migration, then inspect original tests and independent behavior checks. The workspace displays source impact, each model attempt and live system resources. Public runs use reviewed projects.</p><a class="button secondary small" href="https://github.com/Hari-Aditya-003/versionbridge-ai/blob/main/V2_IMPLEMENTATION.md">Read the V2 implementation ↗</a></div>
 <div class="faq"><h3>Measured on controlled examples.</h3>
 <p>GLM 5.3 Flash verified twelve repairs and rejected the seeded regression in the thirteen-profile model evaluation.
@@ -54,6 +55,6 @@ Every outcome includes its candidate patch, test output, and provider receipt.</
 <details><summary>Does it change my repository?</summary><p>The patch applies to a temporary copy. Download the diff and decide whether to apply it to your project.</p></details></div>
 </section>
 </main>
-<footer class="shell"><a class="brand" href="/"><img src="/mark.svg" alt="">VersionBridge<span>AI</span></a><a class="muted" href="/brand.png" target="_blank" rel="noopener">Brand artwork ↗</a><a href="https://lablab.ai/ai-hackathons/vultr-hackathon/">Vultr Agent Rush ↗</a></footer>
+<footer class="shell"><a class="brand" href="/"><img src="/mark.svg" alt="">VersionBridge<span>AI</span></a><a class="muted" href="/brand.png" target="_blank" rel="noopener">Brand artwork ↗</a><a href="https://github.com/Hari-Aditya-003/versionbridge-ai">Source &amp; documentation ↗</a></footer>
 </body>
 </html>

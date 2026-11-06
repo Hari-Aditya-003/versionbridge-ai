@@ -10,12 +10,13 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/style.css">
 <script src="/motion.js" defer></script>
+<script src="/workflow.js" defer></script>
 <script src="/app.js" defer></script>
 <script src="/resources.js" defer></script>
 </head>
 <body>
 <header><div class="nav shell"><a class="brand" href="/"><img src="/mark.svg" alt="">VersionBridge<span>AI</span></a>
-<nav aria-label="Demo"><a href="#workspace">Repair</a><a href="#containment">Containment</a><a href="#history">Run history</a></nav>
+<nav aria-label="Demo"><a href="#workspace">Repair</a><a href="#containment">Containment</a><a href="/#architecture" target="_blank" rel="noopener">Architecture ↗</a></nav>
 <a class="button secondary small" href="/">Project overview</a></div></header>
 <aside class="resource-dock" aria-label="Live system resources">
 <details id="resource-panel" open>
@@ -26,7 +27,6 @@
 <div><dt><span aria-hidden="true">▦</span> RAM</dt><dd id="resource-ram">—</dd></div>
 <div><dt><span aria-hidden="true">◈</span> CPU</dt><dd id="resource-cpu">—</dd></div>
 <div><dt><span aria-hidden="true">ϟ</span> CPU speed</dt><dd id="resource-speed">—</dd></div>
-<div><dt><span aria-hidden="true">♨</span> Temperature</dt><dd id="resource-temp">—</dd></div>
 <div><dt><span aria-hidden="true">▣</span> GPU</dt><dd id="resource-gpu">—</dd></div>
 <div><dt><span aria-hidden="true">▤</span> VRAM</dt><dd id="resource-vram">—</dd></div>
 </dl>
@@ -41,41 +41,51 @@
 <button class="button secondary" type="submit">Unlock workspace</button>
 <p id="access-status" role="status">Enter the operator token to access this private workspace.</p></form>
 </section>
-<section class="shell section" aria-label="Recent repair overview">
-<div class="cards"><article><p class="micro">RETAINED RUNS</p><h2 id="stat-runs">—</h2></article>
+<section class="shell section" aria-label="Workspace overview">
+<div class="cards"><article><p class="micro">WORKSPACE RUNS</p><h2 id="stat-runs">—</h2></article>
 <article><p class="micro">VERIFIED</p><h2 id="stat-verified">—</h2></article>
 <article><p class="micro">UNVERIFIED</p><h2 id="stat-unverified">—</h2></article></div>
 <p id="budget-note" class="muted">Loading workspace usage…</p>
 </section>
 <section class="shell section" id="workspace">
 <div class="section-index">01 <span>/</span> REPAIR WORKSPACE</div>
-<div class="section-head"><div><h2>Run your first repair.</h2><p>Choose a scoped repair across nine language and database environments, then inspect the actual before-and-after tests. The regression guard demonstrates a rejected patch.</p></div><span class="tag">BUNDLED EXAMPLE</span></div>
+<div class="section-head"><div><h2>Run your first repair.</h2><p>Choose a task, inspect its verification contract, and run it. Follow live container output, compare the tests, and save the scoped run files with their results.</p></div><span class="tag">REVIEWED SOURCE · REAL EXECUTION</span></div>
+<details class="live-workflow"><summary>Live execution workflow <span>Follow the actual run through the architecture</span></summary><div data-workflow="live"></div></details>
 <div class="workspace">
 <form id="source" class="source-form">
-<label for="profile">Repair profile</label>
-<select id="profile">
+<label for="profile">Repair profile <small>Choose a repair task. Each profile explains its source and checks.</small></label>
+<select id="profile" aria-label="Repair profile" aria-describedby="profile-description">
+<optgroup label="AI-authored migrations · recommended">
+<option value="v2-settings">Python · Pydantic settings migration</option>
+<option value="v2-collections" selected>Python · collections API migration</option>
+<option value="v2-multifile">Python · two-file import migration</option>
+</optgroup>
+<optgroup label="Reviewed Python examples">
 <option value="python" id="scoped-option" hidden disabled>Python · scoped function repair</option>
-<option value="v2-settings">V2 · open-ended Pydantic migration</option>
-<option value="v2-collections">V2 · open-ended collections migration</option>
-<option value="v2-multifile">V2 · two-file import migration</option>
-<option value="pandas" selected>pandas 2 · removed append API</option>
+<option value="pandas">pandas 2 · removed append API</option>
 <option value="settings">Pydantic 2 · settings import</option>
-<option value="billing">Python · invoice total bug</option>
-<option value="go">Go beta · pagination boundary</option>
-<option value="rust">Rust beta · inclusive limit</option>
-<option value="java">Java beta · role comparison</option>
-<option value="cpp">C++ beta · integer overflow</option>
-<option value="typescript">TypeScript beta · repair inventory field</option>
-<option value="javascript">JavaScript beta · enforce discount cap</option>
-<option value="postgresql">PostgreSQL beta · count paid orders</option>
-<option value="sqlite">SQLite beta · count paid orders</option>
-<option value="algorithm">Algorithm beta · binary search boundary</option>
-<option value="regression">pandas 2 · regression guard</option>
+<option value="billing">Python · invoice total</option>
+<option value="algorithm">Algorithm · binary search boundary</option>
+<option value="regression">Regression guard · reject a harmful patch</option>
+</optgroup>
+<optgroup label="Web and database examples">
+<option value="javascript">JavaScript · discount cap</option>
+<option value="typescript">TypeScript · inventory field</option>
+<option value="sqlite">SQLite · paid order totals</option>
+<option value="postgresql">PostgreSQL · paid order totals</option>
+</optgroup>
+<optgroup label="Compiled language examples">
+<option value="go">Go · pagination boundary</option>
+<option value="rust">Rust · inclusive limit</option>
+<option value="java">Java · role comparison</option>
+<option value="cpp">C++ · integer overflow</option>
+</optgroup>
 </select>
-<label for="repository">Public GitHub repository <small>Optional · leave blank for the bundled example</small></label>
+<div class="profile-guide"><span id="profile-kind" class="micro">AI-AUTHORED MIGRATION</span><p id="profile-description">Loading the profile contract…</p><p id="profile-checks" class="muted"></p></div>
+<div id="repository-fields"><label for="repository">Public GitHub repository <small>Optional · leave blank for the bundled example</small></label>
 <div><input id="repository" type="url" maxlength="220" placeholder="https://github.com/owner/project" disabled>
 <input id="ref" aria-label="Branch or commit" maxlength="128" placeholder="Default branch" disabled></div>
-<div id="python-target" hidden>
+</div><div id="python-target" hidden>
 <input id="filename" aria-label="Python source path" placeholder="src/example.py" maxlength="180" disabled>
 <input id="function" aria-label="Top-level function" placeholder="calculate_total" maxlength="80" disabled>
 </div>
@@ -87,8 +97,8 @@
 <div class="workspace-top"><span><i></i> <span id="project-title">pandas 2 · removed append API</span></span><button id="run" class="button primary small">▶ &nbsp;Run repair</button></div>
 <div class="workspace-body"><aside class="steps"><p class="micro">EXECUTION PLAN</p><ol><li><b>01</b><span>Reproduce failure<small>Run the original tests</small></span></li><li><b>02</b><span>Prepare patch<small>Propose a scoped repair</small></span></li><li><b>03</b><span>Verify result<small>Rerun the unchanged tests</small></span></li></ol></aside>
 <div class="terminal"><div class="terminal-head"><span>⌘ &nbsp; EXECUTION LOG</span><span id="state">READY</span></div><pre id="logs" tabindex="0">Choose a profile and run it to capture baseline and verification output.</pre></div></div>
-<section class="runtime" aria-labelledby="runtime-title"><div id="runtime-title" class="micro">SANDBOX ACTIVITY</div><div id="sandboxes" role="status">Containers appear here when a repair starts.</div></section>
-<div class="workspace-foot"><span id="status" role="status">Ready to start a sandbox run.</span><button class="button secondary small" id="cancel-run" hidden>Cancel run</button><button class="button secondary small" id="download" hidden>Download evidence ↓</button><button class="button secondary small" id="download-markdown" hidden>Markdown report ↓</button><button class="button secondary small" id="download-patch" hidden>Download patch ↓</button></div>
+<section class="runtime" aria-labelledby="runtime-title"><div class="runtime-heading"><div id="runtime-title" class="micro">SANDBOX ACTIVITY</div><button type="button" id="open-sandbox" class="button secondary small" disabled>Open sandbox ↗</button></div><div id="sandboxes" role="status">Containers appear here when a repair starts.</div><pre id="live-console" class="live-console" tabindex="0">Live stdout will appear as the container runs.</pre></section>
+<div class="workspace-foot"><span id="status" role="status">Ready to start a sandbox run.</span><button class="button secondary small" id="cancel-run" hidden>Cancel run</button><button class="button secondary small" id="download-txt" hidden>Save run files · TXT ↓</button><button class="button secondary small" id="download" hidden>Download evidence ↓</button><button class="button secondary small" id="download-markdown" hidden>Markdown report ↓</button><button class="button secondary small" id="download-patch" hidden>Download patch ↓</button></div>
 <details id="analysis-panel" hidden><summary>Diagnosis, source impact and model attempts</summary>
 <div class="analysis-body"><p id="category-result"></p><div id="candidate-history" class="candidate-history"></div>
 <div id="impact-graph" class="impact-graph"></div><pre id="analysis-evidence"></pre></div></details>
@@ -107,12 +117,15 @@
 05  Deadline and teardown
 06  Kernel memory cap</pre></div>
 </section>
-<section class="shell section" id="history">
-<div class="section-index">03 <span>/</span> RUN HISTORY</div>
-<div class="section-head"><div><h2>Review prior repairs.</h2><p>Open a recorded run to inspect and export its evidence.</p></div><label class="micro">STATUS <select id="history-filter"><option>All</option><option>Verified</option><option>Unverified</option><option>Rejected</option><option>Inconclusive</option><option>Contained</option></select></label></div>
-<div id="history-list" class="workspace history-list" aria-live="polite">Loading run history…</div>
-</section>
 </main>
-<footer class="shell"><a class="brand" href="/"><img src="/mark.svg" alt="">VersionBridge<span>AI</span></a><a class="muted" href="/brand.png" target="_blank" rel="noopener">Brand artwork ↗</a><a href="https://lablab.ai/ai-hackathons/vultr-hackathon/">Vultr Agent Rush ↗</a></footer>
+<dialog id="sandbox-dialog" class="sandbox-dialog" aria-labelledby="sandbox-dialog-title">
+<div class="inspector-head"><div><span class="micro">READ-ONLY EXECUTION INSPECTOR</span><h2 id="sandbox-dialog-title">Inside the sandbox.</h2><p>Inspect scoped source snapshots, live output, and recorded container details.</p></div><button type="button" id="close-sandbox" class="button secondary small">Close ✕</button></div>
+<div class="inspector-tabs" role="tablist" aria-label="Sandbox views"><button type="button" role="tab" id="tab-console" aria-controls="view-console" aria-selected="true" data-sandbox-tab="console">Console</button><button type="button" role="tab" id="tab-files" aria-controls="view-files" aria-selected="false" data-sandbox-tab="files">Run files</button><button type="button" role="tab" id="tab-details" aria-controls="view-details" aria-selected="false" data-sandbox-tab="details">Container details</button></div>
+<label class="inspector-container">Container <select id="sandbox-select" aria-label="Inspect container"></select></label>
+<section id="view-console" role="tabpanel" aria-labelledby="tab-console"><pre id="sandbox-console" tabindex="0">Waiting for container output…</pre></section>
+<section id="view-files" role="tabpanel" aria-labelledby="tab-files" hidden><label>Source snapshot <select id="sandbox-file" aria-label="Inspect run file"></select></label><pre id="sandbox-file-content" tabindex="0">Scoped run files appear here after intake.</pre></section>
+<section id="view-details" role="tabpanel" aria-labelledby="tab-details" hidden><pre id="sandbox-details" tabindex="0"></pre></section>
+</dialog>
+<footer class="shell"><a class="brand" href="/"><img src="/mark.svg" alt="">VersionBridge<span>AI</span></a><a class="muted" href="/brand.png" target="_blank" rel="noopener">Brand artwork ↗</a><a href="https://github.com/Hari-Aditya-003/versionbridge-ai">Source &amp; documentation ↗</a></footer>
 </body>
 </html>
