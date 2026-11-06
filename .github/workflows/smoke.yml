@@ -10,6 +10,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build disposable runtime
         run: docker build -t versionbridge-sandbox:1 -f Sandbox.Dockerfile .
+      - name: Verify model routing without paid inference
+        run: python3 -m unittest test_model_routing.py
       - name: Verify repair, evidence and containment
         run: python3 smoke.py
       - name: Verify authenticated API and separate worker
