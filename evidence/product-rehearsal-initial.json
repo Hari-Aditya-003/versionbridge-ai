@@ -1,0 +1,1 @@
+{"date":"2026-11-07","case":"Immediate run after initial workspace navigation","observed":"Run was enabled while configuration was still loading; request used the inline endpoint and was rejected by the external-worker deployment.","disposition":"Block run and containment controls until configuration is ready; repeat the browser rehearsal before recording.","model_requests":0}
