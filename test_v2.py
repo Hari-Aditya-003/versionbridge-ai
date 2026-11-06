@@ -187,6 +187,16 @@ class PatchTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             bind_proposal(self.root, proposal, ["app/core.py"], source_sha)
 
+    def test_single_line_migration_inherits_original_indentation(self):
+        from patch_engine import bind_proposal, apply_manifest, snapshot_hash
+        text="def f():\n    from collections import Mapping\n    return Mapping\n"
+        (self.root/"app/core.py").write_text(text)
+        proposal={"diagnosis":"Move import.","edits":[{"path":"app/core.py","start_line":2,"end_line":2,
+                    "new_text":"from collections.abc import Mapping\n","reason":"Migrate removed API."}]}
+        bound=bind_proposal(self.root,proposal,["app/core.py"],snapshot_hash(self.root,["app/core.py"]))
+        self.assertEqual(bound["edits"][0]["new_text"],"    from collections.abc import Mapping\n")
+        self.assertIn("collections.abc",apply_manifest(self.root,bound,["app/core.py"])["files"]["app/core.py"])
+
     def test_unterminated_export_applies_with_git(self):
         import subprocess
         from patch_engine import apply_manifest, snapshot_hash
