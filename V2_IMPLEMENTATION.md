@@ -14,7 +14,7 @@ The new migrations use model-authored edit spans and text, with no permitted-rep
 | M3 language adapters | Explicit command/deadline/build-space contracts for nine existing environments; existing compiler/DB positive cases remain exercised. | General Node/TS/SQL/Go/Rust/Java/C++ dependency preparation and repository adapters remain unimplemented. Unsupported languages are rejected. |
 | M4 multi-file | Up to four application files, eight edits, 128 affected lines, 16 KB replacement text. Two-file migration passes independent checks. Pristine source per attempt; no test or policy edits. | Arbitrary multi-file application to unreviewed public repositories is disabled. |
 | M5 independent checks | Read-only supervisor runs source in a child and compares behavior outside that child. Four settings checks, 101 mapping checks, 102 cross-file checks; seed 7319. Semantic shortcut and forged-verdict negatives tested. | No general generated-test/mutation-testing engine; constructed checks cannot establish full semantic correctness or security. |
-| M6 evidence/UX | Source-grounded AST symbols/import/call edges with exact/heuristic labels; category, model attempt history, diff, independent results, atomic SQLite candidate records, Markdown/JSON export. Live resource panel. | Static Python impact edges cover allowed files, not whole-program resolved graphs. Model critics are advisory infrastructure, disabled by default. |
+| M6 evidence/UX | Source-grounded AST symbols/import/call edges with exact/heuristic labels; category, model attempt history, diff, independent results, atomic SQLite candidate records, TXT/Markdown/JSON export, live output and source/container inspector. Live resource panel. | Static Python impact edges cover allowed files, not whole-program resolved graphs. Model critics are advisory infrastructure, disabled by default. |
 | M7 broader deployment | Existing HTTPS deployment, separate web/worker users, optional single-workspace bearer token, daily submission/inference caps retained. | Organization roles, per-user ownership, private GitHub App access, automatic PR approval and stronger arbitrary-code isolation remain future work. |
 
 ## Trust boundary
@@ -38,9 +38,9 @@ V1 and V2 evidence must be reported separately. The old 13-profile benchmark use
 
 ## Resource panel
 
-`GET /api/telemetry` (also `/api/v1/telemetry`) follows workspace authentication. The workspace polls every three seconds and pauses polling when hidden. Host CPU uses sampled counters on Linux and process estimates on macOS. RAM, available CPU frequency, accessible temperature sensors, NVIDIA utilization/VRAM and fresh trusted Dell telemetry are shown with provenance. Stale/offline values are cleared.
+`GET /api/telemetry` (also `/api/v1/telemetry`) follows workspace authentication. The workspace polls every three seconds and pauses polling when hidden. Host CPU uses sampled counters on Linux and process estimates on macOS. RAM, available CPU frequency, NVIDIA utilization/VRAM and fresh trusted Dell telemetry are shown with provenance. The UI omits the temperature row; backend temperature readings remain available for private GPU admission checks. Stale/offline values are cleared.
 
-RAM and CPU refer to the application host. A Dell GPU monitor can supply the separate inference GPU readings. Vultr Serverless Inference GPU utilization, VRAM and temperature are not exposed by its inference API and are shown unavailable. The shared-CPU VM has no NVIDIA sensor; unavailable temperature readings are not synthesized. Figures are whole-host measurements, not per-job attribution or browser-device telemetry.
+RAM and CPU refer to the application host. A Dell GPU monitor can supply the separate inference GPU readings. Vultr Serverless Inference GPU utilization and VRAM are not exposed by its inference API and are shown unavailable. The shared-CPU VM has no NVIDIA sensor. Unavailable readings are not synthesized. Figures are whole-host measurements, not per-job attribution or browser-device telemetry.
 
 ```sh
 python3 gpu_monitor.py dell-ts --output data/gpu-status.json
@@ -60,9 +60,12 @@ Quiet mode still requires fresh readings, temperature below 65 C, utilization be
 docker build -t versionbridge-sandbox:1 -f Sandbox.Dockerfile .
 python3 smoke.py
 python3 api_smoke.py
-python3 -m unittest test_v2 test_v2_sandbox -v
+python3 -m unittest test_v2 test_v2_sandbox test_experience -v
 node --check web/app.js
 node --check web/resources.js
+node test_workflow.cjs
+node test_edge.mjs
+python3 version_assets.py --check
 # Live model evaluation consumes inference allowance:
 python3 evaluate_v2.py --models glm-5.3-flash deepseek-v4.1-flash-1017 --output v2-evaluation.json
 ```

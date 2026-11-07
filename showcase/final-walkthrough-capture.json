@@ -1,0 +1,124 @@
+{
+  "captured_on": "2026-11-07",
+  "application_url": "https://versionbridge.pages.dev/demo.html",
+  "capture_type": "Browser screenshots of actual live UI interactions",
+  "frame_count": 561,
+  "duration_seconds": 104.871,
+  "audio": false,
+  "editing": "Selected live tutorial runs. Static pauses shortened to at most two seconds between captured frames. Responsive viewports letterboxed without cropping. Execution results unchanged.",
+  "scenes": [
+    {
+      "label": "VersionBridge AI - verified code repair",
+      "start": 0.0,
+      "end": 4.103
+    },
+    {
+      "label": "Explore the animated architecture",
+      "start": 4.103,
+      "end": 11.09
+    },
+    {
+      "label": "Validate scope, syntax and source identity",
+      "start": 11.09,
+      "end": 15.399
+    },
+    {
+      "label": "Verify in fresh containers with independent checks",
+      "start": 15.399,
+      "end": 21.307
+    },
+    {
+      "label": "Profiles explain each source, language and check",
+      "start": 21.307,
+      "end": 27.285
+    },
+    {
+      "label": "Choose the two-file migration and read its verification contract",
+      "start": 27.285,
+      "end": 31.756
+    },
+    {
+      "label": "Run the real baseline, model proposal and verification",
+      "start": 31.756,
+      "end": 35.11
+    },
+    {
+      "label": "The workflow follows actual run events",
+      "start": 35.11,
+      "end": 41.97
+    },
+    {
+      "label": "Open the sandbox console and inspect the reproduced failure",
+      "start": 41.97,
+      "end": 46.044
+    },
+    {
+      "label": "The candidate passes the original test suite",
+      "start": 46.044,
+      "end": 49.511
+    },
+    {
+      "label": "Inspect the original application and test snapshots",
+      "start": 49.511,
+      "end": 52.634
+    },
+    {
+      "label": "Compare the actual candidate file",
+      "start": 52.634,
+      "end": 57.478
+    },
+    {
+      "label": "Review the image, command, limits and cleanup result",
+      "start": 57.478,
+      "end": 61.462
+    },
+    {
+      "label": "Inspect passing tests and the verified two-file patch",
+      "start": 61.462,
+      "end": 67.73
+    },
+    {
+      "label": "Save scoped run files, console output and results as TXT",
+      "start": 67.73,
+      "end": 72.684
+    },
+    {
+      "label": "Run the regression guard with one bounded attempt",
+      "start": 72.684,
+      "end": 80.644
+    },
+    {
+      "label": "Verification checks behavior beyond the first failure",
+      "start": 80.644,
+      "end": 84.02
+    },
+    {
+      "label": "The regression is rejected and no verified patch is exported",
+      "start": 84.02,
+      "end": 88.296
+    },
+    {
+      "label": "Run real network, filesystem, timeout and memory probes",
+      "start": 88.296,
+      "end": 97.125
+    },
+    {
+      "label": "Containment checks pass and the containers are removed",
+      "start": 97.125,
+      "end": 100.578
+    },
+    {
+      "label": "Live whole-host resources without unavailable temperature readings",
+      "start": 100.578,
+      "end": 104.871
+    }
+  ],
+  "excluded_takes": [
+    {
+      "label": "A repair must preserve behavior outside the initial failure",
+      "reason": "First candidate was rejected, then the optional fallback provider returned an invalid structured response."
+    }
+  ],
+  "final_state": "CONTAINED",
+  "browser_errors": []
+}

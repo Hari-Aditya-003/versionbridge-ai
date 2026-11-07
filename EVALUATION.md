@@ -75,8 +75,19 @@ The recording shortens static pauses between captured frames. It preserves the a
 
 ## V2 technical report implementation
 
-The release adds 28 V2 unit and real-Docker methods to the retained 23 V1 acceptance methods. The separate-worker HTTP suite now has 24 checks. New cases include five-track routing, provider catalogs/assets, stale/unsafe manifests, independent semantic regressions, runner/protocol protections and live telemetry authorization.
+The release adds 28 V2 unit and real-Docker methods to the retained 23 V1 acceptance methods. At the initial V2 checkpoint, the separate-worker HTTP suite had 24 checks; the current product release expands it to 27. New cases include five-track routing, provider catalogs/assets, stale/unsafe manifests, independent semantic regressions, runner/protocol protections and live telemetry authorization.
 
 Both live backends verified the three new no-enum migration tasks. The cloud cascade used DeepSeek after a GLM rejection for settings; the Dell 1.5B model passed all three final cases on its first attempt. Earlier rejected trials are retained. See [V2 implementation and live evidence](V2_IMPLEMENTATION.md) for task scope and remaining evaluation gaps.
 
 Measured statement coverage of the listed V2/shared core modules was 85.7% (582 of 679 statements); this is not whole-repository coverage. [Reproducible release-check receipt](evidence/v2-release-checks-2026-11-06.json).
+
+
+## Product release checks on November 7, 2026
+
+The current suite contains **56 Python test methods** (23 V1, 28 V2 and five streaming/export methods) and **27 HTTP integration checks**. Real-Docker streaming checks observe output before execution finishes; export checks cover bounded snapshots, chunk boundaries and legacy output. Node checks exercise event-driven workflow states and fixed-origin proxy routing. Content-version checks prevent stale browser assets.
+
+The final live walkthrough verified a two-file migration with GLM 5.3 Flash: the original test changed from failed to passed, with all 102 independent checks passing. A separate seeded regression was rejected by the original suite. Containment passed its network, filesystem, privilege, timeout, memory-cap and cleanup checks. All eight recorded containers across those three tutorial jobs were removed. The live inspector was checked at a 390-pixel viewport without page overflow.
+
+[Product QA receipt](evidence/product-live-qa-2026-11-07.json) · [Downloaded source/output/results bundle](evidence/walkthrough-run.txt) · [Silent walkthrough and editing record](DEMO.md)
+
+An earlier optional fallback response failed structured validation. That take failed closed and is disclosed in the capture metadata; it is not counted as a verified repair. These tutorial runs and fixture suites do not establish universal language or repository coverage.

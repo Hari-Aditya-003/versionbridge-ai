@@ -4,7 +4,8 @@ The HTTP service accepts validated requests and stores queued work. A separate w
 
 ```mermaid
 flowchart LR
-    Browser[Browser workspace] --> HTTPS[Caddy HTTPS]
+    Browser[Browser workspace] --> Edge[versionbridge.pages.dev · fixed-origin HTTPS proxy]
+    Edge --> HTTPS[Caddy HTTPS]
     HTTPS --> Web[Unprivileged HTTP API]
     Web --> DB[(SQLite jobs and evidence)]
     DB --> Worker[Execution worker]
@@ -23,6 +24,16 @@ flowchart LR
 The [V2 implementation map](V2_IMPLEMENTATION.md) records the full scope. `v2_pipeline.py` performs immutable intake, baseline/localization, deterministic category routing, sequential synthesis, static policy validation, fresh original/independent execution, and evidence publication. Vultr and Ollama share provider contracts, policy, verifier and reports. Trusted code binds model-proposed spans to checksums; source and models never decide eligibility.
 
 `patch_engine.py` supports bounded Python multi-location and multi-file edits from the pristine original. `independent_tests.py` owns the behavior verdict while `independent_worker.py` imports application code only in a child. The source graph labels exact import syntax and heuristic calls. `history.py` records candidate attempts atomically. Existing V1 profiles and endpoints remain available.
+
+## Live workflow and run inspector
+
+![Final workflow](showcase/final-architecture.png)
+
+The homepage node canvas illustrates the architecture and labels itself as a guide. Select a node to read its responsibility or pause the animation. The workspace graph instead advances from recorded job events: source intake → baseline → diagnosis → cloud or private model → patch policy → fresh verification → evidence → maintainer review. Only the selected backend is used for each attempt. A rejected or incomplete candidate never becomes a verified repair.
+
+The worker publishes bounded stdout chunks while each container is running. The browser combines these with lifecycle records in the Console, Run files and Container details views. Scoped original/candidate snapshots are limited to 16 files and 64 KiB per phase. TXT export includes those files, captured output, commands, results and changes. Internal evidence retention remains available through the API; the prior-run history section is removed from the UI.
+
+The public address uses a free Cloudflare Pages proxy. It forwards to one fixed HTTPS origin without caching application responses or accepting a client-chosen upstream. Legacy page URLs redirect to the clean address; backend API routes remain reachable.
 
 ## Processes and permissions
 
@@ -72,6 +83,7 @@ Existing `/api/` routes also accept the `/api/v1/` prefix.
 | `GET /api/budget` | Application inference reservations |
 | `GET /api/runs/ID/report.json` | Download recorded events |
 | `GET /api/runs/ID/report.md` | Download a Markdown report |
+| `GET /api/runs/ID/report.txt` | Download scoped source files, captured output and results |
 | `GET /api/runs/ID/patch` | Export a verified patch |
 
 Private deployments can require a bearer access token on API routes. Configuration and health remain readable without a token. This is a single-workspace operator gate. Organizations, per-user ownership, private GitHub authentication, and automatic PR creation require further development.

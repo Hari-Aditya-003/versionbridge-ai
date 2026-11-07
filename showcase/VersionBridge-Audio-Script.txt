@@ -1,0 +1,17 @@
+VersionBridge AI helps developers repair broken code with evidence they can inspect.
+
+A dependency upgrade can remove an API, change a type, or break behavior across several files. An AI-generated patch may look convincing and still introduce a regression. VersionBridge was built to make that repair process reproducible, visible, and reviewable.
+
+The homepage explains the project and presents an animated architecture. Select a node to understand its role, from source intake and failure diagnosis to patch policy, verification, and maintainer review. This animation is a guide. Inside the workspace, the live workflow follows real execution events.
+
+Start by choosing a repair profile. Each profile explains its source, permitted changes, and verification checks. AI-authored Python migrations support scoped edits, including a two-file import migration. Other reviewed examples cover Python, JavaScript, TypeScript, Go, Rust, Java, C++, SQLite, PostgreSQL, and an algorithm boundary case. These are supported examples, rather than a promise to repair every repository.
+
+When you run a repair, VersionBridge first reproduces the failure inside a fresh container. It then builds relevant context and asks a registered model for a candidate. Cloud inference and the optional private Dell backend share the same patch policy and verification rules. A rejected candidate can trigger one bounded retry.
+
+Sandbox activity shows actual container output as it arrives. Open the sandbox inspector to examine the console, compare original and candidate files, and review the container command, limits, image, and cleanup result.
+
+The candidate is checked against the original tests. Supported V2 migrations also run independent behavior checks. A regression is rejected even when it fixes the first failure. The Containment Lab demonstrates network restrictions, filesystem protection, memory limits, deadlines, and container removal.
+
+After execution, save a TXT run bundle containing the scoped files, output, changes, and results. JSON evidence, Markdown reports, and verified patches are also available. The resource panel shows whole-host RAM, CPU, and accessible GPU readings without inventing unavailable measurements.
+
+VersionBridge does not automatically apply or merge a patch. A passing result means verified against its listed checks. You inspect the evidence and make the final decision.

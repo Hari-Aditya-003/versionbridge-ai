@@ -1,0 +1,316 @@
+{
+  "checked_on": "2026-11-07",
+  "public_application": "https://versionbridge.pages.dev",
+  "scope": "Selected real public tutorial runs; not universal repository repair coverage.",
+  "automated_release_checks": {
+    "python_test_methods": 56,
+    "http_integration_checks": 27,
+    "workflow_transitions": "passed",
+    "fixed_origin_proxy": "passed",
+    "asset_versions": "passed",
+    "prior_ci_commit": "fc78af5943518948c71f7fef6fcde5061351e988",
+    "prior_ci_outcome": "success"
+  },
+  "runs": {
+    "two_file_repair": {
+      "id": "bd5db3d7c45545eb9620ffe7b2b0ce09",
+      "events_url": "https://versionbridge.pages.dev/api/runs/bd5db3d7c45545eb9620ffe7b2b0ce09/report.json",
+      "terminal_event": {
+        "event": "result",
+        "recorded_at": 1794001752.330577,
+        "id": "bd5db3d7c45545eb9620ffe7b2b0ce09",
+        "profile": "v2-multifile",
+        "provider": "Vultr Serverless Inference",
+        "diagnosis": "Python 3.10+ removed Mapping from collections; both modules import it from there. Replace with collections.abc.Mapping.",
+        "attempt": 1,
+        "inference": {
+          "requested_model": "glm-5.3-flash",
+          "served_model": "glm-5.3-flash",
+          "model_substitution": false,
+          "identity_verified": true,
+          "provider": "Vultr Serverless Inference",
+          "completion_id": "chatcmpl-7840a21a-8f04-4c30-925d-804c8bc6d5ac",
+          "tokens": {
+            "prompt_tokens": 1200,
+            "completion_tokens": 129,
+            "total_tokens": 1329
+          },
+          "latency_ms": 888.35,
+          "budget": {
+            "reservation_id": 36,
+            "reserved_usd": 0.034566
+          }
+        },
+        "selection": {
+          "model": "glm-5.3-flash",
+          "provider": "vultr",
+          "categories": [
+            "api",
+            "algorithm"
+          ],
+          "reason": "Evidence-backed baseline; no category holdout promotion yet.",
+          "attempt": 1
+        },
+        "classification": {
+          "categories": [
+            "api",
+            "algorithm"
+          ],
+          "matches": [
+            {
+              "category": "api",
+              "evidence": "ImportError",
+              "path": "app/types.py",
+              "basis": "deterministic_signature"
+            },
+            {
+              "category": "algorithm",
+              "evidence": "assert normalize([{'id': 2}, None]) ==",
+              "path": "app/types.py",
+              "basis": "deterministic_signature"
+            }
+          ],
+          "confidence_source": "matched signatures",
+          "universal_guards": [
+            "patch_policy",
+            "original_test_inventory",
+            "independent_checks_when_available",
+            "sandbox_cleanup"
+          ],
+          "narrow_scope": false
+        },
+        "source_sha": "975f54654f1ac84e337f84bee39557802ff78a499e0c7d0aaf438ade85d07f40",
+        "image_digest": "sha256:fbbefae16ff6881f8a442ce1f8d87c4a03c9edc919c3a48f0a12119df8b51c98",
+        "snapshot_sha256": "671db9b86b2bfe3a7dc66c8747d0017e5d01b351cee4d93f0fc5fdca4774e3a9",
+        "execution_command": [
+          "python",
+          "-I",
+          "/opt/versionbridge/pytest_runner.py"
+        ],
+        "cleanup_verified": true,
+        "tests_sha256": "8bbf8e0d595cd6ff3c9e2db35668abe432349257f2cbc3ae51c1d95d38fdf148",
+        "commit": null,
+        "changed_paths": [
+          "app/service.py",
+          "app/types.py"
+        ],
+        "diff": "--- a/app/service.py\n+++ b/app/service.py\n@@ -1,4 +1,4 @@\n def normalize(rows):\n-    from collections import Mapping\n+    from collections.abc import Mapping\n     from app.types import is_record\n     return [dict(row) for row in rows if isinstance(row, Mapping) and is_record(row)]\n--- a/app/types.py\n+++ b/app/types.py\n@@ -1,3 +1,3 @@\n def is_record(value):\n-    from collections import Mapping\n+    from collections.abc import Mapping\n     return isinstance(value, Mapping)\n",
+        "patch_sha256": "732b496aa277643862441bc93459d00a18e21bfb634f62d28780ef21a9799b89",
+        "candidate_sha": "b107cd3536a4bd39224db836489dac6c7a74eb04510dfdf2bf2efcf92767a088",
+        "edit_manifest": {
+          "schema_version": 1,
+          "source_sha": "975f54654f1ac84e337f84bee39557802ff78a499e0c7d0aaf438ade85d07f40",
+          "diagnosis": "Python 3.10+ removed Mapping from collections; both modules import it from there. Replace with collections.abc.Mapping.",
+          "edits": [
+            {
+              "path": "app/service.py",
+              "start_line": 2,
+              "end_line": 2,
+              "new_text": "    from collections.abc import Mapping\n",
+              "reason": "Use collections.abc.Mapping (collections alias removed in Python 3.10+).",
+              "old_sha256": "bc66655fab69d7b00118fbbbc17129d6b06d9072d6e9ca2760d119502b5d57fd"
+            },
+            {
+              "path": "app/types.py",
+              "start_line": 2,
+              "end_line": 2,
+              "new_text": "    from collections.abc import Mapping\n",
+              "reason": "Use collections.abc.Mapping (collections alias removed in Python 3.10+).",
+              "old_sha256": "bc66655fab69d7b00118fbbbc17129d6b06d9072d6e9ca2760d119502b5d57fd"
+            }
+          ]
+        },
+        "manifest_binding": "Trusted source and span hashes; single-line edits inherit original indentation. Model supplies paths, spans and replacement text.",
+        "static_checks": [
+          {
+            "path": "app/service.py",
+            "check": "python_ast_policy",
+            "passed": true,
+            "scope": "conservative syntax and structural checks; not proof of safety"
+          },
+          {
+            "path": "app/types.py",
+            "check": "python_ast_policy",
+            "passed": true,
+            "scope": "conservative syntax and structural checks; not proof of safety"
+          }
+        ],
+        "baseline_exit_code": 1,
+        "verification_exit_code": 0,
+        "baseline_tests": {
+          "test_service.py::test_normalize": "failed"
+        },
+        "verification_tests": {
+          "test_service.py::test_normalize": "passed"
+        },
+        "independent_checks": {
+          "passed": true,
+          "checks": 102,
+          "seed": 7319,
+          "suite": "v2-multifile",
+          "protocol": "behavior-supervisor-v2",
+          "provenance": "read-only supervisor; source executed only in isolated child",
+          "suite_sha256": "7bf050dfe94b8329017a1a4d59dab1021da7925994522df67fa991646092ce63"
+        },
+        "before": "F                                                                        [100%]\n=================================== FAILURES ===================================\n________________________________ test_normalize ________________________________\ntest_service.py:3: in test_normalize\n    assert normalize([{'id': 2}, None]) == [{'id': 2}]\napp/service.py:2: in normalize\n    from collections import Mapping\nE   ImportError: cannot import name 'Mapping' from 'collections' (/usr/local/lib/python3.12/collections/__init__.py)\n=========================== short test summary info ============================\nFAILED test_service.py::test_normalize - ImportError: cannot import name 'Map...\n1 failed in 0.02s\n",
+        "after": ".                                                                        [100%]\n1 passed in 0.01s\n",
+        "verification_scope": "original suite plus independent checks",
+        "rejection_reason": null,
+        "eligibility": "verified_by_checks",
+        "human_decision": "pending maintainer review",
+        "elapsed_ms": 2647,
+        "controller_revision": "9cecdcd48379453fb3d671bb274d634f886797c5"
+      },
+      "candidate_event": "result",
+      "provider": "Vultr Serverless Inference",
+      "model_receipt": {
+        "requested_model": "glm-5.3-flash",
+        "served_model": "glm-5.3-flash",
+        "model_substitution": false,
+        "identity_verified": true,
+        "provider": "Vultr Serverless Inference",
+        "completion_id": "chatcmpl-7840a21a-8f04-4c30-925d-804c8bc6d5ac",
+        "tokens": {
+          "prompt_tokens": 1200,
+          "completion_tokens": 129,
+          "total_tokens": 1329
+        },
+        "latency_ms": 888.35,
+        "budget": {
+          "reservation_id": 36,
+          "reserved_usd": 0.034566
+        }
+      },
+      "baseline_tests": {
+        "test_service.py::test_normalize": "failed"
+      },
+      "verification_tests": {
+        "test_service.py::test_normalize": "passed"
+      },
+      "independent_checks": {
+        "passed": true,
+        "checks": 102,
+        "seed": 7319,
+        "suite": "v2-multifile",
+        "protocol": "behavior-supervisor-v2",
+        "provenance": "read-only supervisor; source executed only in isolated child",
+        "suite_sha256": "7bf050dfe94b8329017a1a4d59dab1021da7925994522df67fa991646092ce63"
+      },
+      "changed_paths": [
+        "app/service.py",
+        "app/types.py"
+      ],
+      "sandbox_count": 3,
+      "all_sandboxes_removed": true,
+      "streamed_output_chunks": 6,
+      "file_snapshot_phases": [
+        "Original",
+        "Candidate 1"
+      ]
+    },
+    "regression_guard": {
+      "id": "c19d1b5238f84db9907ec2de5ee18600",
+      "events_url": "https://versionbridge.pages.dev/api/runs/c19d1b5238f84db9907ec2de5ee18600/report.json",
+      "terminal_event": {
+        "event": "error",
+        "message": "Candidate rejected. The verification gate did not pass.",
+        "outcome": "unverified"
+      },
+      "candidate_event": "rejected",
+      "provider": "Vultr Serverless Inference \u00b7 glm-5.3-flash",
+      "model_receipt": {
+        "requested_model": "glm-5.3-flash",
+        "served_model": "glm-5.3-flash",
+        "model_substitution": false,
+        "identity_verified": true,
+        "provider": "Vultr Serverless Inference",
+        "completion_id": "chatcmpl-faf9775b-c170-4ca1-bbd6-5637734f01b1",
+        "tokens": {
+          "prompt_tokens": 369,
+          "completion_tokens": 70,
+          "total_tokens": 439
+        },
+        "latency_ms": 2020.66,
+        "budget": {
+          "reservation_id": 39,
+          "reserved_usd": 0.023001
+        }
+      },
+      "baseline_tests": {
+        "test_regression_pipeline.py::test_standard_frame_migration": "failed",
+        "test_regression_pipeline.py::test_preserve_adapter_audit_metadata": "passed"
+      },
+      "verification_tests": {
+        "test_regression_pipeline.py::test_standard_frame_migration": "passed",
+        "test_regression_pipeline.py::test_preserve_adapter_audit_metadata": "failed"
+      },
+      "independent_checks": null,
+      "changed_paths": null,
+      "sandbox_count": 2,
+      "all_sandboxes_removed": true,
+      "streamed_output_chunks": 7,
+      "file_snapshot_phases": [
+        "Original",
+        "Candidate 1"
+      ]
+    },
+    "containment": {
+      "id": "9a728892a9a94262a6f784f386e7c5a5",
+      "events_url": "https://versionbridge.pages.dev/api/runs/9a728892a9a94262a6f784f386e7c5a5/report.json",
+      "terminal_event": {
+        "event": "contained",
+        "message": "Containment checks passed"
+      },
+      "candidate_event": null,
+      "provider": null,
+      "model_receipt": null,
+      "baseline_tests": null,
+      "verification_tests": null,
+      "independent_checks": null,
+      "changed_paths": null,
+      "sandbox_count": 3,
+      "all_sandboxes_removed": true,
+      "streamed_output_chunks": 5,
+      "file_snapshot_phases": []
+    }
+  },
+  "mobile_inspector": {
+    "viewport_width": 390,
+    "dialog_left": 18,
+    "dialog_right": 357,
+    "page_horizontal_overflow": false,
+    "temperature_row": false,
+    "run_history_section": false,
+    "visible_event_branding": false
+  },
+  "video": {
+    "path": "showcase/versionbridge-final-walkthrough.mp4",
+    "duration_seconds": 105.067,
+    "dimensions": [
+      1600,
+      900
+    ],
+    "audio_streams": 0,
+    "full_decode": "passed",
+    "visual_review": "Eight extracted frames inspected across architecture, profile, console, files, regression and containment scenes."
+  },
+  "txt_export": {
+    "path": "evidence/walkthrough-run.txt",
+    "bytes": 6612,
+    "sha256": "b1456d9fcd83d9fabcd73e01432b624e6a2056b03d82d0fd806b0423075dbe01"
+  },
+  "issues_found_and_disposition": [
+    {
+      "issue": "Run button could be clicked before configuration loaded.",
+      "disposition": "Controls remain disabled until configuration is ready; subsequent live rehearsal passed."
+    },
+    {
+      "issue": "Cached stylesheet could leave the new workflow unstyled.",
+      "disposition": "CSS and JS now use content-versioned URLs; live styled architecture confirmed."
+    },
+    {
+      "issue": "An earlier two-attempt regression take reached an invalid optional fallback response.",
+      "disposition": "Failed closed, no verified patch. Excluded from tutorial and disclosed in capture metadata; a subsequent one-attempt regression was rejected by the actual tests."
+    }
+  ]
+}

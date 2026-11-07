@@ -1,16 +1,16 @@
 # VersionBridge AI
 
-[Live Vultr workspace](https://versionbridge.pages.dev/demo.html) · [Project showcase](https://hari-aditya-003.github.io/versionbridge-ai/) · [Recorded live demo](https://hari-aditya-003.github.io/versionbridge-ai/demo.html) · [Architecture](ARCHITECTURE.md) · [Evaluation](EVALUATION.md) · [Deployment](DEPLOYMENT.md)
+[Live workspace](https://versionbridge.pages.dev/demo.html) · [Project showcase](https://hari-aditya-003.github.io/versionbridge-ai/) · [Recorded live demo](https://hari-aditya-003.github.io/versionbridge-ai/demo.html) · [Architecture](ARCHITECTURE.md) · [Evaluation](EVALUATION.md) · [Deployment](DEPLOYMENT.md)
 
 VersionBridge reproduces a supported code failure in Docker, proposes a scoped repair, and reruns the same tests in a fresh container. Review the patch, individual test outcomes, model receipt, and sandbox lifecycle before exporting the change.
 
-The release includes a persistent job queue, browser refresh recovery, cancellation, an optional workspace access token, project metadata inspection, a usage dashboard, and downloadable JSON, Markdown, and patch artifacts. The HTTP service and execution worker can run under separate OS users. Only the worker needs Docker access and inference credentials.
+The release includes a persistent job queue, browser refresh recovery, cancellation, an optional workspace access token, project metadata inspection, a usage dashboard, and downloadable TXT, JSON, Markdown, and verified patch artifacts. The HTTP service and execution worker can run under separate OS users. Only the worker needs Docker access and inference credentials.
 
 ## V2 update
 
 The [technical blueprint implementation checklist](V2_IMPLEMENTATION.md) maps shipped behavior, live evidence and remaining boundaries. Three additional reviewed Python migrations use model-authored source edits without a replacement enum, including a two-file migration. The shared pipeline adds diagnostic routing, catalog-checked providers, bounded model fallback, trusted manifest hashes, independent behavior verification and source impact/attempt inspection.
 
-The workspace includes a live resource panel for host RAM/CPU, available clock/temperature readings, and accessible local or trusted Dell GPU sensors. Serverless inference hardware readings are explicitly unavailable. Readings refresh every three seconds and identify their source.
+The workspace includes a live resource panel for host RAM/CPU, available clock readings, and accessible local or trusted Dell GPU sensors. Serverless inference hardware readings are explicitly unavailable. Readings refresh every three seconds and identify their source.
 
 ## Run locally
 
@@ -47,12 +47,21 @@ These language examples are scoped, bundled repair profiles. General projects, d
 ```sh
 python3 smoke.py
 python3 api_smoke.py
-python3 -m unittest test_v2 test_v2_sandbox -v
+python3 -m unittest test_v2 test_v2_sandbox test_experience -v
 node --check web/app.js
 node --check web/resources.js
+node test_workflow.cjs
+node test_edge.mjs
+python3 version_assets.py --check
 ```
 
 The release retains 23 V1 acceptance methods, 28 V2 methods and five streaming/export methods, with 27 HTTP integration checks. Node checks also verify workflow transitions and fixed-origin proxy routing. The acceptance suite checks all repair profiles, rejection of weakened tests, sandbox teardown, model validation, queue behavior, inference allowances, and GPU telemetry policy. The HTTP suite starts a separate worker with a temporary database and checks authentication, idempotency, artifact checksums, queued containment, and regression rejection. It uses sample proposals and real sandbox execution, consuming no inference credits. GitHub Actions runs both suites.
+
+## Product walkthrough
+
+[Watch the silent feature walkthrough](https://hari-aditya-003.github.io/versionbridge-ai/demo.html) · [Download the MP4](showcase/versionbridge-final-walkthrough.mp4) · [Narration text](showcase/VersionBridge-Audio-Script.txt) · [User guide](USER_GUIDE.md)
+
+The walkthrough shows the animated architecture, profile contracts, a live two-file repair, sandbox output and source inspection, TXT export, regression rejection, containment and resource readings. The [capture record](showcase/final-walkthrough-capture.json) documents editing and an excluded provider-error take. [Recorded live test evidence](evidence/product-live-qa-2026-11-07.json) and the [downloaded TXT run bundle](evidence/walkthrough-run.txt) accompany it.
 
 ## Inspect verification evidence
 
