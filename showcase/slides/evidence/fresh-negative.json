@@ -1,0 +1,315 @@
+{
+  "id": "68561243fe2e4116a576f2b11a4f391d",
+  "created": "2026-11-08T16:39:52.217448+00:00",
+  "project": "pandas 2 \u00b7 regression guard",
+  "status": "Unverified",
+  "evidence": [
+    {
+      "event": "project",
+      "profile": "regression",
+      "title": "pandas 2 \u00b7 regression guard"
+    },
+    {
+      "event": "inventory",
+      "file_count": 2,
+      "languages": [
+        "Python"
+      ],
+      "manifests": [],
+      "dependencies": [],
+      "note": "Static inventory. Compatibility is established by the recorded execution tests."
+    },
+    {
+      "event": "files",
+      "phase": "Original",
+      "files": [
+        {
+          "path": "regression_pipeline.py",
+          "content": "import pandas as pd\n\n\ndef append_event(events, event):\n    return events.append(event, ignore_index=True)\n",
+          "sha256": "e17d1c01a4ce5051b7ea568271540f1e9b0063b3523160b5814e5a6593888950",
+          "bytes": 106,
+          "truncated": false
+        },
+        {
+          "path": "test_regression_pipeline.py",
+          "content": "import pandas as pd\nfrom regression_pipeline import append_event\n\n\nclass TrackedEvents(pd.DataFrame):\n    \"\"\"Legacy application adapter that preserves audit metadata on append.\"\"\"\n\n    def append(self, event, ignore_index=False):\n        result = pd.concat([self, pd.DataFrame([event])], ignore_index=ignore_index)\n        result.attrs = self.attrs.copy()\n        return result\n\n\ndef test_standard_frame_migration():\n    events = pd.DataFrame({\"event\": [\"opened\"]})\n    assert append_event(events, {\"event\": \"closed\"})[\"event\"].tolist() == [\"opened\", \"closed\"]\n\n\ndef test_preserve_adapter_audit_metadata():\n    events = TrackedEvents({\"event\": [\"opened\"]})\n    events.attrs[\"audit_stream\"] = \"billing\"\n    result = append_event(events, {\"event\": \"closed\"})\n    assert result.attrs.get(\"audit_stream\") == \"billing\"\n",
+          "sha256": "9bcccffb2ca229d545877beb031fc41aed14b51db4b9649217b767ca240063d6",
+          "bytes": 814,
+          "truncated": false
+        }
+      ],
+      "complete": true,
+      "omitted": 0,
+      "scope": "Scoped application and test text snapshots; 16 files / 64 KiB per phase."
+    },
+    {
+      "event": "stage",
+      "step": 0,
+      "message": "Reproducing the failure in a fresh container\u2026"
+    },
+    {
+      "event": "sandbox",
+      "name": "versionbridge-2ff83b882769461a9431b965a8a68c5c",
+      "status": "Dispatching",
+      "image": "sha256:fbbefae16ff6881f8a442ce1f8d87c4a03c9edc919c3a48f0a12119df8b51c98",
+      "runtime": "Docker default",
+      "location": "Vultr-Atlanta",
+      "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s",
+      "command": [
+        "python",
+        "-I",
+        "/opt/versionbridge/pytest_runner.py"
+      ],
+      "purpose": "Baseline",
+      "project_read_only": true
+    },
+    {
+      "event": "sandbox_output",
+      "name": "versionbridge-2ff83b882769461a9431b965a8a68c5c",
+      "text": "F",
+      "recorded_at": 1794155989.907561
+    },
+    {
+      "event": "sandbox_output",
+      "name": "versionbridge-2ff83b882769461a9431b965a8a68c5c",
+      "text": ".",
+      "recorded_at": 1794155989.9117396
+    },
+    {
+      "event": "sandbox_output",
+      "name": "versionbridge-2ff83b882769461a9431b965a8a68c5c",
+      "text": "                                                                       [100%]",
+      "recorded_at": 1794155989.9147582
+    },
+    {
+      "event": "sandbox_output",
+      "name": "versionbridge-2ff83b882769461a9431b965a8a68c5c",
+      "text": "\n=================================== FAILURES ===================================\n________________________ test_standard_frame_migration _________________________\ntest_regression_pipeline.py:16: in test_standard_frame_migration\n    assert append_event(events, {\"event\": \"closed\"})[\"event\"].tolist() == [\"opened\", \"closed\"]\nregression_pipeline.py:5: in append_event\n    return events.append(event, ignore_index=True)\n/usr/local/lib/python3.12/site-packages/pandas/core/generic.py:6299: in __getattr__\n    return object.__getattribute__(self, name)\nE   AttributeError: 'DataFrame' object has no attribute 'append'. Did you mean: '_append'?\n=========================== short test summary info ============================\nFAILED test_regression_pipeline.py::test_standard_frame_migration - Attribute...\n1 failed, 1 passed in 0.65s\n",
+      "recorded_at": 1794155989.918002
+    },
+    {
+      "event": "sandbox",
+      "name": "versionbridge-2ff83b882769461a9431b965a8a68c5c",
+      "status": "Removed",
+      "exit_code": 1,
+      "timed_out": false
+    },
+    {
+      "event": "log",
+      "label": "Baseline",
+      "text": "F.                                                                       [100%]\n=================================== FAILURES ===================================\n________________________ test_standard_frame_migration _________________________\ntest_regression_pipeline.py:16: in test_standard_frame_migration\n    assert append_event(events, {\"event\": \"closed\"})[\"event\"].tolist() == [\"opened\", \"closed\"]\nregression_pipeline.py:5: in append_event\n    return events.append(event, ignore_index=True)\n/usr/local/lib/python3.12/site-packages/pandas/core/generic.py:6299: in __getattr__\n    return object.__getattribute__(self, name)\nE   AttributeError: 'DataFrame' object has no attribute 'append'. Did you mean: '_append'?\n=========================== short test summary info ============================\nFAILED test_regression_pipeline.py::test_standard_frame_migration - Attribute...\n1 failed, 1 passed in 0.65s\n"
+    },
+    {
+      "event": "analysis",
+      "classification": {
+        "categories": [
+          "api",
+          "algorithm"
+        ],
+        "matches": [
+          {
+            "category": "api",
+            "evidence": "AttributeError",
+            "path": "regression_pipeline.py",
+            "basis": "deterministic_signature"
+          },
+          {
+            "category": "algorithm",
+            "evidence": "assert append_event(events, {\"event\": \"closed\"})[\"event\"].tolist() ==",
+            "path": "regression_pipeline.py",
+            "basis": "deterministic_signature"
+          }
+        ],
+        "confidence_source": "matched signatures",
+        "universal_guards": [
+          "patch_policy",
+          "original_test_inventory",
+          "independent_checks_when_available",
+          "sandbox_cleanup"
+        ],
+        "narrow_scope": false
+      },
+      "source_sha": "e17d1c01a4ce5051b7ea568271540f1e9b0063b3523160b5814e5a6593888950",
+      "verification_scope": "controlled V1 profile; original test suite"
+    },
+    {
+      "event": "stage",
+      "step": 1,
+      "message": "Preparing candidate patch \u00b7 attempt 1"
+    },
+    {
+      "event": "routing",
+      "model": "glm-5.3-flash",
+      "provider": "vultr",
+      "categories": [
+        "api",
+        "algorithm"
+      ],
+      "reason": "Evidence-backed baseline; no category holdout promotion yet.",
+      "attempt": 1
+    },
+    {
+      "event": "diagnosis",
+      "attempt": 1,
+      "text": "DataFrame.append was removed in pandas 2.0; append_event must build the result with pd.concat instead.",
+      "provider": "Vultr Serverless Inference \u00b7 glm-5.3-flash",
+      "receipt": {
+        "requested_model": "glm-5.3-flash",
+        "served_model": "glm-5.3-flash",
+        "model_substitution": false,
+        "identity_verified": true,
+        "provider": "Vultr Serverless Inference",
+        "completion_id": "chatcmpl-10c63046-776f-4f39-b583-9d60bcb02f45",
+        "tokens": {
+          "prompt_tokens": 369,
+          "completion_tokens": 50,
+          "total_tokens": 419
+        },
+        "latency_ms": 702.42,
+        "budget": {
+          "reservation_id": 41,
+          "reserved_usd": 0.023001
+        }
+      }
+    },
+    {
+      "event": "files",
+      "phase": "Candidate 1",
+      "files": [
+        {
+          "path": "regression_pipeline.py",
+          "content": "import pandas as pd\n\n\ndef append_event(events, event):\n    return pd.concat([events, pd.DataFrame([event])], ignore_index=True)\n",
+          "sha256": "f8df7fe55a2dc5d7eea46aef5b6aed40b21fe1cbf44e409da3c060d1e9275a55",
+          "bytes": 128,
+          "truncated": false
+        },
+        {
+          "path": "test_regression_pipeline.py",
+          "content": "import pandas as pd\nfrom regression_pipeline import append_event\n\n\nclass TrackedEvents(pd.DataFrame):\n    \"\"\"Legacy application adapter that preserves audit metadata on append.\"\"\"\n\n    def append(self, event, ignore_index=False):\n        result = pd.concat([self, pd.DataFrame([event])], ignore_index=ignore_index)\n        result.attrs = self.attrs.copy()\n        return result\n\n\ndef test_standard_frame_migration():\n    events = pd.DataFrame({\"event\": [\"opened\"]})\n    assert append_event(events, {\"event\": \"closed\"})[\"event\"].tolist() == [\"opened\", \"closed\"]\n\n\ndef test_preserve_adapter_audit_metadata():\n    events = TrackedEvents({\"event\": [\"opened\"]})\n    events.attrs[\"audit_stream\"] = \"billing\"\n    result = append_event(events, {\"event\": \"closed\"})\n    assert result.attrs.get(\"audit_stream\") == \"billing\"\n",
+          "sha256": "9bcccffb2ca229d545877beb031fc41aed14b51db4b9649217b767ca240063d6",
+          "bytes": 814,
+          "truncated": false
+        }
+      ],
+      "complete": true,
+      "omitted": 0,
+      "scope": "Scoped application and test text snapshots; 16 files / 64 KiB per phase."
+    },
+    {
+      "event": "stage",
+      "step": 2,
+      "message": "Running the unchanged tests in a fresh container\u2026"
+    },
+    {
+      "event": "sandbox",
+      "name": "versionbridge-0286da8a964846c29b60600038a1c9de",
+      "status": "Dispatching",
+      "image": "sha256:fbbefae16ff6881f8a442ce1f8d87c4a03c9edc919c3a48f0a12119df8b51c98",
+      "runtime": "Docker default",
+      "location": "Vultr-Atlanta",
+      "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s",
+      "command": [
+        "python",
+        "-I",
+        "/opt/versionbridge/pytest_runner.py"
+      ],
+      "purpose": "Candidate 1 verification",
+      "project_read_only": true
+    },
+    {
+      "event": "sandbox_output",
+      "name": "versionbridge-0286da8a964846c29b60600038a1c9de",
+      "text": ".",
+      "recorded_at": 1794155991.8075924
+    },
+    {
+      "event": "sandbox_output",
+      "name": "versionbridge-0286da8a964846c29b60600038a1c9de",
+      "text": "F",
+      "recorded_at": 1794155991.856637
+    },
+    {
+      "event": "sandbox_output",
+      "name": "versionbridge-0286da8a964846c29b60600038a1c9de",
+      "text": "                                                                       [100%]",
+      "recorded_at": 1794155991.8618422
+    },
+    {
+      "event": "sandbox_output",
+      "name": "versionbridge-0286da8a964846c29b60600038a1c9de",
+      "text": "\n=================================== FAILURES ===================================\n_____________________ test_preserve_adapter_audit_metadata _____________________\ntest_regression_pipeline.py:23: in test_preserve_adapter_audit_metadata\n    assert result.attrs.get(\"audit_stream\") == \"billing\"\nE   AssertionError: assert None == 'billing'\nE    +  where None = <built-in method get of dict object at 0x79e16ad40780>('audit_stream')\nE    +    where <built-in method get of dict object at 0x79e16ad40780> = {}.get\nE    +      where {} =     event\\n0  opened\\n1  closed.attrs\n=========================== short test summary info ============================\nFAILED test_regression_pipeline.py::test_preserve_adapter_audit_metadata - As...\n1 failed, 1 passed in 0.50s\n",
+      "recorded_at": 1794155991.8651166
+    },
+    {
+      "event": "sandbox",
+      "name": "versionbridge-0286da8a964846c29b60600038a1c9de",
+      "status": "Removed",
+      "exit_code": 1,
+      "timed_out": false
+    },
+    {
+      "event": "log",
+      "label": "Verification 1",
+      "text": ".F                                                                       [100%]\n=================================== FAILURES ===================================\n_____________________ test_preserve_adapter_audit_metadata _____________________\ntest_regression_pipeline.py:23: in test_preserve_adapter_audit_metadata\n    assert result.attrs.get(\"audit_stream\") == \"billing\"\nE   AssertionError: assert None == 'billing'\nE    +  where None = <built-in method get of dict object at 0x79e16ad40780>('audit_stream')\nE    +    where <built-in method get of dict object at 0x79e16ad40780> = {}.get\nE    +      where {} =     event\\n0  opened\\n1  closed.attrs\n=========================== short test summary info ============================\nFAILED test_regression_pipeline.py::test_preserve_adapter_audit_metadata - As...\n1 failed, 1 passed in 0.50s\n"
+    },
+    {
+      "event": "rejected",
+      "id": "68561243fe2e4116a576f2b11a4f391d",
+      "provider": "Vultr Serverless Inference \u00b7 glm-5.3-flash",
+      "diff": "--- a/regression_pipeline.py\n+++ b/regression_pipeline.py\n@@ -2,4 +2,4 @@\n \n \n def append_event(events, event):\n-    return events.append(event, ignore_index=True)\n+    return pd.concat([events, pd.DataFrame([event])], ignore_index=True)\n",
+      "diagnosis": "DataFrame.append was removed in pandas 2.0; append_event must build the result with pd.concat instead.",
+      "inference": {
+        "requested_model": "glm-5.3-flash",
+        "served_model": "glm-5.3-flash",
+        "model_substitution": false,
+        "identity_verified": true,
+        "provider": "Vultr Serverless Inference",
+        "completion_id": "chatcmpl-10c63046-776f-4f39-b583-9d60bcb02f45",
+        "tokens": {
+          "prompt_tokens": 369,
+          "completion_tokens": 50,
+          "total_tokens": 419
+        },
+        "latency_ms": 702.42,
+        "budget": {
+          "reservation_id": 41,
+          "reserved_usd": 0.023001
+        }
+      },
+      "before": "F.                                                                       [100%]\n=================================== FAILURES ===================================\n________________________ test_standard_frame_migration _________________________\ntest_regression_pipeline.py:16: in test_standard_frame_migration\n    assert append_event(events, {\"event\": \"closed\"})[\"event\"].tolist() == [\"opened\", \"closed\"]\nregression_pipeline.py:5: in append_event\n    return events.append(event, ignore_index=True)\n/usr/local/lib/python3.12/site-packages/pandas/core/generic.py:6299: in __getattr__\n    return object.__getattribute__(self, name)\nE   AttributeError: 'DataFrame' object has no attribute 'append'. Did you mean: '_append'?\n=========================== short test summary info ============================\nFAILED test_regression_pipeline.py::test_standard_frame_migration - Attribute...\n1 failed, 1 passed in 0.65s\n",
+      "after": ".F                                                                       [100%]\n=================================== FAILURES ===================================\n_____________________ test_preserve_adapter_audit_metadata _____________________\ntest_regression_pipeline.py:23: in test_preserve_adapter_audit_metadata\n    assert result.attrs.get(\"audit_stream\") == \"billing\"\nE   AssertionError: assert None == 'billing'\nE    +  where None = <built-in method get of dict object at 0x79e16ad40780>('audit_stream')\nE    +    where <built-in method get of dict object at 0x79e16ad40780> = {}.get\nE    +      where {} =     event\\n0  opened\\n1  closed.attrs\n=========================== short test summary info ============================\nFAILED test_regression_pipeline.py::test_preserve_adapter_audit_metadata - As...\n1 failed, 1 passed in 0.50s\n",
+      "attempt": 1,
+      "baseline_exit_code": 1,
+      "verification_exit_code": 1,
+      "controller_revision": "52caaf00934d4dead260991c472cb71ddf72f8d1",
+      "inventory": {
+        "file_count": 2,
+        "languages": [
+          "Python"
+        ],
+        "manifests": [],
+        "dependencies": [],
+        "note": "Static inventory. Compatibility is established by the recorded execution tests."
+      },
+      "profile": "regression",
+      "commit": null,
+      "file": "regression_pipeline.py",
+      "baseline_tests": {
+        "test_regression_pipeline.py::test_standard_frame_migration": "failed",
+        "test_regression_pipeline.py::test_preserve_adapter_audit_metadata": "passed"
+      },
+      "verification_tests": {
+        "test_regression_pipeline.py::test_standard_frame_migration": "passed",
+        "test_regression_pipeline.py::test_preserve_adapter_audit_metadata": "failed"
+      },
+      "rejection_reason": "The verification suite did not pass.",
+      "tests_sha256": "a6be0f1eee127757d9f1281a2b4226277525f7688ea64c5e0d260500ab94fc47",
+      "patch_sha256": "1083078cc6cf39d7126ec230c5dcfd0a5c5c6845406be45869d58d6acebefbab"
+    },
+    {
+      "event": "error",
+      "message": "Candidate rejected. The verification gate did not pass.",
+      "outcome": "unverified"
+    }
+  ]
+}

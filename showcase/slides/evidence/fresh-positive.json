@@ -1,0 +1,632 @@
+{
+  "id": "fe9d10292eb747ebb6d8ecd17cb61f6f",
+  "created": "2026-11-08T16:39:01.102999+00:00",
+  "project": "V2 \u00b7 two-file import migration",
+  "status": "Verified",
+  "evidence": [
+    {
+      "event": "project",
+      "recorded_at": 1794155937.9070406,
+      "profile": "v2-multifile",
+      "title": "V2 \u00b7 two-file import migration"
+    },
+    {
+      "event": "files",
+      "recorded_at": 1794155937.9558482,
+      "phase": "Original",
+      "files": [
+        {
+          "path": "app/types.py",
+          "content": "def is_record(value):\n    from collections import Mapping\n    return isinstance(value, Mapping)\n",
+          "sha256": "b187fc06698af4493e5d83579e4ce44981c30e37f9d4cb7d54529578aff4e984",
+          "bytes": 96,
+          "truncated": false
+        },
+        {
+          "path": "app/service.py",
+          "content": "def normalize(rows):\n    from collections import Mapping\n    from app.types import is_record\n    return [dict(row) for row in rows if isinstance(row, Mapping) and is_record(row)]\n",
+          "sha256": "207fc1251b614fccbe74afbf719c6b1a5794d998e55a1ab5f5630de6a1c37185",
+          "bytes": 179,
+          "truncated": false
+        },
+        {
+          "path": "test_service.py",
+          "content": "def test_normalize():\n    from app.service import normalize\n    assert normalize([{'id': 2}, None]) == [{'id': 2}]\n",
+          "sha256": "136de3e3716540f589151f35f509788bc93545e6069662df1bf3bfdeb9d54767",
+          "bytes": 115,
+          "truncated": false
+        }
+      ],
+      "complete": true,
+      "omitted": 0,
+      "scope": "Scoped application and test text snapshots; 16 files / 64 KiB per phase."
+    },
+    {
+      "event": "stage",
+      "recorded_at": 1794155937.95723,
+      "step": 0,
+      "message": "V2 \u00b7 reproducing the pinned migration failure\u2026"
+    },
+    {
+      "event": "sandbox",
+      "recorded_at": 1794155937.9584696,
+      "name": "versionbridge-fe5e4acca19f46359acbad1d5c27dcb1",
+      "status": "Dispatching",
+      "image": "sha256:fbbefae16ff6881f8a442ce1f8d87c4a03c9edc919c3a48f0a12119df8b51c98",
+      "runtime": "Docker default",
+      "location": "Vultr-Atlanta",
+      "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s",
+      "command": [
+        "python",
+        "-I",
+        "/opt/versionbridge/pytest_runner.py"
+      ],
+      "purpose": "Baseline",
+      "project_read_only": true
+    },
+    {
+      "event": "sandbox_output",
+      "recorded_at": 1794155938.4813488,
+      "name": "versionbridge-fe5e4acca19f46359acbad1d5c27dcb1",
+      "text": "F"
+    },
+    {
+      "event": "sandbox_output",
+      "recorded_at": 1794155938.4839923,
+      "name": "versionbridge-fe5e4acca19f46359acbad1d5c27dcb1",
+      "text": "                                                                        [100%]"
+    },
+    {
+      "event": "sandbox_output",
+      "recorded_at": 1794155938.4881063,
+      "name": "versionbridge-fe5e4acca19f46359acbad1d5c27dcb1",
+      "text": "\n=================================== FAILURES ===================================\n________________________________ test_normalize ________________________________\ntest_service.py:3: in test_normalize\n    assert normalize([{'id': 2}, None]) == [{'id': 2}]\napp/service.py:2: in normalize\n    from collections import Mapping\nE   ImportError: cannot import name 'Mapping' from 'collections' (/usr/local/lib/python3.12/collections/__init__.py)\n=========================== short test summary info ============================\nFAILED test_service.py::test_normalize - ImportError: cannot import name 'Map...\n1 failed in 0.02s\n"
+    },
+    {
+      "event": "sandbox",
+      "recorded_at": 1794155938.6732175,
+      "name": "versionbridge-fe5e4acca19f46359acbad1d5c27dcb1",
+      "status": "Removed",
+      "exit_code": 1,
+      "timed_out": false
+    },
+    {
+      "event": "log",
+      "recorded_at": 1794155938.6750956,
+      "label": "V2 baseline",
+      "text": "F                                                                        [100%]\n=================================== FAILURES ===================================\n________________________________ test_normalize ________________________________\ntest_service.py:3: in test_normalize\n    assert normalize([{'id': 2}, None]) == [{'id': 2}]\napp/service.py:2: in normalize\n    from collections import Mapping\nE   ImportError: cannot import name 'Mapping' from 'collections' (/usr/local/lib/python3.12/collections/__init__.py)\n=========================== short test summary info ============================\nFAILED test_service.py::test_normalize - ImportError: cannot import name 'Map...\n1 failed in 0.02s\n"
+    },
+    {
+      "event": "analysis",
+      "recorded_at": 1794155938.6787782,
+      "classification": {
+        "categories": [
+          "api",
+          "algorithm"
+        ],
+        "matches": [
+          {
+            "category": "api",
+            "evidence": "ImportError",
+            "path": "app/types.py",
+            "basis": "deterministic_signature"
+          },
+          {
+            "category": "algorithm",
+            "evidence": "assert normalize([{'id': 2}, None]) ==",
+            "path": "app/types.py",
+            "basis": "deterministic_signature"
+          }
+        ],
+        "confidence_source": "matched signatures",
+        "universal_guards": [
+          "patch_policy",
+          "original_test_inventory",
+          "independent_checks_when_available",
+          "sandbox_cleanup"
+        ],
+        "narrow_scope": false
+      },
+      "context": {
+        "symbols": [
+          {
+            "name": "normalize",
+            "path": "app/service.py",
+            "line": 1,
+            "end_line": 4,
+            "kind": "FunctionDef"
+          },
+          {
+            "name": "is_record",
+            "path": "app/types.py",
+            "line": 1,
+            "end_line": 3,
+            "kind": "FunctionDef"
+          }
+        ],
+        "edges": [
+          {
+            "from": "app/service.py",
+            "to": "collections",
+            "path": "app/service.py",
+            "line": 2,
+            "kind": "import",
+            "confidence": "exact_syntax"
+          },
+          {
+            "from": "app/service.py",
+            "to": "app.types",
+            "path": "app/service.py",
+            "line": 3,
+            "kind": "import",
+            "confidence": "exact_syntax"
+          },
+          {
+            "from": "app/service.py",
+            "to": "dict",
+            "path": "app/service.py",
+            "line": 4,
+            "kind": "call",
+            "confidence": "heuristic_unresolved_receiver"
+          },
+          {
+            "from": "app/service.py",
+            "to": "isinstance",
+            "path": "app/service.py",
+            "line": 4,
+            "kind": "call",
+            "confidence": "heuristic_unresolved_receiver"
+          },
+          {
+            "from": "app/service.py",
+            "to": "is_record",
+            "path": "app/service.py",
+            "line": 4,
+            "kind": "call",
+            "confidence": "heuristic_unresolved_receiver"
+          },
+          {
+            "from": "app/types.py",
+            "to": "collections",
+            "path": "app/types.py",
+            "line": 2,
+            "kind": "import",
+            "confidence": "exact_syntax"
+          },
+          {
+            "from": "app/types.py",
+            "to": "isinstance",
+            "path": "app/types.py",
+            "line": 3,
+            "kind": "call",
+            "confidence": "heuristic_unresolved_receiver"
+          }
+        ],
+        "diagnostic_excerpt": "F                                                                        [100%]\n=================================== FAILURES ===================================\n________________________________ test_normalize ________________________________\ntest_service.py:3: in test_normalize\n    assert normalize([{'id': 2}, None]) == [{'id': 2}]\napp/service.py:2: in normalize\n    from collections import Mapping\nE   ImportError: cannot import name 'Mapping' from 'collections' (/usr/local/lib/python3.12/collections/__init__.py)\n=========================== short test summary info ============================\nFAILED test_service.py::test_normalize - ImportError: cannot import name 'Map...\n1 failed in 0.02s\n",
+        "localization_basis": "Allowed application files plus parsed source locations; no learned precision claim."
+      },
+      "impact_graph": {
+        "nodes": [
+          {
+            "id": "app/service.py",
+            "kind": "file",
+            "sha256": "207fc1251b614fccbe74afbf719c6b1a5794d998e55a1ab5f5630de6a1c37185"
+          },
+          {
+            "id": "app/types.py",
+            "kind": "file",
+            "sha256": "b187fc06698af4493e5d83579e4ce44981c30e37f9d4cb7d54529578aff4e984"
+          }
+        ],
+        "symbols": [
+          {
+            "name": "normalize",
+            "path": "app/service.py",
+            "line": 1,
+            "end_line": 4,
+            "kind": "FunctionDef"
+          },
+          {
+            "name": "is_record",
+            "path": "app/types.py",
+            "line": 1,
+            "end_line": 3,
+            "kind": "FunctionDef"
+          }
+        ],
+        "edges": [
+          {
+            "from": "app/service.py",
+            "to": "collections",
+            "path": "app/service.py",
+            "line": 2,
+            "kind": "import",
+            "confidence": "exact_syntax"
+          },
+          {
+            "from": "app/service.py",
+            "to": "app.types",
+            "path": "app/service.py",
+            "line": 3,
+            "kind": "import",
+            "confidence": "exact_syntax"
+          },
+          {
+            "from": "app/service.py",
+            "to": "dict",
+            "path": "app/service.py",
+            "line": 4,
+            "kind": "call",
+            "confidence": "heuristic_unresolved_receiver"
+          },
+          {
+            "from": "app/service.py",
+            "to": "isinstance",
+            "path": "app/service.py",
+            "line": 4,
+            "kind": "call",
+            "confidence": "heuristic_unresolved_receiver"
+          },
+          {
+            "from": "app/service.py",
+            "to": "is_record",
+            "path": "app/service.py",
+            "line": 4,
+            "kind": "call",
+            "confidence": "heuristic_unresolved_receiver"
+          },
+          {
+            "from": "app/types.py",
+            "to": "collections",
+            "path": "app/types.py",
+            "line": 2,
+            "kind": "import",
+            "confidence": "exact_syntax"
+          },
+          {
+            "from": "app/types.py",
+            "to": "isinstance",
+            "path": "app/types.py",
+            "line": 3,
+            "kind": "call",
+            "confidence": "heuristic_unresolved_receiver"
+          }
+        ],
+        "limitations": "Import syntax is exact; calls are heuristic, not a whole-program dependency graph."
+      },
+      "knowledge": [
+        {
+          "id": "collections-abc-py310",
+          "package": "python",
+          "version_prefix": "3.",
+          "text": "Python 3.10 removed deprecated collections aliases for collections.abc abstract base classes, including Mapping. The qualified replacement namespace is collections.abc.Mapping, not abc.Mapping. Check import consumers and preserve mapping behavior.",
+          "source_url": "https://docs.python.org/3.12/whatsnew/3.10.html",
+          "reviewed": "2026-11-06",
+          "scope": "Python 3.10-3.12",
+          "retrieval_score": 4.6702,
+          "retrieval": "bounded BM25-style lexical ranking"
+        }
+      ],
+      "allowed_paths": [
+        "app/types.py",
+        "app/service.py"
+      ],
+      "source_sha": "975f54654f1ac84e337f84bee39557802ff78a499e0c7d0aaf438ade85d07f40",
+      "versions": {
+        "python": "3.12.0"
+      },
+      "adapter": {
+        "language": "Python",
+        "command": [
+          "python",
+          "-I",
+          "/opt/versionbridge/pytest_runner.py"
+        ],
+        "native_build_space": false,
+        "deadline_seconds": 35,
+        "scope": "Python application edits with existing pytest and independent checks"
+      }
+    },
+    {
+      "event": "routing",
+      "recorded_at": 1794155938.6809106,
+      "model": "glm-5.3-flash",
+      "provider": "vultr",
+      "categories": [
+        "api",
+        "algorithm"
+      ],
+      "reason": "Evidence-backed baseline; no category holdout promotion yet.",
+      "attempt": 1
+    },
+    {
+      "event": "stage",
+      "recorded_at": 1794155938.6846592,
+      "step": 1,
+      "message": "V2 \u00b7 authoring manifest \u00b7 attempt 1 \u00b7 glm-5.3-flash"
+    },
+    {
+      "event": "diagnosis",
+      "recorded_at": 1794155940.022269,
+      "attempt": 1,
+      "text": "`collections.Mapping` was removed in Python 3.10; imports must use `collections.abc.Mapping`. Both app/service.py and app/types.py contain the deprecated import.",
+      "provider": "Vultr Serverless Inference",
+      "receipt": {
+        "requested_model": "glm-5.3-flash",
+        "served_model": "glm-5.3-flash",
+        "model_substitution": false,
+        "identity_verified": true,
+        "provider": "Vultr Serverless Inference",
+        "completion_id": "chatcmpl-864825ff-c4f4-4f13-ac82-d9bc5e39d157",
+        "tokens": {
+          "prompt_tokens": 1200,
+          "completion_tokens": 129,
+          "total_tokens": 1329
+        },
+        "latency_ms": 1256.27,
+        "budget": {
+          "reservation_id": 40,
+          "reserved_usd": 0.034566
+        }
+      }
+    },
+    {
+      "event": "files",
+      "recorded_at": 1794155940.0287712,
+      "phase": "Candidate 1",
+      "files": [
+        {
+          "path": "app/types.py",
+          "content": "def is_record(value):\n    from collections.abc import Mapping\n    return isinstance(value, Mapping)\n",
+          "sha256": "399ac120bf282e531368e797469191b32d4a83f466c352bb5c63fc343fb10627",
+          "bytes": 100,
+          "truncated": false
+        },
+        {
+          "path": "app/service.py",
+          "content": "def normalize(rows):\n    from collections.abc import Mapping\n    from app.types import is_record\n    return [dict(row) for row in rows if isinstance(row, Mapping) and is_record(row)]\n",
+          "sha256": "698cc413e5cb3cf71cbeb7c2b0326d5bb3b47a4a46dd7ab2eacd8ecb45a53fd5",
+          "bytes": 183,
+          "truncated": false
+        },
+        {
+          "path": "test_service.py",
+          "content": "def test_normalize():\n    from app.service import normalize\n    assert normalize([{'id': 2}, None]) == [{'id': 2}]\n",
+          "sha256": "136de3e3716540f589151f35f509788bc93545e6069662df1bf3bfdeb9d54767",
+          "bytes": 115,
+          "truncated": false
+        }
+      ],
+      "complete": true,
+      "omitted": 0,
+      "scope": "Scoped application and test text snapshots; 16 files / 64 KiB per phase."
+    },
+    {
+      "event": "stage",
+      "recorded_at": 1794155940.03041,
+      "step": 2,
+      "message": "V2 \u00b7 original suite and independent checks in fresh containers\u2026"
+    },
+    {
+      "event": "sandbox",
+      "recorded_at": 1794155940.0316863,
+      "name": "versionbridge-3055c31e40614e5399df1d5019a79327",
+      "status": "Dispatching",
+      "image": "sha256:fbbefae16ff6881f8a442ce1f8d87c4a03c9edc919c3a48f0a12119df8b51c98",
+      "runtime": "Docker default",
+      "location": "Vultr-Atlanta",
+      "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s",
+      "command": [
+        "python",
+        "-I",
+        "/opt/versionbridge/pytest_runner.py"
+      ],
+      "purpose": "Candidate verification",
+      "project_read_only": true
+    },
+    {
+      "event": "sandbox_output",
+      "recorded_at": 1794155940.529296,
+      "name": "versionbridge-3055c31e40614e5399df1d5019a79327",
+      "text": "."
+    },
+    {
+      "event": "sandbox_output",
+      "recorded_at": 1794155940.5336807,
+      "name": "versionbridge-3055c31e40614e5399df1d5019a79327",
+      "text": "                                                                        [100%]\n1 passed in 0.01s\n"
+    },
+    {
+      "event": "sandbox",
+      "recorded_at": 1794155940.7166574,
+      "name": "versionbridge-3055c31e40614e5399df1d5019a79327",
+      "status": "Removed",
+      "exit_code": 0,
+      "timed_out": false
+    },
+    {
+      "event": "sandbox",
+      "recorded_at": 1794155940.718931,
+      "name": "versionbridge-1a66b89599fc432b895d220577a84189",
+      "status": "Dispatching",
+      "image": "sha256:fbbefae16ff6881f8a442ce1f8d87c4a03c9edc919c3a48f0a12119df8b51c98",
+      "runtime": "Docker default",
+      "location": "Vultr-Atlanta",
+      "limits": "1 CPU \u00b7 384 MiB \u00b7 64 PIDs \u00b7 35s",
+      "command": [
+        "python",
+        "-I",
+        "/opt/versionbridge/independent_tests.py",
+        "v2-multifile"
+      ],
+      "purpose": "Independent checks",
+      "project_read_only": true
+    },
+    {
+      "event": "sandbox_output",
+      "recorded_at": 1794155940.973128,
+      "name": "versionbridge-1a66b89599fc432b895d220577a84189",
+      "text": "{\"passed\": true, \"checks\": 102, \"seed\": 7319, \"suite\": \"v2-multifile\", \"protocol\": \"behavior-supervisor-v2\", \"provenance\": \"read-only supervisor; source executed only in isolated child\", \"suite_sha256\": \"7bf050dfe94b8329017a1a4d59dab1021da7925994522df67fa991646092ce63\"}\n"
+    },
+    {
+      "event": "sandbox",
+      "recorded_at": 1794155941.0903227,
+      "name": "versionbridge-1a66b89599fc432b895d220577a84189",
+      "status": "Removed",
+      "exit_code": 0,
+      "timed_out": false
+    },
+    {
+      "event": "log",
+      "recorded_at": 1794155941.0978513,
+      "label": "V2 verification 1",
+      "text": ".                                                                        [100%]\n1 passed in 0.01s\n"
+    },
+    {
+      "event": "result",
+      "recorded_at": 1794155941.101926,
+      "id": "fe9d10292eb747ebb6d8ecd17cb61f6f",
+      "profile": "v2-multifile",
+      "provider": "Vultr Serverless Inference",
+      "diagnosis": "`collections.Mapping` was removed in Python 3.10; imports must use `collections.abc.Mapping`. Both app/service.py and app/types.py contain the deprecated import.",
+      "attempt": 1,
+      "inference": {
+        "requested_model": "glm-5.3-flash",
+        "served_model": "glm-5.3-flash",
+        "model_substitution": false,
+        "identity_verified": true,
+        "provider": "Vultr Serverless Inference",
+        "completion_id": "chatcmpl-864825ff-c4f4-4f13-ac82-d9bc5e39d157",
+        "tokens": {
+          "prompt_tokens": 1200,
+          "completion_tokens": 129,
+          "total_tokens": 1329
+        },
+        "latency_ms": 1256.27,
+        "budget": {
+          "reservation_id": 40,
+          "reserved_usd": 0.034566
+        }
+      },
+      "selection": {
+        "model": "glm-5.3-flash",
+        "provider": "vultr",
+        "categories": [
+          "api",
+          "algorithm"
+        ],
+        "reason": "Evidence-backed baseline; no category holdout promotion yet.",
+        "attempt": 1
+      },
+      "classification": {
+        "categories": [
+          "api",
+          "algorithm"
+        ],
+        "matches": [
+          {
+            "category": "api",
+            "evidence": "ImportError",
+            "path": "app/types.py",
+            "basis": "deterministic_signature"
+          },
+          {
+            "category": "algorithm",
+            "evidence": "assert normalize([{'id': 2}, None]) ==",
+            "path": "app/types.py",
+            "basis": "deterministic_signature"
+          }
+        ],
+        "confidence_source": "matched signatures",
+        "universal_guards": [
+          "patch_policy",
+          "original_test_inventory",
+          "independent_checks_when_available",
+          "sandbox_cleanup"
+        ],
+        "narrow_scope": false
+      },
+      "source_sha": "975f54654f1ac84e337f84bee39557802ff78a499e0c7d0aaf438ade85d07f40",
+      "image_digest": "sha256:fbbefae16ff6881f8a442ce1f8d87c4a03c9edc919c3a48f0a12119df8b51c98",
+      "snapshot_sha256": "671db9b86b2bfe3a7dc66c8747d0017e5d01b351cee4d93f0fc5fdca4774e3a9",
+      "execution_command": [
+        "python",
+        "-I",
+        "/opt/versionbridge/pytest_runner.py"
+      ],
+      "cleanup_verified": true,
+      "tests_sha256": "8bbf8e0d595cd6ff3c9e2db35668abe432349257f2cbc3ae51c1d95d38fdf148",
+      "commit": null,
+      "changed_paths": [
+        "app/service.py",
+        "app/types.py"
+      ],
+      "diff": "--- a/app/service.py\n+++ b/app/service.py\n@@ -1,4 +1,4 @@\n def normalize(rows):\n-    from collections import Mapping\n+    from collections.abc import Mapping\n     from app.types import is_record\n     return [dict(row) for row in rows if isinstance(row, Mapping) and is_record(row)]\n--- a/app/types.py\n+++ b/app/types.py\n@@ -1,3 +1,3 @@\n def is_record(value):\n-    from collections import Mapping\n+    from collections.abc import Mapping\n     return isinstance(value, Mapping)\n",
+      "patch_sha256": "732b496aa277643862441bc93459d00a18e21bfb634f62d28780ef21a9799b89",
+      "candidate_sha": "b107cd3536a4bd39224db836489dac6c7a74eb04510dfdf2bf2efcf92767a088",
+      "edit_manifest": {
+        "schema_version": 1,
+        "source_sha": "975f54654f1ac84e337f84bee39557802ff78a499e0c7d0aaf438ade85d07f40",
+        "diagnosis": "`collections.Mapping` was removed in Python 3.10; imports must use `collections.abc.Mapping`. Both app/service.py and app/types.py contain the deprecated import.",
+        "edits": [
+          {
+            "path": "app/service.py",
+            "start_line": 2,
+            "end_line": 2,
+            "new_text": "    from collections.abc import Mapping\n",
+            "reason": "Use collections.abc.Mapping in Python 3.10+",
+            "old_sha256": "bc66655fab69d7b00118fbbbc17129d6b06d9072d6e9ca2760d119502b5d57fd"
+          },
+          {
+            "path": "app/types.py",
+            "start_line": 2,
+            "end_line": 2,
+            "new_text": "    from collections.abc import Mapping\n",
+            "reason": "Use collections.abc.Mapping in Python 3.10+",
+            "old_sha256": "bc66655fab69d7b00118fbbbc17129d6b06d9072d6e9ca2760d119502b5d57fd"
+          }
+        ]
+      },
+      "manifest_binding": "Trusted source and span hashes; single-line edits inherit original indentation. Model supplies paths, spans and replacement text.",
+      "static_checks": [
+        {
+          "path": "app/service.py",
+          "check": "python_ast_policy",
+          "passed": true,
+          "scope": "conservative syntax and structural checks; not proof of safety"
+        },
+        {
+          "path": "app/types.py",
+          "check": "python_ast_policy",
+          "passed": true,
+          "scope": "conservative syntax and structural checks; not proof of safety"
+        }
+      ],
+      "baseline_exit_code": 1,
+      "verification_exit_code": 0,
+      "baseline_tests": {
+        "test_service.py::test_normalize": "failed"
+      },
+      "verification_tests": {
+        "test_service.py::test_normalize": "passed"
+      },
+      "independent_checks": {
+        "passed": true,
+        "checks": 102,
+        "seed": 7319,
+        "suite": "v2-multifile",
+        "protocol": "behavior-supervisor-v2",
+        "provenance": "read-only supervisor; source executed only in isolated child",
+        "suite_sha256": "7bf050dfe94b8329017a1a4d59dab1021da7925994522df67fa991646092ce63"
+      },
+      "before": "F                                                                        [100%]\n=================================== FAILURES ===================================\n________________________________ test_normalize ________________________________\ntest_service.py:3: in test_normalize\n    assert normalize([{'id': 2}, None]) == [{'id': 2}]\napp/service.py:2: in normalize\n    from collections import Mapping\nE   ImportError: cannot import name 'Mapping' from 'collections' (/usr/local/lib/python3.12/collections/__init__.py)\n=========================== short test summary info ============================\nFAILED test_service.py::test_normalize - ImportError: cannot import name 'Map...\n1 failed in 0.02s\n",
+      "after": ".                                                                        [100%]\n1 passed in 0.01s\n",
+      "verification_scope": "original suite plus independent checks",
+      "rejection_reason": null,
+      "eligibility": "verified_by_checks",
+      "human_decision": "pending maintainer review",
+      "elapsed_ms": 3193,
+      "controller_revision": "52caaf00934d4dead260991c472cb71ddf72f8d1"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "prepared_date": "2026-11-09",
+  "capture_date": "2026-11-08",
+  "capture_timezone": "Asia/Kolkata",
+  "application_url": "https://versionbridge.pages.dev",
+  "tested_commit": "52caaf00934d4dead260991c472cb71ddf72f8d1",
+  "slide_count": 20,
+  "pdf_sha256": "31423ab24fc45abf777c62a1540eed574775c5358c67dd515138e9ccc52b0931",
+  "screenshots": "Fresh captures from the deployed application. Static PDF images do not update live. No screenshot content was altered. PDF crops frame the relevant controls.",
+  "runs": [
+    {
+      "kind": "positive",
+      "id": "fe9d10292eb747ebb6d8ecd17cb61f6f",
+      "archive": "evidence/fresh-positive.json",
+      "source": "https://versionbridge.pages.dev/api/runs/fe9d10292eb747ebb6d8ecd17cb61f6f/report.json"
+    },
+    {
+      "kind": "negative",
+      "id": "68561243fe2e4116a576f2b11a4f391d",
+      "archive": "evidence/fresh-negative.json",
+      "source": "https://versionbridge.pages.dev/api/runs/68561243fe2e4116a576f2b11a4f391d/report.json"
+    },
+    {
+      "kind": "containment",
+      "id": "ab497225143d4614b87fa212a327b6f8",
+      "archive": "evidence/fresh-containment.json",
+      "source": "https://versionbridge.pages.dev/api/runs/ab497225143d4614b87fa212a327b6f8/report.json"
+    }
+  ]
+}

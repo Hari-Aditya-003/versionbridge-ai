@@ -59,6 +59,8 @@ The release retains 23 V1 acceptance methods, 28 V2 methods and five streaming/e
 
 ## Product walkthrough
 
+[Download the 20-slide live demo and architecture PDF](showcase/slides/VersionBridge-Live-Demo-and-Architecture.pdf) · [Slide screenshots and captured test evidence](showcase/slides/README.md)
+
 [Watch the silent feature walkthrough](https://hari-aditya-003.github.io/versionbridge-ai/demo.html) · [Download the MP4](showcase/versionbridge-final-walkthrough.mp4) · [Narration text](showcase/VersionBridge-Audio-Script.txt) · [User guide](USER_GUIDE.md)
 
 The walkthrough shows the animated architecture, profile contracts, a live two-file repair, sandbox output and source inspection, TXT export, regression rejection, containment and resource readings. The [capture record](showcase/final-walkthrough-capture.json) documents editing and an excluded provider-error take. [Recorded live test evidence](evidence/product-live-qa-2026-11-07.json) and the [downloaded TXT run bundle](evidence/walkthrough-run.txt) accompany it.
